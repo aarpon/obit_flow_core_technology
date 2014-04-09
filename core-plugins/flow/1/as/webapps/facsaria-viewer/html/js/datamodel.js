@@ -651,15 +651,15 @@ DataModel.prototype.getTubes = function(expCode, node) {
  * @param {type} ?
  * @returns {tubes} ?
  */
-DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identifier, specimen) {
+DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identifier, specimen, mode) {
 
     // Add call to the aggregation service
-    var parameters = 
-    {
+    var parameters = {
         experimentId: experimentId,
         entityType: type,
         entityId: identifier,
-        specimen: specimen
+        specimen: specimen,
+        mode: mode
     };
 
     // Inform the user that we are about to process the request

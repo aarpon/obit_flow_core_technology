@@ -11,6 +11,62 @@ import os
 import subprocess
 import sys
 import re
+import zipfile
+
+
+def zip_folder(folder_path, output_path):
+    """Zip the contents of an entire folder (with that folder included
+    in the archive). Empty subfolders will be included in the archive
+    as well.
+
+    Modified from:
+        http://www.calazan.com/how-to-zip-an-entire-directory-with-python/
+    """
+
+    # Get current workind dir
+    current_path = os.getcwd()
+
+    # Change working dir
+    parent_folder = os.path.dirname(folder_path)
+    os.chdir(parent_folder)
+
+    # Now target only the required folder
+    target = os.path.relpath(folder_path, start=os.path.dirname(folder_path))
+
+    # Retrieve the paths of the folder contents.
+    contents = os.walk(target)
+
+    try:
+        zip_file = zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED)
+        for root, folders, files in contents:
+
+            # Include all subfolders, including empty ones.
+            for folder_name in folders:
+                absolute_path = os.path.join(root, folder_name)
+                relative_path = absolute_path.replace(parent_folder + '\\', '')
+                zip_file.write(absolute_path, relative_path)
+
+            # Include all files
+            for file_name in files:
+                absolute_path = os.path.join(root, file_name)
+                relative_path = absolute_path.replace(parent_folder + '\\', '')
+                zip_file.write(absolute_path, relative_path)
+
+    except IOError, message:
+        raise Exception(message)
+
+    except OSError, message:
+        raise Exception(message)
+
+    except zipfile.BadZipfile, message:
+        raise Exception(message)
+
+    finally:
+        zip_file.close()
+
+    # Change back to the original path
+    os.chdir(current_path)
+
 
 class Mover():
     """
@@ -18,7 +74,8 @@ class Mover():
     performs the actual copying.
     """
 
-    def __init__(self, experimentId, entityType, entityId, specimen, userId, properties):
+    def __init__(self, experimentId, entityType, entityId, specimen, mode, \
+                 userId, properties):
         '''Constructor'''
 
         # Store properties
@@ -43,9 +100,24 @@ class Mover():
         # Specimen name (or "")
         self._specimen = specimen
 
-        # User folder
-        self._userFolder = os.path.join(self._properties['base_dir'], \
-                                        userId, self._properties['export_dir'])
+        # User folder: depending on the 'mode' settings, the user folder changes
+        if mode =="normal":
+            
+            # Standard user folder
+            self._userFolder = os.path.join(self._properties['base_dir'], \
+                                            userId, self._properties['export_dir'])
+            
+        elif mode == "zip":
+
+            # Temporary folder (the exported data will then be zipped and served for download).
+            self._userFolder = os.path.join(self._properties['tmp_dir'], \
+                                            self._properties['export_dir'])
+
+        else:
+            raise Exception("Bad value for argument 'mode' (" + mode  +")")
+
+        # Store the mode
+        self._mode = mode
 
         # Make sure the use folder (with export subfolder) exists and has
         # the correct permissions
@@ -55,7 +127,7 @@ class Mover():
         # Get the experiment
         self._experiment = searchService.getExperiment(self._experimentId)
 
-        # Experiment full path in user folder
+        # Experiment full path in user/tmp folder
         self._experimentPath = os.path.join(self._userFolder, self._experimentCode)
 
         # Current path: this is used to keep track of the path where to copy
@@ -137,6 +209,11 @@ class Mover():
         else:
 
             self._message = "Unknown entity!"
+            return False
+
+        if self._mode == "zip":
+            zip_folder(self._experimentPath, self._experimentPath + ".zip")
+            self._message = self._experimentPath + ".zip"
             return False
 
         # Return
@@ -667,8 +744,8 @@ class Mover():
 def parsePropertiesFile():
     """Parse properties file for custom plug-in settings."""
 
-    filename = "../core-plugins/microscopy/1/dss/reporting-plugins/copy_facsaria_datasets_to_userdir/plugin.properties"
-    var_names = ['base_dir', 'export_dir']
+    filename = "../core-plugins/flow/1/dss/reporting-plugins/copy_facsaria_datasets_to_userdir/plugin.properties"
+    var_names = ['base_dir', 'export_dir', 'tmp_dir']
 
     properties = {}
     try:
@@ -718,10 +795,14 @@ def aggregate(parameters, tableBuilder):
 
     # Get the specimen name
     specimen = parameters.get("specimen")
+    
+    # Get the mode
+    mode = parameters.get("mode")
 
     # Instantiate the Mover object - userId is a global variable
     # made available to the aggregation plug-in
-    mover = Mover(experimentId, entityType, entityId, specimen, userId, properties)
+    mover = Mover(experimentId, entityType, entityId, specimen, mode, userId,
+                  properties)
 
     # Process
     success = mover.process()
