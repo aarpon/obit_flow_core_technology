@@ -356,13 +356,14 @@ DataViewer.prototype.displayExportAction = function(node) {
 
     // Build and display the call
     callAggregationPlugin = DATAMODEL.copyDatasetsToUserDir;
+
     $("#detailViewAction").append(
         "<span><a class=\"btn btn-xs btn-primary\" " +
         "href=\"#\" onclick='callAggregationPlugin(\"" + 
         experimentId  + "\", \"" + type + "\", \"" + identifier +
         "\", \"" + specimenName + "\", \"normal\");'>" +
         "<img src=\"img/export.png\" />&nbsp;" + 
-        "Export to your user folder</a></span>&nbsp;");
+        "Export to your folder</a></span>&nbsp;");
 
     // Build and display the call for a zip archive
     $("#detailViewAction").append(
@@ -371,7 +372,7 @@ DataViewer.prototype.displayExportAction = function(node) {
             experimentId  + "\", \"" + type + "\", \"" + identifier +
             "\", \"" + specimenName + "\", \"zip\");'>" +
             "<img src=\"img/zip.png\" />&nbsp;" +
-            "Download archive</a></span>&nbsp;");
+            "Compress to archive</a></span>&nbsp;");
 };
 
 

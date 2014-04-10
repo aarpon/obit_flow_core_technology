@@ -227,7 +227,17 @@ class Mover():
         """
 
         if self._mode == "zip":
-            zip_folder(self._experimentPath, self._experimentPath + ".zip")
+            zip_folder(self._experimentPath, self.getZipArchiveFullPath())
+
+
+    def getZipArchiveFullPath(self):
+        """Return the full path of the zip archive (or "" if mode was "normal").
+        """
+        
+        if self._mode == "zip":
+            return self._experimentPath + ".zip"
+        
+        return ""
 
 
     def getErrorMessage(self):
@@ -825,12 +835,15 @@ def aggregate(parameters, tableBuilder):
     nCopiedFiles = mover.getNumberOfCopiedFiles()
     errorMessage = mover.getErrorMessage();
     relativeExpFolder = mover.getRelativeExperimentPath()
+    zipArchiveFullPath = mover.getZipArchiveFullPath()
 
     # Add the table headers
     tableBuilder.addHeader("Success")
     tableBuilder.addHeader("Message")
     tableBuilder.addHeader("nCopiedFiles")
     tableBuilder.addHeader("relativeExpFolder")
+    tableBuilder.addHeader("zipArchiveFullPath")
+    tableBuilder.addHeader("Mode")
 
     # Store the results in the table
     row = tableBuilder.addRow()
@@ -838,20 +851,27 @@ def aggregate(parameters, tableBuilder):
     row.setCell("Message", errorMessage)
     row.setCell("nCopiedFiles", nCopiedFiles)
     row.setCell("relativeExpFolder", relativeExpFolder)
+    row.setCell("zipArchiveFullPath", zipArchiveFullPath)
+    row.setCell("Mode", mode)
 
     # Email result to the user
     if success == True:
-        subject = "FACS Aria: successful export to user folder"
-
+        
+        subject = "FACS Aria: successfully processed requested data"
+        
         if nCopiedFiles == 1:
             snip = "One file was "
         else:
             snip = str(nCopiedFiles) + " files were "
 
-        body = snip + "successfully exported to {...}/" + relativeExpFolder + "."
+        if mode == "normal":
+            body = snip + "successfully exported to {...}/" + relativeExpFolder + "."
+        else:
+            body = snip + "successfully packaged for download."
+            
     else:
-        subject = "FACS Aria: error exporting to user folder!"
-        body = "Sorry, there was an error exporting to your user folder. " + \
+        subject = "FACS Aria: error processing request!"
+        body = "Sorry, there was an error processing your request. " + \
         "Please send your administrator the following report:\n\n" + \
         "\"" + errorMessage + "\"\n"
 
