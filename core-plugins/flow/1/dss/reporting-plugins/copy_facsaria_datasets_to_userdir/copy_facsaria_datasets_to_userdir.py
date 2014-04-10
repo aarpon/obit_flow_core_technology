@@ -31,7 +31,9 @@ def zip_folder(folder_path, output_path):
     os.chdir(parent_folder)
 
     # Now target only the required folder
-    target = os.path.relpath(folder_path, start=os.path.dirname(folder_path))
+    # Note: os.path.relpath() does not exist in Jython.
+    # target = os.path.relpath(folder_path, start=os.path.dirname(folder_path))
+    target = folder_path[folder_path.rfind(os.sep) + 1:]
 
     # Retrieve the paths of the folder contents.
     contents = os.walk(target)
@@ -44,12 +46,16 @@ def zip_folder(folder_path, output_path):
             for folder_name in folders:
                 absolute_path = os.path.join(root, folder_name)
                 relative_path = absolute_path.replace(parent_folder + '\\', '')
+                absolute_path = absolute_path.encode('latin-1')
+                relative_path = relative_path.encode('latin-1')
                 zip_file.write(absolute_path, relative_path)
 
             # Include all files
             for file_name in files:
                 absolute_path = os.path.join(root, file_name)
                 relative_path = absolute_path.replace(parent_folder + '\\', '')
+                absolute_path = absolute_path.encode('latin-1')
+                relative_path = relative_path.encode('latin-1')
                 zip_file.write(absolute_path, relative_path)
 
     except IOError, message:
@@ -211,13 +217,17 @@ class Mover():
             self._message = "Unknown entity!"
             return False
 
-        if self._mode == "zip":
-            zip_folder(self._experimentPath, self._experimentPath + ".zip")
-            self._message = self._experimentPath + ".zip"
-            return False
-
         # Return
         return True
+
+
+    def compressIfNeeded(self):
+        """Compresses the exported experiment folder to a zip archive
+        but only if the mode was "zip".
+        """
+
+        if self._mode == "zip":
+            zip_folder(self._experimentPath, self._experimentPath + ".zip")
 
 
     def getErrorMessage(self):
@@ -806,7 +816,11 @@ def aggregate(parameters, tableBuilder):
 
     # Process
     success = mover.process()
-
+    
+    # Compress
+    if mode == "zip":
+        mover.compressIfNeeded()
+        
     # Get some results info
     nCopiedFiles = mover.getNumberOfCopiedFiles()
     errorMessage = mover.getErrorMessage();
