@@ -1,5 +1,5 @@
 '''
-Aggregation plug-in to copy all FCS files under a specified FACS ARIA element to the user folder.
+Aggregation plug-in to copy all FCS files under a specified FACSAria III element to the user folder.
 @author: Aaron Ponti
 '''
 
@@ -857,7 +857,7 @@ def aggregate(parameters, tableBuilder):
     # Email result to the user
     if success == True:
         
-        subject = "FACS Aria: successfully processed requested data"
+        subject = "FACSAria III: successfully processed requested data"
         
         if nCopiedFiles == 1:
             snip = "One file was "
@@ -870,7 +870,7 @@ def aggregate(parameters, tableBuilder):
             body = snip + "successfully packaged for download."
             
     else:
-        subject = "FACS Aria: error processing request!"
+        subject = "FACSAria III: error processing request!"
         body = "Sorry, there was an error processing your request. " + \
         "Please send your administrator the following report:\n\n" + \
         "\"" + errorMessage + "\"\n"

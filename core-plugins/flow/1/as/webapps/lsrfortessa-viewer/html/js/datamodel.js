@@ -651,15 +651,15 @@ DataModel.prototype.getTubes = function(expCode, node) {
  * @param {type} ?
  * @returns {tubes} ?
  */
-DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identifier, specimen) {
+DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identifier, specimen, mode) {
 
     // Add call to the aggregation service
-    var parameters = 
-    {
+    var parameters = {
         experimentId: experimentId,
         entityType: type,
         entityId: identifier,
-        specimen: specimen
+        specimen: specimen,
+        mode: mode
     };
 
     // Inform the user that we are about to process the request
@@ -673,9 +673,18 @@ DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identif
 	    var unexpected = "Sorry, unexpectd feedback from server " +
 	    "obtained. Please contact your administrator.";
         var level = "";
+        var row;
+
+        // Returned parameters
+        var r_Success;
+        var r_ErrorMessage;
+        var r_NCopiedFiles;
+        var r_RelativeExpFolder;
+        var r_ZipArchiveFullPath;
+        var r_Mode;
 
 	    if (response.error) {
-	        status = "Sorry, could not copy datasets to working directory.";
+	        status = "Sorry, could not process request.";
 	        level = "error";
 	    } else {
             status = "";
@@ -684,29 +693,45 @@ DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identif
                 level = "error";
             } else {
                 row = response.result.rows[0];
-                if (row.length != 4) {
+                if (row.length != 6) {
                     status = unexpected;
                     level = "error";
                 } else {
-                    if (row[0].value == true) {
-                        var nCopiedFiles = row[2].value;
-                        var relativeExpFolder = row[3].value;
+
+                    // Extract returned values for clarity
+                    r_Success = row[0].value;
+                    r_ErrorMessage = row[1].value;
+                    r_NCopiedFiles = row[2].value;
+                    r_RelativeExpFolder = row[3].value;
+                    r_ZipArchiveFullPath = row[4].value;
+                    r_Mode = row[5].value;
+
+                    if (r_Success == true) {
                         var snip = "<b>Congratulations!</b>&nbsp;";
-                        if (nCopiedFiles == 1) {
+                        if (r_NCopiedFiles == 1) {
                             snip = snip +
                                 "<span class=\"badge\">1</span> file was ";
                         } else {
                             snip = snip +
                                 "<span class=\"badge\">" + 
-                                nCopiedFiles + "</span> files were ";
+                                r_NCopiedFiles + "</span> files were ";
                         }
+                        if (r_Mode == "normal") {
                         status = snip + "successfully exported to " +
-                        "{...}/" + relativeExpFolder + ".";
+                                "{...}/" + r_RelativeExpFolder + ".";
+                        } else {
+                            status = snip + "successfully packaged for <a href=\"" + r_ZipArchiveFullPath +
+                                "\">download</a>!";
+                        }
                         level = "success";
                     } else {
+                        if (r_Mode == "normal") {
                         status = "Sorry, there was an error exporting " + 
                         "to your user folder:<br /><br />\"" +
-                        row[1].value + "\".";
+                                r_ErrorMessage + "\".";
+                        } else {
+                            status = "Sorry, there was an error packaging your files for download!";
+                        }
                         level = "error";
                     }
                 }

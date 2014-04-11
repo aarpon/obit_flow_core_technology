@@ -11,6 +11,68 @@ import os
 import subprocess
 import sys
 import re
+import zipfile
+
+
+def zip_folder(folder_path, output_path):
+    """Zip the contents of an entire folder (with that folder included
+    in the archive). Empty subfolders will be included in the archive
+    as well.
+
+    Modified from:
+        http://www.calazan.com/how-to-zip-an-entire-directory-with-python/
+    """
+
+    # Get current workind dir
+    current_path = os.getcwd()
+
+    # Change working dir
+    parent_folder = os.path.dirname(folder_path)
+    os.chdir(parent_folder)
+
+    # Now target only the required folder
+    # Note: os.path.relpath() does not exist in Jython.
+    # target = os.path.relpath(folder_path, start=os.path.dirname(folder_path))
+    target = folder_path[folder_path.rfind(os.sep) + 1:]
+
+    # Retrieve the paths of the folder contents.
+    contents = os.walk(target)
+
+    try:
+        zip_file = zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED)
+        for root, folders, files in contents:
+
+            # Include all subfolders, including empty ones.
+            for folder_name in folders:
+                absolute_path = os.path.join(root, folder_name)
+                relative_path = absolute_path.replace(parent_folder + '\\', '')
+                absolute_path = absolute_path.encode('latin-1')
+                relative_path = relative_path.encode('latin-1')
+                zip_file.write(absolute_path, relative_path)
+
+            # Include all files
+            for file_name in files:
+                absolute_path = os.path.join(root, file_name)
+                relative_path = absolute_path.replace(parent_folder + '\\', '')
+                absolute_path = absolute_path.encode('latin-1')
+                relative_path = relative_path.encode('latin-1')
+                zip_file.write(absolute_path, relative_path)
+
+    except IOError, message:
+        raise Exception(message)
+
+    except OSError, message:
+        raise Exception(message)
+
+    except zipfile.BadZipfile, message:
+        raise Exception(message)
+
+    finally:
+        zip_file.close()
+
+    # Change back to the original path
+    os.chdir(current_path)
+
 
 class Mover():
     """
@@ -18,7 +80,8 @@ class Mover():
     performs the actual copying.
     """
 
-    def __init__(self, experimentId, entityType, entityId, specimen, userId, properties):
+    def __init__(self, experimentId, entityType, entityId, specimen, mode, \
+                 userId, properties):
         '''Constructor'''
 
         # Store properties
@@ -43,9 +106,24 @@ class Mover():
         # Specimen name (or "")
         self._specimen = specimen
 
-        # User folder
-        self._userFolder = os.path.join(self._properties['base_dir'], \
+        # User folder: depending on the 'mode' settings, the user folder changes
+        if mode =="normal":
+            
+            # Standard user folder
+            self._userFolder = os.path.join(self._properties['base_dir'], \
                                         userId, self._properties['export_dir'])
+
+        elif mode == "zip":
+
+            # Temporary folder (the exported data will then be zipped and served for download).
+            self._userFolder = os.path.join(self._properties['tmp_dir'], \
+                                            self._properties['export_dir'])
+
+        else:
+            raise Exception("Bad value for argument 'mode' (" + mode  +")")
+
+        # Store the mode
+        self._mode = mode
 
         # Make sure the use folder (with export subfolder) exists and has
         # the correct permissions
@@ -55,7 +133,7 @@ class Mover():
         # Get the experiment
         self._experiment = searchService.getExperiment(self._experimentId)
 
-        # Experiment full path in user folder
+        # Experiment full path in user/tmp folder
         self._experimentPath = os.path.join(self._userFolder, self._experimentCode)
 
         # Current path: this is used to keep track of the path where to copy
@@ -141,6 +219,25 @@ class Mover():
 
         # Return
         return True
+
+
+    def compressIfNeeded(self):
+        """Compresses the exported experiment folder to a zip archive
+        but only if the mode was "zip".
+        """
+
+        if self._mode == "zip":
+            zip_folder(self._experimentPath, self.getZipArchiveFullPath())
+
+
+    def getZipArchiveFullPath(self):
+        """Return the full path of the zip archive (or "" if mode was "normal").
+        """
+        
+        if self._mode == "zip":
+            return self._experimentPath + ".zip"
+        
+        return ""
 
 
     def getErrorMessage(self):
@@ -667,8 +764,8 @@ class Mover():
 def parsePropertiesFile():
     """Parse properties file for custom plug-in settings."""
 
-    filename = "../core-plugins/microscopy/1/dss/reporting-plugins/copy_facsaria_datasets_to_userdir/plugin.properties"
-    var_names = ['base_dir', 'export_dir']
+    filename = "../core-plugins/flow/1/dss/reporting-plugins/copy_lsrfortessa_datasets_to_userdir/plugin.properties"
+    var_names = ['base_dir', 'export_dir', 'tmp_dir']
 
     properties = {}
     try:
@@ -719,23 +816,34 @@ def aggregate(parameters, tableBuilder):
     # Get the specimen name
     specimen = parameters.get("specimen")
 
+    # Get the mode
+    mode = parameters.get("mode")
+
     # Instantiate the Mover object - userId is a global variable
     # made available to the aggregation plug-in
-    mover = Mover(experimentId, entityType, entityId, specimen, userId, properties)
+    mover = Mover(experimentId, entityType, entityId, specimen, mode, userId,
+                  properties)
 
     # Process
     success = mover.process()
 
+    # Compress
+    if mode == "zip":
+        mover.compressIfNeeded()
+        
     # Get some results info
     nCopiedFiles = mover.getNumberOfCopiedFiles()
     errorMessage = mover.getErrorMessage();
     relativeExpFolder = mover.getRelativeExperimentPath()
+    zipArchiveFullPath = mover.getZipArchiveFullPath()
 
     # Add the table headers
     tableBuilder.addHeader("Success")
     tableBuilder.addHeader("Message")
     tableBuilder.addHeader("nCopiedFiles")
     tableBuilder.addHeader("relativeExpFolder")
+    tableBuilder.addHeader("zipArchiveFullPath")
+    tableBuilder.addHeader("Mode")
 
     # Store the results in the table
     row = tableBuilder.addRow()
@@ -743,20 +851,27 @@ def aggregate(parameters, tableBuilder):
     row.setCell("Message", errorMessage)
     row.setCell("nCopiedFiles", nCopiedFiles)
     row.setCell("relativeExpFolder", relativeExpFolder)
+    row.setCell("zipArchiveFullPath", zipArchiveFullPath)
+    row.setCell("Mode", mode)
 
     # Email result to the user
     if success == True:
-        subject = "LSRFortessa: successful export to user folder"
 
+        subject = "LSRFortessa: successfully processed requested data"
+        
         if nCopiedFiles == 1:
             snip = "One file was "
         else:
             snip = str(nCopiedFiles) + " files were "
 
-        body = snip + "successfully exported to {...}/" + relativeExpFolder + "."
+        if mode == "normal":
+            body = snip + "successfully exported to {...}/" + relativeExpFolder + "."
+        else:
+            body = snip + "successfully packaged for download."
+            
     else:
-        subject = "LSRFortessa: error exporting to user folder!"
-        body = "Sorry, there was an error exporting to your user folder. " + \
+        subject = "LSRFortessa: error processing request!"
+        body = "Sorry, there was an error processing your request. " + \
         "Please send your administrator the following report:\n\n" + \
         "\"" + errorMessage + "\"\n"
 

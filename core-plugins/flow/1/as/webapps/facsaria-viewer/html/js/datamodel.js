@@ -7,7 +7,7 @@
 
 
 /**
- * Define a model class to hold all FACS Aria III nodes. The tree model
+ * Define a model class to hold all FACSAria III nodes. The tree model
  * used is DynaTree (http://code.google.com/p/dynatree/).
  */
 function DataModel() {

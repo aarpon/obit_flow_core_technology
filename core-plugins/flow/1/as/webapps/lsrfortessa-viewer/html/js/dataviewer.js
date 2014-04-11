@@ -107,18 +107,25 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
     var spCl = "</span>";
      
     // Adapt the display depending on the element type
-    if (node.data.element) {
-        if (node.data.element.hasOwnProperty("sampleTypeCode") &&
-            node.data.element.sampleTypeCode == "LSR_FORTESSA_PLATE") {
+    if (node.data.element && node.data.element.hasOwnProperty("sampleTypeCode")) {
                 
-            // Update details
-            $("#detailViewSample").append(
-                "<p>" + spOp + "Plate geometry" + spCl + "</p>" + 
-                "<p>" + node.data.element.properties.LSR_FORTESSA_PLATE_GEOMETRY + "</p>"); 
+        var sampleTypeCode = node.data.element.sampleTypeCode;
 
-        } else {
-            // Pass
+        switch (sampleTypeCode) {
+
+            case "LSR_FORTESSA_PLATE":
+
+            	// Update details
+            	$("#detailViewSample").append(
+                	"<p>" + spOp + "Plate geometry" + spCl + "</p>" + 
+                    "<p>" + node.data.element.properties.LSR_FORTESSA_PLATE_GEOMETRY + "</p>");
+                break;
+			
+			default:
+				break;
+
         }
+
     }
 
     spOp = "<span class=\"label label-warning\">";
@@ -329,15 +336,23 @@ DataViewer.prototype.displayExportAction = function(node) {
 
     // Build and display the call
     callAggregationPlugin = DATAMODEL.copyDatasetsToUserDir;
+
     $("#detailViewAction").append(
         "<span><a class=\"btn btn-xs btn-primary\" " +
         "href=\"#\" onclick='callAggregationPlugin(\"" + 
         experimentId  + "\", \"" + type + "\", \"" + identifier +
-        "\", \"" + specimenName + "\");'>" +
+        "\", \"" + specimenName + "\", \"normal\");'>" +
         "<img src=\"img/export.png\" />&nbsp;" + 
-        "Export to your user folder</a></span>&nbsp;");
+        "Export to your folder</a></span>&nbsp;");
         
-        
+    // Build and display the call for a zip archive
+    $("#detailViewAction").append(
+            "<span><a class=\"btn btn-xs btn-primary\" " +
+            "href=\"#\" onclick='callAggregationPlugin(\"" +
+            experimentId  + "\", \"" + type + "\", \"" + identifier +
+            "\", \"" + specimenName + "\", \"zip\");'>" +
+            "<img src=\"img/zip.png\" />&nbsp;" +
+            "Compress to archive</a></span>&nbsp;");
 };
 
 
