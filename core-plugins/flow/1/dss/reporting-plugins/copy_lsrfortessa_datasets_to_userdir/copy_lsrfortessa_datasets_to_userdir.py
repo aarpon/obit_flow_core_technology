@@ -12,51 +12,65 @@ import subprocess
 import sys
 import re
 import zipfile
+import java.io.File
+
+
+def touch(full_file):
+    """Touches a file.
+    """
+    f = open(full_file, 'w')
+    f.close()
 
 
 def zip_folder(folder_path, output_path):
-    """Zip the contents of an entire folder (with that folder included
-    in the archive). Empty subfolders will be included in the archive
-    as well.
-
-    Modified from:
-        http://www.calazan.com/how-to-zip-an-entire-directory-with-python/
+    """Zip the contents of an entire folder recursively. Please notice that
+    empty sub-folders will NOT be included in the archive.
     """
 
-    # Get current workind dir
-    current_path = os.getcwd()
-
-    # Change working dir
-    parent_folder = os.path.dirname(folder_path)
-    os.chdir(parent_folder)
-
-    # Now target only the required folder
-    # Note: os.path.relpath() does not exist in Jython.
-    # target = os.path.relpath(folder_path, start=os.path.dirname(folder_path))
-    target = folder_path[folder_path.rfind(os.sep) + 1:]
-
-    # Retrieve the paths of the folder contents.
-    contents = os.walk(target)
+    # Simple trick to build relative paths
+    root_len = len(os.path.abspath(folder_path))
 
     try:
-        zip_file = zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED)
-        for root, folders, files in contents:
+        
+        # Open zip file (no compression)
+        zip_file = zipfile.ZipFile(output_path, 'w', zipfile.ZIP_STORED)
+        
+        # Now recurse into the folder
+        for root, folders, files in os.walk(folder_path):
 
-            # Include all subfolders, including empty ones.
-            for folder_name in folders:
-                absolute_path = os.path.join(root, folder_name)
-                relative_path = absolute_path.replace(parent_folder + '\\', '')
-                absolute_path = absolute_path.encode('latin-1')
-                relative_path = relative_path.encode('latin-1')
-                zip_file.write(absolute_path, relative_path)
+            # We do not process folders. This is only useful to store empty
+            # folders to the archive, but 1) jython's zipfile implementation
+            # throws:
+            #
+            #     Exception: [Errno 21] Is a directory <directory_name>
+            #
+            # when trying to write a directory to a zip file (in contrast to 
+            # Python's implementation) and 2) oBIT does not export empty
+            # folders in the first place.
+
+            # Build the relative directory path (current root)
+            relative_dir_path = os.path.abspath(root)[root_len:]
+
+            # If a folder only contains a subfolder, we disrupt the hierarchy,
+            # unless we add a file.
+            if len(files) == 0:
+                touch(os.path.join(root, '~'))
+                files.append('~')
 
             # Include all files
             for file_name in files:
-                absolute_path = os.path.join(root, file_name)
-                relative_path = absolute_path.replace(parent_folder + '\\', '')
-                absolute_path = absolute_path.encode('latin-1')
-                relative_path = relative_path.encode('latin-1')
-                zip_file.write(absolute_path, relative_path)
+
+                # Full file path to add
+                full_file_path = os.path.join(root, file_name)
+                relative_file_path = os.path.join(relative_dir_path, file_name)
+
+                # Workaround problem with file name encoding
+                full_file_path = full_file_path.encode('latin-1')
+                relative_file_path = relative_file_path.encode('latin-1')
+
+                # Write to zip
+                zip_file.write(full_file_path, relative_file_path, \
+                               zipfile.ZIP_STORED)
 
     except IOError, message:
         raise Exception(message)
@@ -69,9 +83,6 @@ def zip_folder(folder_path, output_path):
 
     finally:
         zip_file.close()
-
-    # Change back to the original path
-    os.chdir(current_path)
 
 
 class Mover():
@@ -120,7 +131,6 @@ class Mover():
 
             # The user folder now will point to the Session Workspace
             self._userFolder = sessionWorkspace.absolutePath
-
 
         else:
             raise Exception("Bad value for argument 'mode' (" + mode  +")")
@@ -243,6 +253,16 @@ class Mover():
         return ""
 
 
+    def getZipArchiveFileName(self):
+        """Return the file name of the zip archive without path."""
+
+        if self._mode == "zip":
+            fullFile = java.io.File(self.getZipArchiveFullPath())
+            return fullFile.getName()
+
+        return ""
+
+        
     def getErrorMessage(self):
         """
         Return the error message (in case process() returned failure)
@@ -838,14 +858,14 @@ def aggregate(parameters, tableBuilder):
     nCopiedFiles = mover.getNumberOfCopiedFiles()
     errorMessage = mover.getErrorMessage();
     relativeExpFolder = mover.getRelativeExperimentPath()
-    zipArchiveFullPath = mover.getZipArchiveFullPath()
+    zipFileName = mover.getZipArchiveFileName()
 
     # Add the table headers
     tableBuilder.addHeader("Success")
     tableBuilder.addHeader("Message")
     tableBuilder.addHeader("nCopiedFiles")
     tableBuilder.addHeader("relativeExpFolder")
-    tableBuilder.addHeader("zipArchiveFullPath")
+    tableBuilder.addHeader("zipArchiveFileName")
     tableBuilder.addHeader("Mode")
 
     # Store the results in the table
@@ -854,7 +874,7 @@ def aggregate(parameters, tableBuilder):
     row.setCell("Message", errorMessage)
     row.setCell("nCopiedFiles", nCopiedFiles)
     row.setCell("relativeExpFolder", relativeExpFolder)
-    row.setCell("zipArchiveFullPath", zipArchiveFullPath)
+    row.setCell("zipArchiveFileName", zipFileName)
     row.setCell("Mode", mode)
 
     # Email result to the user
