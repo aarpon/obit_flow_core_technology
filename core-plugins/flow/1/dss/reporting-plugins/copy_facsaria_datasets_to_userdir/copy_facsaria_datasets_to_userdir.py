@@ -115,9 +115,11 @@ class Mover():
             
         elif mode == "zip":
 
-            # Temporary folder (the exported data will then be zipped and served for download).
-            self._userFolder = os.path.join(self._properties['tmp_dir'], \
-                                            self._properties['export_dir'])
+            # Get the path to the user's Session Workspace
+            sessionWorkspace = sessionWorkspaceProvider.getSessionWorkspace()
+
+            # The user folder now will point to the Session Workspace
+            self._userFolder = sessionWorkspace.absolutePath
 
         else:
             raise Exception("Bad value for argument 'mode' (" + mode  +")")
@@ -765,7 +767,7 @@ def parsePropertiesFile():
     """Parse properties file for custom plug-in settings."""
 
     filename = "../core-plugins/flow/1/dss/reporting-plugins/copy_facsaria_datasets_to_userdir/plugin.properties"
-    var_names = ['base_dir', 'export_dir', 'tmp_dir']
+    var_names = ['base_dir', 'export_dir']
 
     properties = {}
     try:
