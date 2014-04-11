@@ -670,8 +670,8 @@ DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identif
 	"copy_facsaria_datasets_to_userdir", parameters, function(response) {
 	    
 	    var status;
-	    var unexpected = "Sorry, unexpectd feedback from server " +
-	    "obtained. Please contact your administrator.";
+	    var unexpected = "Sorry, unexpected feedback from server " +
+	        "obtained. Please contact your administrator.";
         var level = "";
         var row;
 
@@ -680,12 +680,13 @@ DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identif
         var r_ErrorMessage;
         var r_NCopiedFiles;
         var r_RelativeExpFolder;
-        var r_ZipArchiveFullPath;
+        var r_ZipArchiveFileName;
         var r_Mode;
 
 	    if (response.error) {
 	        status = "Sorry, could not process request.";
 	        level = "error";
+            r_Success = false;
 	    } else {
             status = "";
             if (response.result.rows.length != 1) {
@@ -703,7 +704,7 @@ DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identif
                     r_ErrorMessage = row[1].value;
                     r_NCopiedFiles = row[2].value;
                     r_RelativeExpFolder = row[3].value;
-                    r_ZipArchiveFullPath = row[4].value;
+                    r_ZipArchiveFileName = row[4].value;
                     r_Mode = row[5].value;
 
                     if (r_Success == true) {
@@ -720,8 +721,8 @@ DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identif
                             status = snip + "successfully exported to " +
                                 "{...}/" + r_RelativeExpFolder + ".";
                         } else {
-                            status = snip + "successfully packaged for <a href=\"" + r_ZipArchiveFullPath +
-                                "\">download</a>!";
+                            // Add a placeholder to store the download URL.
+                            status = snip + "successfully packaged. <span id=\"download_url_span\"></span>";
                         }
                         level = "success";
                     } else {
@@ -738,5 +739,15 @@ DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identif
             }
         }
         DATAVIEWER.displayStatus(status, level);
+
+        // Retrieve the URL (asynchronously)
+        if (r_Success == true && r_Mode == "zip")
+            DATAMODEL.openbisServer.createSessionWorkspaceDownloadUrl(r_ZipArchiveFileName,
+                function(url) {
+                    var downloadString =
+                        '<img src="img/download.png" />&nbsp;<a href="' + url + '">Download</a>!';
+                    //'<a href="' + url + '"><img src = "img/download.png" />&nbsp;Download</a>';
+                    $("#download_url_span").html(downloadString);
+                });
     });
 };

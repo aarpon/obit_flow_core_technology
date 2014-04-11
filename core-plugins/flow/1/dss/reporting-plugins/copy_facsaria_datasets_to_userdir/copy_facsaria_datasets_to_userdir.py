@@ -12,6 +12,7 @@ import subprocess
 import sys
 import re
 import zipfile
+import java.io.File
 
 
 def zip_folder(folder_path, output_path):
@@ -235,13 +236,23 @@ class Mover():
     def getZipArchiveFullPath(self):
         """Return the full path of the zip archive (or "" if mode was "normal").
         """
-        
+
         if self._mode == "zip":
             return self._experimentPath + ".zip"
-        
+
         return ""
 
 
+    def getZipArchiveFileName(self):
+        """Return the file name of the zip archive without path."""
+
+        if self._mode == "zip":
+            fullFile = java.io.File(self.getZipArchiveFullPath())
+            return fullFile.getName()
+
+        return ""
+
+        
     def getErrorMessage(self):
         """
         Return the error message (in case process() returned failure)
@@ -837,14 +848,14 @@ def aggregate(parameters, tableBuilder):
     nCopiedFiles = mover.getNumberOfCopiedFiles()
     errorMessage = mover.getErrorMessage();
     relativeExpFolder = mover.getRelativeExperimentPath()
-    zipArchiveFullPath = mover.getZipArchiveFullPath()
+    zipFileName = mover.getZipArchiveFileName()
 
     # Add the table headers
     tableBuilder.addHeader("Success")
     tableBuilder.addHeader("Message")
     tableBuilder.addHeader("nCopiedFiles")
     tableBuilder.addHeader("relativeExpFolder")
-    tableBuilder.addHeader("zipArchiveFullPath")
+    tableBuilder.addHeader("zipArchiveFileName")
     tableBuilder.addHeader("Mode")
 
     # Store the results in the table
@@ -853,7 +864,7 @@ def aggregate(parameters, tableBuilder):
     row.setCell("Message", errorMessage)
     row.setCell("nCopiedFiles", nCopiedFiles)
     row.setCell("relativeExpFolder", relativeExpFolder)
-    row.setCell("zipArchiveFullPath", zipArchiveFullPath)
+    row.setCell("zipArchiveFileName", zipFileName)
     row.setCell("Mode", mode)
 
     # Email result to the user
