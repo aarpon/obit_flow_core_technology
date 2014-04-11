@@ -27,14 +27,18 @@ def zip_folder(folder_path, output_path):
     empty sub-folders will NOT be included in the archive.
     """
 
+    # Note: os.path.relpath() does not exist in Jython.
+    # target = os.path.relpath(folder_path, start=os.path.dirname(folder_path))
+    target = folder_path[folder_path.rfind(os.sep) + 1:]
+
     # Simple trick to build relative paths
-    root_len = len(os.path.abspath(folder_path))
+    root_len = folder_path.find(target)
 
     try:
         
         # Open zip file (no compression)
         zip_file = zipfile.ZipFile(output_path, 'w', zipfile.ZIP_STORED)
-        
+
         # Now recurse into the folder
         for root, folders, files in os.walk(folder_path):
 
