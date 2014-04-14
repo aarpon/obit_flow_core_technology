@@ -337,13 +337,18 @@ DataViewer.prototype.displayExportAction = function(node) {
     // Build and display the call
     callAggregationPlugin = DATAMODEL.copyDatasetsToUserDir;
 
-    $("#detailViewAction").append(
-        "<span><a class=\"btn btn-xs btn-primary\" " +
-        "href=\"#\" onclick='callAggregationPlugin(\"" + 
-        experimentId  + "\", \"" + type + "\", \"" + identifier +
-        "\", \"" + specimenName + "\", \"normal\");'>" +
-        "<img src=\"img/export.png\" />&nbsp;" + 
-        "Export to your folder</a></span>&nbsp;");
+    // Display the "Export to your folder" button only if enabled in the configuration file
+    if (CONFIG['enableExportToUserFolder'] == true) {
+
+        $("#detailViewAction").append(
+                "<span><a class=\"btn btn-xs btn-primary\" " +
+                "href=\"#\" onclick='callAggregationPlugin(\"" +
+                experimentId  + "\", \"" + type + "\", \"" + identifier +
+                "\", \"" + specimenName + "\", \"normal\");'>" +
+                "<img src=\"img/export.png\" />&nbsp;" +
+                "Export to your folder</a></span>&nbsp;");
+
+    }
         
     // Build and display the call for a zip archive
     $("#detailViewAction").append(
