@@ -2,9 +2,6 @@ body {
     font-family: Sans-serif;
 }
 
-#detailViewContainer {
-}
-
 #detailViewAction {
     min-height: 60px;
     vertical-align: middle;
