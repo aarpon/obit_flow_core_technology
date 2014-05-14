@@ -346,13 +346,13 @@ class Mover():
 
         # Get all datasets for the plate
         dataSets = self._getDataSetsForPlate(plateCode)
-        if dataSets == []:
+        if len(dataSets) == 0:
             self._message = "Could not retrieve datasets for plate with code " + plateCode + "."
             return False
 
         # Get all fcs files for the datasets
         dataSetFiles = self._getFilesForDataSets(dataSets)
-        if dataSetFiles == []:
+        if len(dataSetFiles) == 0:
             self._message = "Could not retrieve files for datasets from plate " + plateCode + "."
             return False
 
@@ -426,7 +426,7 @@ class Mover():
 
         # Get all fcs files for the datasets
         dataSetFiles = self._getFilesForDataSets(dataSets)
-        if dataSetFiles == []:
+        if len(dataSetFiles) == 0:
             self._message = "Could not retrieve files for datasets from tubes."
             return False
 
@@ -458,7 +458,7 @@ class Mover():
 
         # Get all fcs files for the datasets
         dataSetFiles = self._getFilesForDataSets(dataSets)
-        if dataSetFiles == []:
+        if len(dataSetFiles) == 0:
             self._message = "Could not retrieve files for datasets from well."
             return False
 
@@ -487,7 +487,7 @@ class Mover():
 
         # Get all fcs files for the datasets
         dataSetFiles = self._getFilesForDataSets(dataSets)
-        if dataSetFiles == []:
+        if len(dataSetFiles) == 0:
             self._message = "Could not retrieve files for datasets from tube."
             return False
 
@@ -517,7 +517,7 @@ class Mover():
 
         # Get all fcs files for the datasets
         dataSetFiles = self._getFilesForDataSets(dataSets)
-        if dataSetFiles == []:
+        if len(dataSetFiles) == 0:
             self._message = "Could not retrieve files for datasets from FCSFile sample."
             return False
 
@@ -698,7 +698,7 @@ class Mover():
 
         # Get the dataset for current FCS file sample
         dataSets = searchService.getDataSet(self._entityId)
-        if dataSets == []:
+        if len(dataSets) == 0:
             self._message = "Could not retrieve datasets for " \
             "FCS file with identifier " + self._entityId + "!"
         else:
@@ -714,7 +714,7 @@ class Mover():
         of datasets. If not files are found, returns [].
         """
 
-        if dataSets == []:
+        if len(dataSets) == 0:
             return []
 
         dataSetFiles = []
@@ -729,7 +729,7 @@ class Mover():
                         if fileName.lower().endswith(".fcs"):
                             dataSetFiles.append(fileName)
 
-        if dataSetFiles == []:
+        if len(dataSetFiles) == 0:
             self._message = "Could not retrieve dataset files!"
 
         # Return the files
