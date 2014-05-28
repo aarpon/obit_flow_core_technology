@@ -378,8 +378,7 @@ DataViewer.prototype.displayDownloadAction = function(node) {
 };
 
 /**
- * Draw the initial root structure. The tree will then be extended 
- * dynamically (via lazy loading) using DynaTree methods.
+ * Display status text color-coded by level.
  * @param status: text to be displayed
  * @param level: one of "success", "info", "warning", "error". Default is
  * "info"
