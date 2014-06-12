@@ -377,7 +377,7 @@ DataViewer.prototype.displayExportAction = function(node) {
             experimentId  + "\", \"" + type + "\", \"" + identifier +
             "\", \"" + specimenName + "\", \"zip\");'>" +
             "<img src=\"img/zip.png\" />&nbsp;" +
-            "Compress to archive</a></span>&nbsp;");
+            "Download archive</a></span>&nbsp;");
 };
 
 
