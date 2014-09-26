@@ -698,7 +698,7 @@ class Mover():
 
         # Get the dataset for current FCS file sample
         dataSets = searchService.getDataSet(self._entityId)
-        if len(dataSets) == 0:
+        if dataSets is None:
             self._message = "Could not retrieve datasets for " \
             "FCS file with identifier " + self._entityId + "!"
         else:
