@@ -2,16 +2,25 @@ body {
     font-family: Sans-serif;
 }
 
+h2 {
+    padding-left: 5px;
+}
+
 #detailViewAction {
     min-height: 60px;
+    margin-left: 20px;
     vertical-align: middle;
 }
 
 #treeView {
+    margin-left: 20px;
 }
           
 #detailViewSample {
+    margin-left: 20px;
 }
 
 #detailView {
+    margin-left: 20px;
+    padding-top: 20px;
 }
