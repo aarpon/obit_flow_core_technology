@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 '''
 Aggregation plug-in to copy all FCS files under a specified FACSAria III element to the user folder.
 @author: Aaron Ponti
