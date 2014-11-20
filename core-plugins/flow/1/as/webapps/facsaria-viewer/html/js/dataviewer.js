@@ -364,7 +364,7 @@ DataViewer.prototype.displayExportAction = function(node) {
                 "<span><a class=\"btn btn-xs btn-primary\" " +
                 "href=\"#\" onclick='callAggregationPlugin(\"" +
                 experimentId + "\", \"" + type + "\", \"" + identifier +
-                "\", \"" + specimenName + "\", \"normal\");'>" +
+                "\", \"" + specimenName + "\", \"normal\"); return false;'>" +
                 "<img src=\"img/export.png\" />&nbsp;" +
                 "Export to your folder</a></span>&nbsp;");
 
@@ -375,7 +375,7 @@ DataViewer.prototype.displayExportAction = function(node) {
             "<span><a class=\"btn btn-xs btn-primary\" " +
             "href=\"#\" onclick='callAggregationPlugin(\"" +
             experimentId  + "\", \"" + type + "\", \"" + identifier +
-            "\", \"" + specimenName + "\", \"zip\");'>" +
+            "\", \"" + specimenName + "\", \"zip\"); return false;'>" +
             "<img src=\"img/zip.png\" />&nbsp;" +
             "Download archive</a></span>&nbsp;");
 };

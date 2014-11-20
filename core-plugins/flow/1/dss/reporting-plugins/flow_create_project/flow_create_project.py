@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # Ingestion service: create a project with user-defined name in given space
 
 def process(transaction, parameters, tableBuilder):
