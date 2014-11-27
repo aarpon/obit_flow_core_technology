@@ -3,15 +3,21 @@
 """
 @author: Aaron Ponti
 """
+
 import re
 import os
 import logging
 import xml.etree.ElementTree as xml
 from datetime import datetime
+import java.io.File
+from org.apache.commons.io import FileUtils
 
+#
+# The Processor class performs all steps required for registering datasets
+# from the assigned dropbox folder
+#
 class Processor:
-    """The Processor class performs all steps required for registering datasets
-    from the assigned dropbox folder."""
+    """Registers datasets from the dropbox folder"""
 
     # A transaction object passed by openBIS
     transaction = None
@@ -27,6 +33,7 @@ class Processor:
 
         # Set up logging
         logging.basicConfig(filename=logFile, level=logging.DEBUG)
+
 
     def createExperiment(self, expId, expName,
                          expType="LSR_FORTESSA_EXPERIMENT"):
@@ -62,6 +69,7 @@ class Processor:
 
         return exp
 
+
     def createSampleWithGenCode(self, spaceCode,
                                 sampleType="LSR_FORTESSA_PLATE"):
         """Create a sample with automatically generated code.
@@ -83,9 +91,10 @@ class Processor:
 
         return sample
 
+
     def formatExpDateForPostgreSQL(self, expDate):
         """Format the experiment date to be compatible with postgreSQL's
-        'timestamp' data type
+        'timestamp' data type.
 
         @param Date stored in the FCS file, in the form 01-JAN-2013
         @return Date in the form 2013-01-01
@@ -111,6 +120,7 @@ class Processor:
         else:
             return (year + "-" + month + "-" + day)
 
+
     def getCustomTimeStamp(self):
         """Create an univocal time stamp based on the current date and time
         (works around incomplete API of Jython 2.5).
@@ -119,8 +129,9 @@ class Processor:
         t = datetime.now()
         return (t.strftime("%y%d%m%H%M%S") + unicode(t)[20:])
 
+
     def getSubFolders(self):
-        """Returns a list of subfolders of the passed incoming directory.
+        """Return a list of subfolders of the passed incoming directory.
 
         @return list of subfolders (String)
         """
@@ -128,6 +139,7 @@ class Processor:
         incomingStr = self.incoming.getAbsolutePath()
         return [name for name in os.listdir(incomingStr)
                 if os.path.isdir(os.path.join(incomingStr, name))]
+
 
     def processExperiment(self, experimentNode,
                           openBISExpType="LSR_FORTESSA_EXPERIMENT"):
@@ -160,6 +172,9 @@ class Processor:
         # Get the owner name
         owner = experimentNode.attrib.get("owner_name")
 
+        # Get attachments
+        attachments = experimentNode.attrib.get("attachments")
+
         # Create the experiment (with corrected ID if needed: see above)
         openBISExperiment = self.createExperiment(openBISIdentifier,
                                                   expName, openBISExpType)
@@ -187,11 +202,44 @@ class Processor:
         openBISExperiment.setPropertyValue("LSR_FORTESSA_EXPERIMENT_OWNER",
                                            owner)
 
+        # Add the attachments
+        if attachments is not None:
+
+            # Extract all relative file names 
+            attachmentFiles = attachments.split(";")
+
+            for f in attachmentFiles:
+
+                # This is an additional security step
+                if f == '':
+                    continue
+
+                # Inform
+                msg = "Adding file attachment " + f 
+                logging.info(msg)
+
+                # Build the full path
+                attachmentFilePath = os.path.join(self.incoming.getAbsolutePath(),
+                                                  f)
+
+                # Extract the file name
+                attachmentFileName = os.path.basename(attachmentFilePath)
+
+                # Read the attachment into a byte array
+                javaFile = java.io.File(attachmentFilePath)
+                byteArray = FileUtils.readFileToByteArray(javaFile)
+
+                # Add attachment
+                openBISExperiment.addAttachment(attachmentFilePath,
+                                                attachmentFileName,
+                                                "", byteArray)
+
         # Return the openBIS Experiment object
         return openBISExperiment
 
+
     def processFCSFile(self, fcsFileNode, openBISTube, openBISExperiment):
-        """Register the FCS File using the parsed properties file
+        """Register the FCS File using the parsed properties file.
 
         @param fcsFileNode An XML node corresponding to an FCS file (dataset)
         @param openBISTube  An ISample object representing a Tube or Well
@@ -225,7 +273,7 @@ class Processor:
         fileName = os.path.join(self.incoming.getAbsolutePath(), fileName)
 
         # Log
-        logging.info("PROCESSFCSFILE: Registering file: " + fileName)
+        logging.info("Registering file: " + fileName)
 
         # Move the file
         self.transaction.moveFile(fileName, dataset)
@@ -233,7 +281,7 @@ class Processor:
 
     def processTray(self, trayNode, openBISExperiment):
         """Register a Tray (Plate) based on the Tray XML node
-        and an IExperimentUpdatable object
+        and an IExperimentUpdatable object.
 
         @param trayNode An XML node corresponding to a Tray (Plate)
         @param openBISExperiment An IExperimentUpdatable object
@@ -341,6 +389,7 @@ class Processor:
         # Return the openBIS ISample
         return openBISTube
 
+
     def processTubeSet(self, experimentNode, openBISExperiment):
         """Register a TubeSet (virtual tube container).
 
@@ -369,13 +418,14 @@ class Processor:
         # Set the experiment for the sample
         openBISTubeSet.setExperiment(openBISExperiment)
 
-        logging.info("PROCESS_TUBESET: Created new TubeSet " \
+        logging.info("Created new TubeSet " \
                      "with identifier %s, sample type %s" \
                      % (openBISTubeSet.getSampleIdentifier(),
                         openBISSampleType))
 
         # Return the openBIS ISample object
         return openBISTubeSet
+
 
     def register(self, tree):
         """Register the Experiment using the parsed properties file.
@@ -504,7 +554,7 @@ class Processor:
                     raise Exception(msg)
 
         # Log that we are finished with the registration
-        logging.info("REGISTER: Registration completed")
+        logging.info("Registration completed")
 
 
     def run(self):
@@ -555,7 +605,7 @@ class Processor:
         for propertiesFile in propertiesFileList:
 
             # Log
-            logging.info("* * * Processing: " + propertiesFile)
+            logging.info("* * * Processing: " + propertiesFile + " * * *")
 
             # Read the properties file into an ElementTree
             tree = xml.parse(propertiesFile)
