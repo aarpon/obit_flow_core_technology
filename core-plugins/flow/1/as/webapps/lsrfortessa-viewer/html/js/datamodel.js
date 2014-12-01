@@ -31,9 +31,12 @@ function DataModel() {
     this.exp = null;
     this.expName = "";
 
+    // Attachments
+    this.attachments = null;
+
     // Tree mode;
     this.treeModel = null;
-    
+
     // Alias
     var dataModelObj = this;
     
@@ -57,6 +60,14 @@ function DataModel() {
 
         // Display the experiment summary
         DATAVIEWER.displayExperimentInfo(dataModelObj.exp);
+
+        var experimentId = {
+            "@type" : "ExperimentIdentifierId",
+            "identifier" : dataModelObj.expId
+        }
+
+        // Retrieve and display attachment list
+        dataModelObj.retrieveAndDisplayAttachments();
 
     });
 }
@@ -750,4 +761,36 @@ DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identif
                     $("#download_url_span").html(downloadString);
                 });
     });
+};
+
+/**
+ * Get, store and display the attachment info
+ */
+DataModel.prototype.retrieveAndDisplayAttachments = function(action) {
+
+    // Get attachments
+    var experimentId = {
+        "@type" : "ExperimentIdentifierId",
+        "identifier" : this.expId
+    }
+
+    // Alias
+    var dataModelObj = this;
+
+    // Retrieve the attachments
+    this.openbisServer.listAttachmentsForExperiment(experimentId, false, function(response) {
+        if (response.error) {
+            dataModelObj.attachments = [];
+            console.log("There was an error retrieving the attachments for current experiment!");
+        } else {
+
+            // Store the atatchment array
+            dataModelObj.attachments = response.result;
+
+            // Display the info
+            DATAVIEWER.displayAttachments(dataModelObj);
+        }
+    });
+
+
 };

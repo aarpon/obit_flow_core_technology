@@ -413,3 +413,37 @@ DataViewer.prototype.displayStatus = function(status, level) {
     $("#detailViewStatus").html(status);
 
 };
+
+/**
+ * Display attachment info and link to the Attachments tab.
+ * @param attachments: list of attachments
+ */
+DataViewer.prototype.displayAttachments = function(dataMoverObj, attachments) {
+
+    // Clear the attachment div
+    $("#detailViewAttachments").empty();
+
+    // Text
+    var text = "";
+    if (dataMoverObj.attachments.length == 0) {
+        text = "There are no attachments.";
+    } else if (dataMoverObj.attachments.length == 1) {
+        text = "There is one attachment."
+    } else {
+        text = "There are " + dataMoverObj.attachments.length + " attachments";
+    }
+    // Link to the attachment tab
+    var link = $("<a>").text(text).attr("href", "#").attr("title", text).click(
+        function() {
+            var url = "#entity=EXPERIMENT&permId=" + dataMoverObj.exp.permId + "&ui-subtab=attachment-section";
+            window.top.location.hash = url;
+            return false;
+        });
+
+    $("#detailViewAttachments").append(
+        "<p><span class=\"label label-default\">Attachments</span></p>");
+
+    // Display the link
+    $("#detailViewAttachments").append(link);
+
+};
