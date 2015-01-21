@@ -761,7 +761,7 @@ class Mover():
         searchCriteria = SearchCriteria()
         searchCriteria.addMatchClause(MatchClause.createAttributeMatch(MatchClauseAttribute.TYPE, "FACS_ARIA_PLATE"))
         expCriteria = SearchCriteria()
-        expCriteria.addMatchClause(MatchClause.createAttributeMatch(MatchClauseAttribute.CODE, self._experimentCode))
+        expCriteria.addMatchClause(MatchClause.createAttributeMatch(MatchClauseAttribute.PERM_ID, self._experiment.permId))
         searchCriteria.addSubCriteria(SearchSubCriteria.createExperimentCriteria(expCriteria))
         plates = searchService.searchForSamples(searchCriteria)
 
@@ -787,7 +787,7 @@ class Mover():
         searchCriteria = SearchCriteria()
         searchCriteria.addMatchClause(MatchClause.createAttributeMatch(MatchClauseAttribute.TYPE, "FACS_ARIA_TUBE"))
         expCriteria = SearchCriteria()
-        expCriteria.addMatchClause(MatchClause.createAttributeMatch(MatchClauseAttribute.CODE, self._experimentCode))
+        expCriteria.addMatchClause(MatchClause.createAttributeMatch(MatchClauseAttribute.PERM_ID, self._experiment.permId))
         searchCriteria.addSubCriteria(SearchSubCriteria.createExperimentCriteria(expCriteria))
         tubes = searchService.searchForSamples(searchCriteria)
 
