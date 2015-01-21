@@ -152,8 +152,16 @@ class Mover():
         # Get the experiment
         self._experiment = searchService.getExperiment(self._experimentId)
 
-        # Experiment full path in user/tmp folder
-        self._experimentPath = os.path.join(self._userFolder, self._experimentCode)
+        # Get the experiment name
+        self._experimentName = \
+            self._experiment.getPropertyValue("LSR_FORTESSA_EXPERIMENT_NAME")
+
+        # Export full path in user/tmp folder
+        self._rootExportPath = os.path.join(self._userFolder, self._experimentCode)
+
+        # Experiment full path within the export path
+        self._experimentPath = os.path.join(self._rootExportPath,
+                                            self._experimentName)
 
         # Current path: this is used to keep track of the path where to copy
         # files when navigating the experiment hierarchy
@@ -189,9 +197,10 @@ class Mover():
             return False
 
         # At this stage we can create the experiment folder in the user dir
-        if not self._createExperimentFolder():
+        # (and export root)
+        if not self._createRootAndExperimentFolder():
             self._message = "Could not create experiment folder " + \
-            self._experimentPath
+            self._rootExportPath
             return False
 
         # Now process depending on the entity type
@@ -246,7 +255,7 @@ class Mover():
         """
 
         if self._mode == "zip":
-            zip_folder(self._experimentPath, self.getZipArchiveFullPath())
+            zip_folder(self._rootExportPath, self.getZipArchiveFullPath())
 
 
     def getZipArchiveFullPath(self):
@@ -254,7 +263,7 @@ class Mover():
         """
         
         if self._mode == "zip":
-            return self._experimentPath + ".zip"
+            return self._rootExportPath + ".zip"
         
         return ""
 
@@ -283,12 +292,12 @@ class Mover():
         return self._numCopiedFiles
 
 
-    def getRelativeExperimentPath(self):
+    def getRelativeRootExperimentPath(self):
         """
         Return the experiment path relative to the user folder.
         """
         return userId + "/" + \
-            self._experimentPath[self._experimentPath.rfind(self._properties['export_dir']):]
+            self._rootExportPath[self._rootExportPath.rfind(self._properties['export_dir']):]
 
 
     # Private methods
@@ -552,7 +561,7 @@ class Mover():
         os.makedirs(dirFullPath)
 
 
-    def _createExperimentFolder(self):
+    def _createRootAndExperimentFolder(self):
         """
         Create the experiment folder. Notice that it uses information already
         stored in the object, but this info is filled in in the constructor, so
@@ -562,16 +571,16 @@ class Mover():
 
         Please notice that if the experiment folder already exists, _{digit}
         will be appended to the folder name, to ensure that the folder is
-        unique. The updated folder name will be stored in the _experimentPath
+        unique. The updated folder name will be stored in the _rootExportPath
         property.
         """
 
         # This should not happen
-        if self._experimentPath == "":
+        if self._rootExportPath == "":
             return False
 
         # Make sure that the experiment folder does not already exist
-        expPath = self._experimentPath
+        expPath = self._rootExportPath
 
         # Does the folder already exist?
         if os.path.exists(expPath):
@@ -585,10 +594,15 @@ class Mover():
                 else:
                     counter += 1
 
-        # Update the experiment path
-        self._experimentPath = expPath
+        # Update the root and experiment paths
+        self._rootExportPath = expPath
+        self._experimentPath = os.path.join(self._rootExportPath,
+                                            self._experimentName)
 
-        # Create the folder
+        # Create the root folder
+        self._createDir(self._rootExportPath)
+
+        # And now create the experiment folder (in the root folder)
         self._createDir(self._experimentPath)
 
         # Return success
@@ -747,7 +761,7 @@ class Mover():
         searchCriteria = SearchCriteria()
         searchCriteria.addMatchClause(MatchClause.createAttributeMatch(MatchClauseAttribute.TYPE, "LSR_FORTESSA_PLATE"))
         expCriteria = SearchCriteria()
-        expCriteria.addMatchClause(MatchClause.createAttributeMatch(MatchClauseAttribute.CODE, self._experimentCode))
+        expCriteria.addMatchClause(MatchClause.createAttributeMatch(MatchClauseAttribute.PERM_ID, self._experiment.permId))
         searchCriteria.addSubCriteria(SearchSubCriteria.createExperimentCriteria(expCriteria))
         plates = searchService.searchForSamples(searchCriteria)
 
@@ -773,7 +787,7 @@ class Mover():
         searchCriteria = SearchCriteria()
         searchCriteria.addMatchClause(MatchClause.createAttributeMatch(MatchClauseAttribute.TYPE, "LSR_FORTESSA_TUBE"))
         expCriteria = SearchCriteria()
-        expCriteria.addMatchClause(MatchClause.createAttributeMatch(MatchClauseAttribute.CODE, self._experimentCode))
+        expCriteria.addMatchClause(MatchClause.createAttributeMatch(MatchClauseAttribute.PERM_ID, self._experiment.permId))
         searchCriteria.addSubCriteria(SearchSubCriteria.createExperimentCriteria(expCriteria))
         tubes = searchService.searchForSamples(searchCriteria)
 
@@ -863,7 +877,7 @@ def aggregate(parameters, tableBuilder):
     # Get some results info
     nCopiedFiles = mover.getNumberOfCopiedFiles()
     errorMessage = mover.getErrorMessage();
-    relativeExpFolder = mover.getRelativeExperimentPath()
+    relativeRootExpFolder = mover.getRelativeRootExperimentPath()
     zipFileName = mover.getZipArchiveFileName()
 
     # Add the table headers
@@ -879,7 +893,7 @@ def aggregate(parameters, tableBuilder):
     row.setCell("Success", success)
     row.setCell("Message", errorMessage)
     row.setCell("nCopiedFiles", nCopiedFiles)
-    row.setCell("relativeExpFolder", relativeExpFolder)
+    row.setCell("relativeExpFolder", relativeRootExpFolder)
     row.setCell("zipArchiveFileName", zipFileName)
     row.setCell("Mode", mode)
 
@@ -894,7 +908,7 @@ def aggregate(parameters, tableBuilder):
             snip = str(nCopiedFiles) + " files were "
 
         if mode == "normal":
-            body = snip + "successfully exported to {...}/" + relativeExpFolder + "."
+            body = snip + "successfully exported to {...}/" + relativeRootExpFolder + "."
         else:
             body = snip + "successfully packaged for download."
             
