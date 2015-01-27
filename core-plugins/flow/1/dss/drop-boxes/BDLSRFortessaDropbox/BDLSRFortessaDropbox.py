@@ -11,7 +11,6 @@ import xml.etree.ElementTree as xml
 from datetime import datetime
 import java.io.File
 from org.apache.commons.io import FileUtils
-import java.lang.Runtime as Runtime
 
 
 #
