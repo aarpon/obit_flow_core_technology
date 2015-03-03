@@ -16,7 +16,7 @@ function DataViewer() {
 
 /**
  * Displays experiment info
- * 
+ *
  * @param exp openBIS Experiment object
  */
 DataViewer.prototype.displayExperimentInfo = function(exp) {
@@ -26,9 +26,43 @@ DataViewer.prototype.displayExperimentInfo = function(exp) {
     detailView = $("#detailView");
     detailView.empty();
 
-    var spOp = "<span class=\"label label-default\">";
+    var spOp = "<span class=\"label label-info\">";
     var spCl = "</span>";
-     
+
+    // Get metaprojects (tags)
+    var metaprojects = "";
+    if (exp.metaprojects) {
+        if (exp.metaprojects.length == 0) {
+            metaprojects = "<i>None</i>";
+        } else if (exp.metaprojects.length == 1) {
+            metaprojects = exp.metaprojects[0].name;
+        } else {
+            for (var i = 0; i < exp.metaprojects.length; i++) {
+                if (i < (exp.metaprojects.length - 1)) {
+                    metaprojects = metaprojects.concat(exp.metaprojects[i].name + ", ");
+                } else {
+                    metaprojects = metaprojects.concat(exp.metaprojects[i].name);
+                }
+            }
+        }
+    }
+    detailView.append(
+        "<p>" + spOp + "Tags" + spCl + "</p>" +
+        "<p>" + metaprojects + "</p>");
+
+    // Change the color
+    spOp = "<span class=\"label label-default\">";
+
+    // Display the experiment description
+    description = exp.properties.LSR_FORTESSA_EXPERIMENT_DESCRIPTION;
+    if (description === "") {
+        description = "<i>No description provided.</i>";
+    }
+
+    detailView.append(
+        "<p>" + spOp + "Experiment description" + spCl + "</p>" +
+        "<p>" + description + "</p>");
+
     // Underline experiment name in code
     code = exp.code;
     var indx = exp.code.lastIndexOf("_");
@@ -60,16 +94,7 @@ DataViewer.prototype.displayExperimentInfo = function(exp) {
     detailView.append(
         "<p>" + spOp + "Experiment owner" + spCl + "</p>" + 
         "<p>" + exp.properties.LSR_FORTESSA_EXPERIMENT_OWNER + "</p>"); 
-        
-    // Display the experiment description
-    description = exp.properties.LSR_FORTESSA_EXPERIMENT_DESCRIPTION;
-    if (description === "") {
-        description = "<i>No description provided.</i>";
-    }
-    
-    detailView.append(
-        "<p>" + spOp + "Experiment description" + spCl + "</p>" + 
-        "<p>" + description + "</p>");         
+
         
 };
 
@@ -103,7 +128,7 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
     $("#detailViewAction").empty();
     $("#detailViewStatus").empty();
 
-    var spOp = "<span class=\"label label-info\">";
+    var spOp = "<span class=\"label label-default\">";
     var spCl = "</span>";
      
     // Adapt the display depending on the element type
