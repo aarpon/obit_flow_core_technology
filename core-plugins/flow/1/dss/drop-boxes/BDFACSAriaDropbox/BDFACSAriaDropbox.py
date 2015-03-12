@@ -29,21 +29,14 @@ class Processor:
     _username = ""
 
     # Constructor
-    def __init__(self, transaction, logFile):
+    def __init__(self, transaction, logger):
 
         self._transaction = transaction
         self._incoming = transaction.getIncoming()
         self._username = ""
 
         # Set up logging
-        self._logger = logging.getLogger('BDFACSAriaDropbox')
-        self._logger.setLevel(logging.DEBUG)
-        fh = logging.FileHandler(logFile)
-        fh.setLevel(logging.DEBUG)
-        format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-        formatter = logging.Formatter(format)
-        fh.setFormatter(formatter)
-        self._logger.addHandler(fh)
+        self._logger = logger
 
 
     def createExperiment(self, expId, expName,
@@ -709,8 +702,22 @@ def process(transaction):
     # Path for the log file
     logFile = os.path.join(logPath, "registration_log.txt")
 
+    # Set up the logger
+    logger = logging.getLogger('BDFACSAriaDropbox')
+    logger.setLevel(logging.DEBUG)
+    fh = logging.FileHandler(logFile)
+    fh.setLevel(logging.DEBUG)
+    format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    formatter = logging.Formatter(format)
+    fh.setFormatter(formatter)
+    logger.addHandler(fh)
+
     # Create a Processor
-    processor = Processor(transaction, logFile)
+    processor = Processor(transaction, logger)
 
     # Run
     processor.run()
+
+    # Close and remove the logger handler
+    fh.close()
+    logger.removeHandler(fh)
