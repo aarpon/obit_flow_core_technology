@@ -29,6 +29,9 @@ class Processor:
     # The user name
     _username = ""
 
+    # The logger
+    _logger = None
+
     # Constructor
     def __init__(self, transaction, logFile):
 
