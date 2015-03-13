@@ -38,6 +38,7 @@ class Processor:
 
         # Set up logging
         logging.basicConfig(filename=logFile, level=logging.DEBUG)
+        self._logger = logging.getLogger("BLSRFortessa")
 
 
     def createExperiment(self, expId, expName,
@@ -60,14 +61,14 @@ class Processor:
         expId = expId + "_" + self.getCustomTimeStamp()
 
         # Create the experiment
-        logging.info("Register experiment %s" % expId)
+        self._logger.info("Register experiment %s" % expId)
         exp = self._transaction.createNewExperiment(expId, expType)
         if not exp:
             msg = "Could not create experiment " + expId + "!"
-            logging.error(msg)
+            self._logger.error(msg)
             raise Exception(msg)
         else:
-            logging.info("Created experiment with ID " + expId + ".")
+            self._logger.info("Created experiment with ID " + expId + ".")
 
         # Store the name
         exp.setPropertyValue("LSR_FORTESSA_EXPERIMENT_NAME", expName)
@@ -91,7 +92,7 @@ class Processor:
         sample = self._transaction.createNewSampleWithGeneratedCode(spaceCode, sampleType)
         if not sample:
             msg = "Could not create sample with generated code"
-            logging.error(msg)
+            self._logger.error(msg)
             raise Exception(msg)
 
         return sample
@@ -119,7 +120,7 @@ class Processor:
         # Build the date in the correct format. If the month was not found,
         # return 01-01-1970
         if (month == "NOT_FOUND"):
-            logging.info("Invalid experiment date %s found. " \
+            self._logger.info("Invalid experiment date %s found. " \
                          "Reverting to 1970/01/01." % expDate)
             return "1970-01-01"
         else:
@@ -185,7 +186,7 @@ class Processor:
                                                   expName, openBISExpType)
         if not openBISExperiment:
             msg = "Could not create experiment " + openBISIdentifier
-            logging.error(msg)
+            self._logger.error(msg)
             raise Exception(msg)
 
         # Get comma-separated tag list
@@ -232,7 +233,7 @@ class Processor:
 
                 # Inform
                 msg = "Adding file attachment " + f 
-                logging.info(msg)
+                self._logger.info(msg)
 
                 # Build the full path
                 attachmentFilePath = os.path.join(self._incoming.getAbsolutePath(),
@@ -269,7 +270,7 @@ class Processor:
         dataset = self._transaction.createNewDataSet()
         if not dataset:
             msg = "Could not get or create dataset"
-            logging.error(msg)
+            self._logger.error(msg)
             raise Exception(msg)
 
         # Set the dataset type
@@ -289,7 +290,7 @@ class Processor:
         fileName = os.path.join(self._incoming.getAbsolutePath(), fileName)
 
         # Log
-        logging.info("Registering file: " + fileName)
+        self._logger.info("Registering file: " + fileName)
 
         # Move the file
         self._transaction.moveFile(fileName, dataset)
@@ -324,7 +325,7 @@ class Processor:
                                                    openBISSampleType)
         if not openBISTray:
             msg = "Could not create plate sample."
-            logging.error(msg)
+            self._logger.error(msg)
             raise Exception(msg)
 
         # Set the experiment for the sample
@@ -367,7 +368,7 @@ class Processor:
             openBISSpecimenType = "LSR_FORTESSA_WELL"
         else:
             msg = "Unknown tube type" + tubeNode.tag
-            logging.error(msg)
+            self._logger.error(msg)
             raise Exception(msg)
 
         # Build the openBIS Identifier
@@ -380,7 +381,7 @@ class Processor:
                                                    openBISSpecimenType)
         if not openBISTube:
             msg = "Could not create sample with auto-generated identifier"
-            logging.error(msg)
+            self._logger.error(msg)
             raise Exception(msg)
 
         # Set the experiment to which it belongs
@@ -396,7 +397,7 @@ class Processor:
             openBISTube.setPropertyValue("LSR_FORTESSA_WELL_NAME", name)
         else:
             msg = "Unknown value for openBISSpecimenType."
-            logging.error(msg)
+            self._logger.error(msg)
             raise Exception(msg)
 
         # Set the TubeSet container
@@ -428,13 +429,13 @@ class Processor:
                                                       openBISSampleType)
         if not openBISTubeSet:
             msg = "Could not get or create TubeSet"
-            logging.error(msg)
+            self._logger.error(msg)
             raise Exception(msg)
 
         # Set the experiment for the sample
         openBISTubeSet.setExperiment(openBISExperiment)
 
-        logging.info("Created new TubeSet " \
+        self._logger.info("Created new TubeSet " \
                      "with identifier %s, sample type %s" \
                      % (openBISTubeSet.getSampleIdentifier(),
                         openBISSampleType))
@@ -465,7 +466,7 @@ class Processor:
             # must be Experiment
             if experimentNode.tag != "Experiment":
                 msg = "Expected Experiment node, found " + experimentNode.tag
-                logging.error(msg)
+                self._logger.error(msg)
                 raise Exception(msg)
 
             # Process an Experiment XML node and get/create an IExperimentUpdatable
@@ -498,7 +499,7 @@ class Processor:
                         # The child of a Specimen is a Tube
                         if tubeNode.tag != "Tube":
                             msg = "Expected Tube node!"
-                            logging.error(msg)
+                            self._logger.error(msg)
                             raise Exception(msg)
 
                         # Process the tube node and get the openBIS object
@@ -513,7 +514,7 @@ class Processor:
                             # The child of a Tube is an FCSFile
                             if fcsNode.tag != "FCSFile":
                                 msg = "Expected FSC File node!"
-                                logging.error(msg)
+                                self._logger.error(msg)
                                 raise Exception(msg)
 
                             # Process the FCS file node
@@ -532,7 +533,7 @@ class Processor:
                         # The child of a Tray is a Specimen
                         if specimenNode.tag != "Specimen":
                             msg = "Expected Specimen node!"
-                            logging.error(msg)
+                            self._logger.error(msg)
                             raise Exception(msg)
 
                         # The only information we need from the Specimen is its
@@ -544,7 +545,7 @@ class Processor:
                             # The child of a Specimen is a Tube
                             if wellNode.tag != "Well":
                                 msg = "Expected Well node!"
-                                logging.error(msg)
+                                self._logger.error(msg)
                                 raise Exception(msg)
 
                             # Process the tube node and get the openBIS object
@@ -559,7 +560,7 @@ class Processor:
                                 # The child of a Tube is an FCSFile
                                 if fcsNode.tag != "FCSFile":
                                     msg = "Expected FSC File node!"
-                                    logging.error(msg)
+                                    self._logger.error(msg)
                                     raise Exception(msg)
 
                                 # Process the FCS file node
@@ -569,11 +570,11 @@ class Processor:
                 else:
 
                     msg = "The Node must be either a Specimen or a Tray"
-                    logging.error(msg)
+                    self._logger.error(msg)
                     raise Exception(msg)
 
         # Log that we are finished with the registration
-        logging.info("Registration completed")
+        self._logger.info("Registration completed")
 
 
     def retrieveOrCreateTags(self, tagList):
@@ -605,7 +606,7 @@ class Processor:
                 if metaproject is None:
                     msg = "Could not create metaproject " + tag + \
                     "for user " + self._username
-                    logging.error(msg)
+                    self._logger.error(msg)
                     raise Exception(msg)
 
             # Add the created metaproject to the list
@@ -620,17 +621,17 @@ class Processor:
         # Make sure that _incoming is a folder
         if not self._incoming.isDirectory():
             msg = "Incoming MUST be a folder!"
-            logging.error(msg)
+            self._logger.error(msg)
             raise Exception(msg)
 
         # Log
-        logging.info("Incoming folder: " + self._incoming.getAbsolutePath())
+        self._logger.info("Incoming folder: " + self._incoming.getAbsolutePath())
 
         # There must be just one subfolder: the user subfolder
         subFolders = self.getSubFolders()
         if len(subFolders) != 1:
             msg = "Expected user subfolder!"
-            logging.error(msg)
+            self._logger.error(msg)
             raise Exception(msg)
 
         # Set the user folder
@@ -641,7 +642,7 @@ class Processor:
         dataFileName = os.path.join(userFolder, "data_structure.ois")
         if not os.path.exists(dataFileName):
             msg = "File data_structure.ois not found!"
-            logging.error(msg)
+            self._logger.error(msg)
             raise Exception(msg)
 
         # Now read the data structure file and store all the pointers to
@@ -662,7 +663,7 @@ class Processor:
         for propertiesFile in propertiesFileList:
 
             # Log
-            logging.info("* * * Processing: " + propertiesFile + " * * *")
+            self._logger.info("* * * Processing: " + propertiesFile + " * * *")
 
             # Read the properties file into an ElementTree
             tree = xml.parse(propertiesFile)
