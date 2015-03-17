@@ -11,7 +11,6 @@ import xml.etree.ElementTree as xml
 from datetime import datetime
 import java.io.File
 from org.apache.commons.io import FileUtils
-import java.lang.Runtime as Runtime
 
 
 #
@@ -22,26 +21,27 @@ class Processor:
     """Registers datasets from the dropbox folder"""
 
     # A transaction object passed by openBIS
-    transaction = None
+    _transaction = None
 
-    # The incoming folder to process (a java.io.File object)
-    incoming = ""
+    # The _incoming folder to process (a java.io.File object)
+    _incoming = ""
+
+    # The user name
+    _username = ""
+
+    # The logger
+    _logger = None
 
     # Constructor
     def __init__(self, transaction, logFile):
 
-        self.transaction = transaction
-        self.incoming = transaction.getIncoming()
+        self._transaction = transaction
+        self._incoming = transaction.getIncoming()
+        self._username = ""
 
         # Set up logging
-        self._logger = logging.getLogger('BDLSRFortessaDropbox')
-        self._logger.setLevel(logging.DEBUG)
-        fh = logging.FileHandler(logFile)
-        fh.setLevel(logging.DEBUG)
-        format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-        formatter = logging.Formatter(format)
-        fh.setFormatter(formatter)
-        self._logger.addHandler(fh)
+        logging.basicConfig(filename=logFile, level=logging.DEBUG)
+        self._logger = logging.getLogger("BLSRFortessa")
 
 
     def createExperiment(self, expId, expName,
@@ -65,7 +65,7 @@ class Processor:
 
         # Create the experiment
         self._logger.info("Register experiment %s" % expId)
-        exp = self.transaction.createNewExperiment(expId, expType)
+        exp = self._transaction.createNewExperiment(expId, expType)
         if not exp:
             msg = "Could not create experiment " + expId + "!"
             self._logger.error(msg)
@@ -92,7 +92,7 @@ class Processor:
         spaceCode = spaceCode.replace("/", "")
 
         # Create the sample
-        sample = self.transaction.createNewSampleWithGeneratedCode(spaceCode, sampleType)
+        sample = self._transaction.createNewSampleWithGeneratedCode(spaceCode, sampleType)
         if not sample:
             msg = "Could not create sample with generated code"
             self._logger.error(msg)
@@ -145,7 +145,7 @@ class Processor:
         @return list of subfolders (String)
         """
 
-        incomingStr = self.incoming.getAbsolutePath()
+        incomingStr = self._incoming.getAbsolutePath()
         return [name for name in os.listdir(incomingStr)
                 if os.path.isdir(os.path.join(incomingStr, name))]
 
@@ -192,6 +192,17 @@ class Processor:
             self._logger.error(msg)
             raise Exception(msg)
 
+        # Get comma-separated tag list
+        tagList = experimentNode.attrib.get("tags")
+        if tagList != "":
+
+            # Retrieve or create the tags
+            openBISTags = self.retrieveOrCreateTags(tagList)
+
+            # Set the metaprojects (tags)
+            for openBISTag in openBISTags:
+                openBISTag.addEntity(openBISExperiment)
+
         # Set the date
         openBISExperiment.setPropertyValue("LSR_FORTESSA_EXPERIMENT_DATE",
                                            expDate)
@@ -228,7 +239,7 @@ class Processor:
                 self._logger.info(msg)
 
                 # Build the full path
-                attachmentFilePath = os.path.join(self.incoming.getAbsolutePath(),
+                attachmentFilePath = os.path.join(self._incoming.getAbsolutePath(),
                                                   f)
 
                 # Extract the file name
@@ -259,7 +270,7 @@ class Processor:
         datasetType = "LSR_FORTESSA_FCSFILE"
 
         # Create a new dataset
-        dataset = self.transaction.createNewDataSet()
+        dataset = self._transaction.createNewDataSet()
         if not dataset:
             msg = "Could not get or create dataset"
             self._logger.error(msg)
@@ -279,13 +290,13 @@ class Processor:
 
         # Assign the file to the dataset (we will use the absolute path)
         fileName = fcsFileNode.attrib.get("relativeFileName")
-        fileName = os.path.join(self.incoming.getAbsolutePath(), fileName)
+        fileName = os.path.join(self._incoming.getAbsolutePath(), fileName)
 
         # Log
         self._logger.info("Registering file: " + fileName)
 
         # Move the file
-        self.transaction.moveFile(fileName, dataset)
+        self._transaction.moveFile(fileName, dataset)
 
 
     def processTray(self, trayNode, openBISExperiment):
@@ -445,6 +456,9 @@ class Processor:
         # Get the root node (obitXML)
         root = tree.getroot()
 
+        # Store the username
+        self._username = root.attrib.get("userName")
+
         # Create a virtual TubeSet
         openBISTubeSet = None
 
@@ -566,17 +580,55 @@ class Processor:
         self._logger.info("Registration completed")
 
 
+    def retrieveOrCreateTags(self, tagList):
+        """Retrieve or create the tags (metaprojects) with specified names."""
+
+        # Initialize openBISTags list
+        openBISTags = []
+
+        # Get the individual tag names (with no blank spaces)
+        tags = ["".join(t.strip()) for t in tagList.split(",")]
+
+        # Process all tags (metaprojects)
+        for tag in tags:
+            if len(tag) == 0:
+                continue
+
+            # Retrieve the tag (metaproject)
+            metaproject = self._transaction.getMetaproject(tag, self._username)
+            if metaproject is None:
+
+                # Create the tag (metaproject)
+                logging("Creating metaproject " + tag)
+
+                metaproject = self._transaction.createNewMetaproject(tag,
+                                                                     "",
+                                                                     self._username)
+
+                # Check that creation was succcessful
+                if metaproject is None:
+                    msg = "Could not create metaproject " + tag + \
+                    "for user " + self._username
+                    self._logger.error(msg)
+                    raise Exception(msg)
+
+            # Add the created metaproject to the list
+            openBISTags.append(metaproject)
+
+        return openBISTags
+
+
     def run(self):
         """Run the registration."""
 
-        # Make sure that incoming is a folder
-        if not self.incoming.isDirectory():
+        # Make sure that _incoming is a folder
+        if not self._incoming.isDirectory():
             msg = "Incoming MUST be a folder!"
             self._logger.error(msg)
             raise Exception(msg)
 
         # Log
-        self._logger.info("Incoming folder: " + self.incoming.getAbsolutePath())
+        self._logger.info("Incoming folder: " + self._incoming.getAbsolutePath())
 
         # There must be just one subfolder: the user subfolder
         subFolders = self.getSubFolders()
@@ -586,7 +638,7 @@ class Processor:
             raise Exception(msg)
 
         # Set the user folder
-        userFolder = os.path.join(self.incoming.getAbsolutePath(),
+        userFolder = os.path.join(self._incoming.getAbsolutePath(),
                                   subFolders[0])
 
         # In the user subfolder we must find the data_structure.ois file
@@ -597,14 +649,14 @@ class Processor:
             raise Exception(msg)
 
         # Now read the data structure file and store all the pointers to
-        # the properties files. The paths are stored relative to self.incoming,
+        # the properties files. The paths are stored relative to self._incoming,
         # so we can easily build the full file paths.
         propertiesFileList = []
         f = open(dataFileName)
         try:
             for line in f:
                 line = re.sub('[\r\n]', '', line)
-                propertiesFile = os.path.join(self.incoming.getAbsolutePath(),
+                propertiesFile = os.path.join(self._incoming.getAbsolutePath(),
                                             line)
                 propertiesFileList.append(propertiesFile)
         finally:
