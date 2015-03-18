@@ -194,7 +194,7 @@ class Processor:
 
         # Get comma-separated tag list
         tagList = experimentNode.attrib.get("tags")
-        if tagList != "":
+        if tagList != None and tagList != "":
 
             # Retrieve or create the tags
             openBISTags = self.retrieveOrCreateTags(tagList)
@@ -585,6 +585,10 @@ class Processor:
 
         # Initialize openBISTags list
         openBISTags = []
+
+        # Make sure tagList is not None
+        if tagList is None:
+            return []
 
         # Get the individual tag names (with no blank spaces)
         tags = ["".join(t.strip()) for t in tagList.split(",")]
