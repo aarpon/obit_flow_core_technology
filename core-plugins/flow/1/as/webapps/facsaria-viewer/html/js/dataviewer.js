@@ -479,7 +479,8 @@ DataViewer.prototype.displayAttachments = function(dataMoverObj, attachments) {
     // Link to the attachment tab
     var link = $("<a>").text(text).attr("href", "#").attr("title", text).click(
         function() {
-            var url = "#entity=EXPERIMENT&permId=" + dataMoverObj.exp.permId + "&ui-subtab=attachment-section";
+            var url = "#entity=EXPERIMENT&permId=" + dataMoverObj.exp.permId +
+                "&ui-subtab=attachment-section&ui-timestamp=" + (new Date().getTime());
             window.top.location.hash = url;
             return false;
         });
