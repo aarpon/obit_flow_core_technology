@@ -39,7 +39,7 @@ def zip_folder(folder_path, output_path):
     try:
         
         # Open zip file (no compression)
-        zip_file = zipfile.ZipFile(output_path, 'w', zipfile.ZIP_STORED)
+        zip_file = zipfile.ZipFile(output_path, 'w', zipfile.ZIP_STORED, allowZip64=True)
 
         # Now recurse into the folder
         for root, folders, files in os.walk(folder_path):
