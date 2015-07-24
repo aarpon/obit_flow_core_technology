@@ -154,6 +154,11 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
 
                 if (node.data.element.dataSetTypeCode == "LSR_FORTESSA_FCSFILE") {
 
+                    // Old experiments might not have anything stored in LSR_FORTESSA_FCSFILE_PARAMETERS.
+                    if (! node.data.element.properties.LSR_FORTESSA_FCSFILE_PARAMETERS) {
+                        break;
+                    }
+
                     // Retrieve parameter information
                     var parametersXML = $.parseXML(node.data.element.properties.LSR_FORTESSA_FCSFILE_PARAMETERS);
                     var parameters = parametersXML.childNodes[0];
