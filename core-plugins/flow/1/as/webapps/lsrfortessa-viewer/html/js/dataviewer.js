@@ -124,33 +124,56 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
     }
 
     // Clear previous views
-    $("#detailViewSample").empty();
+    $("#status").empty();
     $("#detailViewAction").empty();
     $("#detailViewStatus").empty();
+    $("#detailViewSample").empty();
 
     var spOp = "<span class=\"label label-default\">";
     var spCl = "</span>";
-     
+
     // Adapt the display depending on the element type
-    if (node.data.element && node.data.element.hasOwnProperty("sampleTypeCode")) {
-                
-        var sampleTypeCode = node.data.element.sampleTypeCode;
+    if (node.data.element) {
 
-        switch (sampleTypeCode) {
+        // Samples
+        switch (node.data.element["@type"]) {
 
-            case "LSR_FORTESSA_PLATE":
+            case "Sample":
 
-            	// Update details
-            	$("#detailViewSample").append(
-                	"<p>" + spOp + "Plate geometry" + spCl + "</p>" + 
-                    "<p>" + node.data.element.properties.LSR_FORTESSA_PLATE_GEOMETRY + "</p>");
+                if (node.data.element.sampleTypeCode == "LSR_FORTESSA_PLATE") {
+
+                    // Update details
+                    $("#detailViewSample").append(
+                        "<p>" + spOp + "Plate geometry" + spCl + "</p>" +
+                        "<p>" + node.data.element.properties.LSR_FORTESSA_PLATE_GEOMETRY + "</p>");
+
+                }
                 break;
-			
-			default:
-				break;
+
+            case "DataSet":
+
+                if (node.data.element.dataSetTypeCode == "LSR_FORTESSA_FCSFILE") {
+
+                    // Retrieve parameter information
+                    var parametersXML = $.parseXML(node.data.element.properties.LSR_FORTESSA_FCSFILE_PARAMETERS);
+                    var parameters = parametersXML.childNodes[0];
+
+                    var numParameters = parameters.getAttribute("numParameters");
+                    var numEvents = parameters.getAttribute("numEvents");
+
+                    // Update details
+                    $("#detailViewSample").append(
+                        "<p>" + spOp + "Number of events" + spCl + "</p>" +
+                        "<p>" + numEvents + "</p>");
+
+                    $("#detailViewSample").append(
+                        "<p>" + spOp + "Number of parameters" + spCl + "</p>" +
+                        "<p>" + numParameters + "</p>");
+
+                }
+                break;
 
         }
-
     }
 
     spOp = "<span class=\"label label-warning\">";
@@ -407,14 +430,18 @@ DataViewer.prototype.displayDownloadAction = function(node) {
  * @param status: text to be displayed
  * @param level: one of "success", "info", "warning", "error". Default is
  * "info"
- * 
- * @param tree DynaTree object
  */
 DataViewer.prototype.displayStatus = function(status, level) {
 
-    // Display the status
-    $("#detailViewStatus").empty();
-    
+    // Get the the status div
+    var status_div = $("#status");
+
+    // Make sure the status div is visible
+    status_div.show();
+
+    // Clear the status
+    status_div.empty();
+
     switch (level) {
         case "success":
             cls = "success";
@@ -433,9 +460,8 @@ DataViewer.prototype.displayStatus = function(status, level) {
             break;
     }
 
-    status = "<div class=\"alert alert-" + cls + " alert-dismissable\">" +
-        status + "</div>";
-    $("#detailViewStatus").html(status);
+    var d = $("<div>").addClass("alert alert-dismissable fade in").addClass("alert-" + cls).html(status);
+    status_div.append(d);
 
 };
 
