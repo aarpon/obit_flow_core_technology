@@ -266,7 +266,7 @@ DataViewer.prototype.displayExportAction = function(node) {
                     identifier = parent.data.element.identifier;
                     
                     // Experiment ID
-                    experimentID = parent.data.element.experimentIdentifierOrNull;
+                    experimentId = parent.data.element.experimentIdentifierOrNull;
 
                 }
 
