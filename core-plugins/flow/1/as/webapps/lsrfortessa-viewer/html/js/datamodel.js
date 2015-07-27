@@ -19,14 +19,14 @@ function DataModel() {
 
     // Create an OpenBIS facade to call JSON RPC services
     this.openbisServer = new openbis("/openbis");
-    
+
     // Reuse the current sessionId that we received in the context for
     // all the facade calls
     this.openbisServer.useSession(this.context.getSessionId());  
-    
+
     // Experiment identifier
     this.expId = this.context.getEntityIdentifier();
-    
+
     // Experiment object and name
     this.exp = null;
     this.expName = "";
@@ -39,10 +39,10 @@ function DataModel() {
 
     // Alias
     var dataModelObj = this;
-    
+
     // Get the experiment object for given ID and update the model
     this.getExperiment(function(response) {
-        
+
         if (response.hasOwnProperty("error")) {
             // Server returned an error
             dataModelObj.exp = null;
@@ -54,17 +54,12 @@ function DataModel() {
 
         // Initialize the tree
         dataModelObj.buildInitialTree();
-        
+
         // Draw it
         DATAVIEWER.drawTree(dataModelObj.treeModel);
 
         // Display the experiment summary
         DATAVIEWER.displayExperimentInfo(dataModelObj.exp);
-
-        var experimentId = {
-            "@type" : "ExperimentIdentifierId",
-            "identifier" : dataModelObj.expId
-        }
 
         // Retrieve and display attachment list
         dataModelObj.retrieveAndDisplayAttachments();
@@ -307,7 +302,7 @@ DataModel.prototype.getAndAddDatasetForTubeOrWell = function(sample, node) {
 DataModel.prototype.getContainedSamples = function(containerSampleCode, action) {
 
     // Search criteria
-    var sampleCriteria = 
+    var sampleCriteria =
     {
         operator : "MATCH_ALL_CLAUSES",
         subCriterias: [
@@ -385,7 +380,7 @@ DataModel.prototype.getType = function(element) {
     } else if (element.hasOwnProperty("dataSetTypeCode")) {
         return element.dataSetTypeCode;
     } else if (element.hasOwnProperty("url")) {
-        return "LSR_FORTESSA_FCSFILE";        
+        return "LSR_FORTESSA_FCSFILE";
     } else {
         return "Unknown";
     }
@@ -412,13 +407,13 @@ DataModel.prototype.toDynaTree = function(response, node) {
         });
         return;
     }
-    
+
     // No objects found
     if (response.result.length === 0) {
 
         // PWS status OK
         node.setLazyNodeStatus(DTNodeStatus_Ok);
-        
+
         // Customize the node
         if (node && node.data && node.data.type &&
             (node.data.type === "plate_container" || node.data.type === "tubesets")) {
@@ -439,11 +434,11 @@ DataModel.prototype.toDynaTree = function(response, node) {
     // or wells as children.
     var res = [];
     $.each(response.result, function(index, sample) {
-        
+
         var elementType = dataModelObj.getType(sample);
-        
+
         switch (elementType) {
-            
+
             case "LSR_FORTESSA_PLATE":
 
                 res.push({
@@ -456,18 +451,18 @@ DataModel.prototype.toDynaTree = function(response, node) {
                     element: sample
                 });
                 break;
-                            
+
             case "LSR_FORTESSA_WELL":
-            
+
                 // The well is a child of a specimen
                 var specimenNode = null;
-                
+
                 // Do we already have a Specimen node?
                 var indx = dataModelObj.findIn(res, 
                     sample.properties.LSR_FORTESSA_SPECIMEN);
-                
+
                 if (indx === -1) {
-                    
+
                     // Create a new Specimen node and add it to the array
                     specimenNode = {
                         title: sample.properties.LSR_FORTESSA_SPECIMEN,
@@ -479,14 +474,14 @@ DataModel.prototype.toDynaTree = function(response, node) {
                         element: null,
                         children: []
                     }; 
-                    
+
                 } else {
-                    
+
                     // We get the node from the array
                     specimenNode = res[indx];
-                    
+
                 }
-                
+
                 // Now we create the well node and add it as a child of 
                 // the correct specimen node
                 var wellNode = {
@@ -510,7 +505,7 @@ DataModel.prototype.toDynaTree = function(response, node) {
                 break;
 
             case "LSR_FORTESSA_TUBESET":
-                
+
                 res.push({
                     title: sample.code,
                     icon: "tubeset.png",
@@ -523,16 +518,16 @@ DataModel.prototype.toDynaTree = function(response, node) {
                 break;
 
             case "LSR_FORTESSA_TUBE":
-            
+
                 // The tube is a child of a specimen
                 specimenNode = null;
-                
+
                 // Do we already have a Specimen node?
                 indx = dataModelObj.findIn(res, 
                     sample.properties.LSR_FORTESSA_SPECIMEN);
-                
+
                 if (indx === -1) {
-                    
+
                     // Create a new Specimen node and add it to the array
                     specimenNode = {
                         title: sample.properties.LSR_FORTESSA_SPECIMEN,
@@ -544,14 +539,14 @@ DataModel.prototype.toDynaTree = function(response, node) {
                         element: null,
                         children: []
                     };
-                    
+
                 } else {
-                    
+
                     // We get the node from the array
                     specimenNode = res[indx];
-                    
+
                 }
-                
+
                 // Now we create the tube node and add it as a child of 
                 // the correct specimen node
                 var tubeNode = {
@@ -575,7 +570,7 @@ DataModel.prototype.toDynaTree = function(response, node) {
                 break;
 
             case "LSR_FORTESSA_FCSFILE":
-            
+
                 // File name
                 res.push({
                     title: sample.filename,
@@ -589,7 +584,7 @@ DataModel.prototype.toDynaTree = function(response, node) {
                 break;
 
             default:
-    
+
                 // Unexpected sample type!
                 node.setLazyNodeStatus(DTNodeStatus_Error, 
                 {
@@ -599,7 +594,7 @@ DataModel.prototype.toDynaTree = function(response, node) {
                 return;
 
         }
-      
+
     });
 
     // PWS status OK
@@ -631,10 +626,10 @@ DataModel.prototype.getTubes = function(expCode, node) {
 
     // Alias
     var dataModelObj = this;
-    
+
     // First get the Tubeset
     this.getSamplesOfType("LSR_FORTESSA_TUBESET", expCode, function(response) {
-    
+
         // Are there tubesets?
         if (response.result.length === 0) {
             dataModelObj.toDynaTree(response, node);
@@ -643,14 +638,14 @@ DataModel.prototype.getTubes = function(expCode, node) {
 
         // Get the identifier of the Tubeset
         var identifier = response.result[0].identifier;
-        
+
         // Now get all the Tubes that belong to the Tubeset
         dataModelObj.getContainedSamples(identifier, function(response) {
-           
+
             dataModelObj.toDynaTree(response, node);
 
         });
-            
+
     });
 };
 
@@ -675,11 +670,11 @@ DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identif
 
     // Inform the user that we are about to process the request
     DATAVIEWER.displayStatus("Please wait while processing your request. This might take a while...", "info");
-     
+
 	// Must use global object
 	DATAMODEL.openbisServer.createReportFromAggregationService("DSS1",
 	"copy_lsrfortessa_datasets_to_userdir", parameters, function(response) {
-	    
+
 	    var status;
 	    var unexpected = "Sorry, unexpected feedback from server " +
 	        "obtained. Please contact your administrator.";
@@ -792,5 +787,67 @@ DataModel.prototype.retrieveAndDisplayAttachments = function(action) {
         }
     });
 
+
+};
+
+DataModel.prototype.getAndAddParemeterInfoForDatasets = function(node, action) {
+
+    // Consistency check on the node
+    try {
+        if (node.data.element.dataSetTypeCode != "LSR_FORTESSA_FCSFILE") {
+            throw("The node is not of the expected type!");
+        }
+    } catch(err) {
+        console.log("The node is not of the expected type!")
+        return;
+    }
+
+    // Old experiments might not have anything stored in LSR_FORTESSA_FCSFILE_PARAMETERS.
+    if (! node.data.element.properties.LSR_FORTESSA_FCSFILE_PARAMETERS) {
+        return;
+    }
+
+    // If the node already contain the processed parameter information, we can go straight to
+    // the rendering.
+    if (! node.data.parameterInfo) {
+
+        // Retrieve parameter information
+        var parametersXML = $.parseXML(node.data.element.properties.LSR_FORTESSA_FCSFILE_PARAMETERS);
+        var parameters = parametersXML.childNodes[0];
+
+        var numParameters = parameters.getAttribute("numParameters");
+        var numEvents = parameters.getAttribute("numEvents");
+
+        var names = [];
+        var compositeNames = [];
+
+        // Parameter numbering starts at 1
+        for (var i = 1; i <= numParameters; i++) {
+
+            // Store the parameter name
+            var name = parameters.getAttribute("P" + i + "N");
+            names.push(name);
+
+            // Store the composite name
+            var pStr = parameters.getAttribute("P" + i + "S");
+            var composite = name;
+            if (pStr != "") {
+                composite = name + " (" + pStr + ")";
+            }
+            compositeNames.push(composite);
+        }
+
+        // Store the parameter info
+        node.data.parameterInfo = {
+            "numParameters" : numParameters,
+            "numEvents" : numEvents,
+            "names" : names,
+            "compositeNames" : compositeNames
+        }
+
+    }
+
+    // Now render
+    action(node);
 
 };

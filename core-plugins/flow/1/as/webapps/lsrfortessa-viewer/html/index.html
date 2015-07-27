@@ -1,11 +1,11 @@
 <html>
 <head>
-    
+
     <meta charset="utf-8">
-    
+
     <!-- Required by bootstrap -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- Include jquery -->
     <script src="./third-party/jquery/js/jquery.min.js"></script>
     <script src="./third-party/jquery/js/jquery.cookie.js"></script>
@@ -14,8 +14,8 @@
     <!-- Include bootstrap -->
     <script src="./third-party/bootstrap/js/bootstrap.min.js"></script>
     <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
 
     <!-- Include dynatree library -->
@@ -26,44 +26,67 @@
     <link rel="stylesheet" media="screen" href="./third-party/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" media="screen" href="./third-party/bootstrap/css/bootstrap-theme.min.css">
     <link rel="stylesheet" type="text/css" href="./css/default.css">
-    
+
     <!-- Include openbis library to gain access to the openbisWebAppContext and openbis objects -->
-	<script src="/openbis/resources/js/openbis.js"></script>
+    <script src="/openbis/resources/js/openbis.js"></script>
 
     <!-- Include configuration script -->
     <script src="./config/config.js"></script>
 
-	<!-- Include local scripts -->
-	<script src="./js/util.js"></script>
+    <!-- Include local scripts -->
+    <script src="./js/util.js"></script>
     <script src="./js/dataviewer.js"></script>
-	<script src="./js/datamodel.js"></script>
+    <script src="./js/datamodel.js"></script>
 
 </head>
 <body>
-<div id="status">&nbsp;</div>
 <div class="container-fluid">
-
-      <div class="row">
+    <div class="row">
+        <div id="experimentNameView" class="col-md-12">&nbsp;</div>
+    </div>
+    <div class="row">
+        <div id="experimentTagView" class="col-md-4">&nbsp;</div>
+        <div id="experimentDescriptionView" class="col-md-8">&nbsp;</div>
+    </div>
+    <div class="row">
+        <div id="experimentAttachmentsView" class="col-md-4">&nbsp;</div>
+        <div id="experimentAcquisitionDetailsView" class="col-md-8">&nbsp;</div>
+    </div>
+    <div class="row">
+        <div id="status" class="col-md-12">&nbsp;</div>
+    </div>
+    <div class="row">
         <div class="col-md-4">
-            <h2>Experiment tree</h2>
-            <div id="treeView">
-                Please wait while retrieving data...
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Experiment structure</h3>
+                </div>
+                <div class="panel-body">
+                    <div id="detailViewAction">&nbsp;</div>
+                    <div id="treeView">
+                        Please wait while retrieving data...
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-md-8">
-            <h2>Experiment details</h2>
-            <div id="detailView">&nbsp;</div>
-            <div id="detailViewAttachments">&nbsp;</div>
-            <div id="detailViewSample">&nbsp;</div>
-            <div id="detailViewAction">&nbsp;</div>
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Details</h3>
+                </div>
+                <div class="panel-body">
+                    <div id="detailView">&nbsp;</div>
+                    <div id="detailViewAttachments">&nbsp;</div>
+                    <div id="detailViewSample">&nbsp;</div>
+                </div>
+            </div>
         </div>
-      </div>
-
+    </div>
 </div>
 
 <script>
 
-    $(document).ready(function() {
+    $(document).ready(function () {
 
         /* Set the configuration */
         window.CONFIG = CONFIG;

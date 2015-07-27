@@ -21,13 +21,21 @@ function DataViewer() {
  */
 DataViewer.prototype.displayExperimentInfo = function(exp) {
 
-    var detailView, description;
+    // Display the experiment name
+    $("#experimentNameView").html("<h2>" + exp.properties.LSR_FORTESSA_EXPERIMENT_NAME + "</h2>")
 
-    detailView = $("#detailView");
+    // Display the experiment info
+    var detailView = $("#detailView");
     detailView.empty();
 
-    var spOp = "<span class=\"label label-info\">";
-    var spCl = "</span>";
+    var experimentTagView = $("#experimentTagView");
+    experimentTagView.empty();
+
+    var experimentDescriptionView = $("#experimentDescriptionView");
+    experimentDescriptionView.empty();
+
+    var experimentAcquisitionDetailsView = $("#experimentAcquisitionDetailsView");
+    experimentAcquisitionDetailsView.empty();
 
     // Get metaprojects (tags)
     var metaprojects = "";
@@ -46,56 +54,27 @@ DataViewer.prototype.displayExperimentInfo = function(exp) {
             }
         }
     }
-    detailView.append(
-        "<p>" + spOp + "Tags" + spCl + "</p>" +
-        "<p>" + metaprojects + "</p>");
-
-    // Change the color
-    spOp = "<span class=\"label label-default\">";
+    experimentTagView.append(this.prepareTitle("Tags", "info"));
+    experimentTagView.append($("<p>").html(metaprojects));
 
     // Display the experiment description
-    description = exp.properties.LSR_FORTESSA_EXPERIMENT_DESCRIPTION;
-    if (description === "") {
+    var description = exp.properties.LSR_FORTESSA_EXPERIMENT_DESCRIPTION;
+    if (undefined === description || description == "") {
         description = "<i>No description provided.</i>";
     }
+    experimentDescriptionView.append(this.prepareTitle("Description"));
+    experimentDescriptionView.append($("<p>").html(description));
 
-    detailView.append(
-        "<p>" + spOp + "Experiment description" + spCl + "</p>" +
-        "<p>" + description + "</p>");
-
-    // Underline experiment name in code
-    code = exp.code;
-    var indx = exp.code.lastIndexOf("_");
-    if (indx != -1) {
-        // Make sure we got the 18 random alphanumeric chars
-        var suffix = exp.code.substr(indx);
-        if (suffix.length == 19) {
-            code = "<b>" + exp.code.substr(0, indx) + "</b>" + suffix;
-        }
-    }
-    detailView.append(
-        "<p>" + spOp + "Experiment code" + spCl + "</p>" + 
-        "<p>" + code + "</p>"); 
-
+    // Display the acquisition details
     var acqDate = exp.properties.LSR_FORTESSA_EXPERIMENT_DATE;
-    
-    detailView.append(
-        "<p>" + spOp + "Acquisition date" + spCl + "</p>" + 
-        "<p>" + acqDate.substring(0, 10) + "</p>"); 
-    
-    detailView.append(
-        "<p>" + spOp + "Acquisition hardware" + spCl + "</p>" + 
-        "<p>" + exp.properties.LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE + "</p>"); 
 
-    detailView.append(
-        "<p>" + spOp + "Acquisition software" + spCl + "</p>" + 
-        "<p>" + exp.properties.LSR_FORTESSA_EXPERIMENT_ACQ_SOFTWARE + "</p>"); 
+    var acqDetails = "<p>Acquired on " + acqDate.substring(0, 10) + " on " +
+        exp.properties.LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE + " by " +
+        exp.properties.LSR_FORTESSA_EXPERIMENT_OWNER + " using " +
+        exp.properties.LSR_FORTESSA_EXPERIMENT_ACQ_SOFTWARE + ".</p>";
+    experimentAcquisitionDetailsView.append(this.prepareTitle("Acquisition details"));
+    experimentAcquisitionDetailsView.append($("<p>").html(acqDetails));
 
-    detailView.append(
-        "<p>" + spOp + "Experiment owner" + spCl + "</p>" + 
-        "<p>" + exp.properties.LSR_FORTESSA_EXPERIMENT_OWNER + "</p>"); 
-
-        
 };
 
 /**
@@ -123,14 +102,17 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
         return;
     }
 
-    // Clear previous views
-    $("#status").empty();
-    $("#detailViewAction").empty();
-    $("#detailViewStatus").empty();
-    $("#detailViewSample").empty();
+    // Store some references
+    var statusID = $("#status");
+    var detailViewActionID = $("#detailViewAction");
+    var detailViewStatusID = $("#detailViewStatus");
+    var detailViewSampleID = $("#detailViewSample");
 
-    var spOp = "<span class=\"label label-default\">";
-    var spCl = "</span>";
+    // Clear previous views
+    statusID.empty();
+    detailViewActionID.empty();
+    detailViewStatusID.empty();
+    detailViewSampleID.empty();
 
     // Adapt the display depending on the element type
     if (node.data.element) {
@@ -143,9 +125,8 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
                 if (node.data.element.sampleTypeCode == "LSR_FORTESSA_PLATE") {
 
                     // Update details
-                    $("#detailViewSample").append(
-                        "<p>" + spOp + "Plate geometry" + spCl + "</p>" +
-                        "<p>" + node.data.element.properties.LSR_FORTESSA_PLATE_GEOMETRY + "</p>");
+                    detailViewSampleID.append(this.prepareTitle("Plate geometry"));
+                    detailViewSampleID.append($("<p>").html(node.data.element.properties.LSR_FORTESSA_PLATE_GEOMETRY));
 
                 }
                 break;
@@ -159,21 +140,13 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
                         break;
                     }
 
-                    // Retrieve parameter information
-                    var parametersXML = $.parseXML(node.data.element.properties.LSR_FORTESSA_FCSFILE_PARAMETERS);
-                    var parameters = parametersXML.childNodes[0];
+                    // Retrieve and store the parameter information
+                    DATAMODEL.getAndAddParemeterInfoForDatasets(node, function() {
 
-                    var numParameters = parameters.getAttribute("numParameters");
-                    var numEvents = parameters.getAttribute("numEvents");
+                        // Display the form to be used for parameter plotting
+                        DATAVIEWER.renderParameterSelectionForm(node);
 
-                    // Update details
-                    $("#detailViewSample").append(
-                        "<p>" + spOp + "Number of events" + spCl + "</p>" +
-                        "<p>" + numEvents + "</p>");
-
-                    $("#detailViewSample").append(
-                        "<p>" + spOp + "Number of parameters" + spCl + "</p>" +
-                        "<p>" + numParameters + "</p>");
+                    });
 
                 }
                 break;
@@ -181,11 +154,6 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
         }
     }
 
-    spOp = "<span class=\"label label-warning\">";
-    spCl = "</span>";
-
-    $("#detailViewAction").append("<p>" + spOp + "Actions" + spCl + "</p>");
- 
     // Display the export action
     this.displayExportAction(node);
     
@@ -207,7 +175,8 @@ DataViewer.prototype.displayExportAction = function(node) {
     var type = "";
     var identifier = "";
     var specimenName = "";
-    
+    var experimentId = null;
+
     // Get element type and code
     if (node.data.element) {
         
@@ -235,7 +204,7 @@ DataViewer.prototype.displayExportAction = function(node) {
                 experimentId = "";
                 type = "";
                 identifier = "";
-        };
+        }
         
     } else {
         
@@ -263,7 +232,7 @@ DataViewer.prototype.displayExportAction = function(node) {
             if (node.parent && node.parent.data && node.parent.data.element) {
                 
                 // Reference
-                parent = node.parent;
+                var parent = node.parent;
                 
                 if (parent.data.element["@type"] == "Sample" &&
                     parent.data.element.sampleTypeCode == "LSR_FORTESSA_PLATE") {
@@ -275,7 +244,7 @@ DataViewer.prototype.displayExportAction = function(node) {
                     identifier = parent.data.element.identifier;
                     
                     // Experiment ID
-                    experimentID = parent.data.element.experimentIdentifierOrNull;
+                    experimentId = parent.data.element.experimentIdentifierOrNull;
 
                 }
 
@@ -433,8 +402,7 @@ DataViewer.prototype.displayDownloadAction = function(node) {
 /**
  * Display status text color-coded by level.
  * @param status: text to be displayed
- * @param level: one of "success", "info", "warning", "error". Default is
- * "info"
+ * @param level: one of "default", "info", "success", "warning", "danger". Default is "default".
  */
 DataViewer.prototype.displayStatus = function(status, level) {
 
@@ -447,25 +415,13 @@ DataViewer.prototype.displayStatus = function(status, level) {
     // Clear the status
     status_div.empty();
 
-    switch (level) {
-        case "success":
-            cls = "success";
-            break;
-        case "info":
-            cls = "info";
-            break;
-        case "warning":
-            cls = "warning";
-            break;
-        case "error":
-            cls = "danger";
-            break;
-        default:
-            cls = "info";
-            break;
+    // Make sure the level is valid
+    if (["default", "success", "info", "warning", "danger"].indexOf(level) == -1) {
+        console.log("Unknown level: reset to 'info'.")
+        level = "default";
     }
 
-    var d = $("<div>").addClass("alert alert-dismissable fade in").addClass("alert-" + cls).html(status);
+    var d = $("<div>").addClass("alert alert-dismissable fade in").addClass("alert-" + level).html(status);
     status_div.append(d);
 
 };
@@ -476,8 +432,11 @@ DataViewer.prototype.displayStatus = function(status, level) {
  */
 DataViewer.prototype.displayAttachments = function(dataMoverObj, attachments) {
 
+    // Get the div
+    var experimentAttachmentsViewId = $("#experimentAttachmentsView");
+
     // Clear the attachment div
-    $("#detailViewAttachments").empty();
+    experimentAttachmentsViewId.empty();
 
     // Text
     var text = "";
@@ -497,10 +456,67 @@ DataViewer.prototype.displayAttachments = function(dataMoverObj, attachments) {
             return false;
         });
 
-    $("#detailViewAttachments").append(
-        "<p><span class=\"label label-default\">Attachments</span></p>");
+    experimentAttachmentsViewId.append(this.prepareTitle("Attachments"));
 
     // Display the link
-    $("#detailViewAttachments").append(link);
+    experimentAttachmentsViewId.append(link);
 
 };
+
+/**
+ * Display the form with the parameter selections for the plotting.
+ * @param target_div: div to which the form will be appended.
+ * @param parameters: list of parameter names
+ * @patam dataset_permid: permid of the dataset
+ */
+DataViewer.prototype.renderParameterSelectionForm = function(node) {
+
+    // Check that the parameter info is present
+    if (!node.data.parameterInfo) {
+        return;
+    }
+
+    // Update details
+    var detailViewSampleID = $("#detailViewSample");
+
+    detailViewSampleID.append(this.prepareTitle("Number of events"));
+    detailViewSampleID.append($("<p>").html(node.data.parameterInfo.numEvents));
+
+    detailViewSampleID.append(this.prepareTitle("Number of parameters"));
+    detailViewSampleID.append($("<p>").html(node.data.parameterInfo.numParameters));
+
+    // Create the form
+    var form = $("<form>").addClass("form-group").attr("id", "parameter_form");
+    detailViewSampleID.append(form);
+    var formId = $("#parameter_form");
+    var select =  $("<select>").addClass("form_control").attr("id", "parameter_form_select");
+    formId.append(select);
+    var selectId = $("#parameter_form_select");
+
+    // Add all options
+    for (var i = 0; i < node.data.parameterInfo.numParameters; i++) {
+        var name = node.data.parameterInfo["names"][i];
+        var compositeName = node.data.parameterInfo["compositeNames"][i];
+        selectId.append($("<option>")
+            .attr("value", name)
+            .text(compositeName));
+    }
+}
+
+/**
+ * Prepare a title div to be added to the page.
+ * @param title Text for the title
+ * @param level One of "default", "info", "success", "warning", "danger". Default is "default".
+ */
+DataViewer.prototype.prepareTitle = function(title, level) {
+
+
+    // Make sure the level is valid
+    if (["default", "success", "info", "warning", "danger"].indexOf(level) == -1) {
+        console.log("Unknown level: reset to 'info'.")
+        level = "default";
+    }
+
+    return ($("<p>").append($("<span>").addClass("label").addClass("label-" + level).text(title)));
+
+}
