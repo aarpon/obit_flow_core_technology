@@ -1,6 +1,6 @@
 /**
  * DataViewer class
- * 
+ *
  * @author Aaron Ponti
  *
  */
@@ -12,8 +12,7 @@ function DataViewer() {
 
     "use strict";
 
-};
-
+}
 /**
  * Displays experiment info
  *
@@ -22,7 +21,7 @@ function DataViewer() {
 DataViewer.prototype.displayExperimentInfo = function(exp) {
 
     // Display the experiment name
-    $("#experimentNameView").html("<h2>" + exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_NAME"] + "</h2>")
+    $("#experimentNameView").html("<h2>" + exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_NAME"] + "</h2>");
 
     // Display the experiment info
     var detailView = $("#detailView");
@@ -68,19 +67,21 @@ DataViewer.prototype.displayExperimentInfo = function(exp) {
     // Display the acquisition details
     var acqDate = exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_DATE"];
 
-    var acqDetails = "<p>Acquired on " + acqDate.substring(0, 10) + " on " +
-        exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_HARDWARE"] + " by " +
-        exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_OWNER"] + " using " +
-        exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_SOFTWARE"] + ".</p>";
+    var acqDetails = "<p>" +
+        exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_SOFTWARE"] + " on " +
+        exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_HARDWARE"] + " (acquisition by " +
+        exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_OWNER"] + " on " +
+        acqDate.substring(0, 10) + ").</p>";
+
     experimentAcquisitionDetailsView.append(this.prepareTitle("Acquisition details"));
     experimentAcquisitionDetailsView.append($("<p>").html(acqDetails));
 
 };
 
 /**
- * Draw the initial root structure. The tree will then be extended 
+ * Draw the initial root structure. The tree will then be extended
  * dynamically (via lazy loading) using DynaTree methods.
- * 
+ *
  * @param tree DynaTree object
  */
 DataViewer.prototype.drawTree = function(tree) {
@@ -95,7 +96,7 @@ DataViewer.prototype.drawTree = function(tree) {
  * @param {Object} node from the DynaTree model
  */
 DataViewer.prototype.displayDetailsAndActions = function(node) {
-    
+
     // In theory, an unselectable node should not be selectable
     // - we build in an additional check here
     if (node.data.unselectable === true) {
@@ -148,7 +149,7 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
                 if (node.data.element.dataSetTypeCode == (DATAMODEL.EXPERIMENT_PREFIX + "_FCSFILE")) {
 
                     // Old experiments might not have anything stored in {exo_prefix}_FCSFILE_PARAMETERS.
-                    if (! node.data.element.properties[DATAMODEL.EXPERIMENT_PREFIX + "_FCSFILE_PARAMETERS"]) {
+                    if (!node.data.element.properties[DATAMODEL.EXPERIMENT_PREFIX + "_FCSFILE_PARAMETERS"]) {
                         break;
                     }
 
@@ -168,7 +169,7 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
 
     // Display the export action
     this.displayExportAction(node);
-    
+
     // Display the download action
     this.displayDownloadAction(node);
 
@@ -180,7 +181,7 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
  * @param node: DataTree node
  */
 DataViewer.prototype.displayExportAction = function(node) {
-    
+
     // Get the type and identifier of the element associated to the node. 
     // If the node is associated to a specimen, the type and identifier
     // will instead be those of the parent node.
@@ -191,7 +192,7 @@ DataViewer.prototype.displayExportAction = function(node) {
 
     // Get element type and code
     if (node.data.element) {
-        
+
         // Get type
         switch (node.data.element["@type"]) {
             case "Experiment":
@@ -199,33 +200,33 @@ DataViewer.prototype.displayExportAction = function(node) {
                 type = node.data.element.experimentTypeCode;
                 identifier = node.data.element.identifier;
                 break;
-                
+
             case "Sample":
                 experimentId = node.data.element.experimentIdentifierOrNull;
                 type = node.data.element.sampleTypeCode;
                 identifier = node.data.element.identifier;
                 break;
-                
+
             case "DataSet":
                 experimentId = node.data.element.experimentIdentifier;
                 type = node.data.element.dataSetTypeCode;
                 identifier = node.data.element.code;
                 break;
-            
+
             default:
                 experimentId = "";
                 type = "";
                 identifier = "";
         }
-        
+
     } else {
-        
+
         if (node.data.type && node.data.type == "specimen") {
-            
+
             // Get the specimen name.
             // TODO: Use a dedicate property
-            specimenName = node.data.title; 
-            
+            specimenName = node.data.title;
+
             // In case of a specimen, we filter WELLS or TUBES for the 
             // associated property {exp_prefix}_SPECIMEN.
             // We must treat the two cases differently, though.
@@ -239,128 +240,128 @@ DataViewer.prototype.displayExportAction = function(node) {
             // simply need to get all tubes in the experiment and check
             // that their {exp_prefix}_SPECIMEN property matches the
             // given specimen.
-             
+
             // Do we have a parent?
             if (node.parent && node.parent.data && node.parent.data.element) {
-                
+
                 // Reference
                 var parent = node.parent;
-                
+
                 if (parent.data.element["@type"] == "Sample" &&
                     parent.data.element.sampleTypeCode == (DATAMODEL.EXPERIMENT_PREFIX + "_PLATE")) {
 
                     // Type
                     type = DATAMODEL.EXPERIMENT_PREFIX + "_PLATE";
-                    
+
                     // Get plate's identifier
                     identifier = parent.data.element.identifier;
-                    
+
                     // Experiment ID
                     experimentId = parent.data.element.experimentIdentifierOrNull;
 
                 }
 
             } else {
-                
+
                 // We set the parent to point to the experiment
                 type = DATAMODEL.EXPERIMENT_PREFIX + "_TUBESET";
-                
+
                 // Walk up the tree until we reach the experiment
                 while (node.parent) {
                     node = node.parent;
-                    if (node.data.element && 
+                    if (node.data.element &&
                         node.data.element["@type"] == "Experiment") {
-                            identifier = node.data.element.identifier;
-                            break; 
+                        identifier = node.data.element.identifier;
+                        break;
                     }
                 }
-                
+
                 // Experiment ID (same as identifier)
                 experimentId = identifier;
-                
+
             }
 
         } else if (node.data.type && node.data.type == "tubesets") {
-        
+
             // If there are no (loaded) children (yet), just return
             if (!node.childList || node.childList.length == 0) {
                 if (node._isLoading) {
-                    this.displayStatus("Please reselect this node to " + 
-                    "display export option.</br />", "info");
+                    this.displayStatus("Please reselect this node to " +
+                        "display export option.</br />", "info");
                 }
                 return;
             }
 
             // Do we have real samples?
-            if (node.childList.length == 1 && 
-                node.childList[0].data && 
+            if (node.childList.length == 1 &&
+                node.childList[0].data &&
                 node.childList[0].data.icon == "empty.png" &&
                 node.childList[0].data.title === "<i>None</i>" != -1) {
-                    return;
+                return;
             }
 
             // This is the same as the tubeset case before, but without
             // filtering by the specimen
-            
+
             // Empty specimen
             specimenName = "";
-            
+
             // Tubeset
             type = DATAMODEL.EXPERIMENT_PREFIX + "_TUBESET";
-                
+
             // Walk up the tree until we reach the experiment
             while (node.parent) {
                 node = node.parent;
-                if (node.data.element && 
+                if (node.data.element &&
                     node.data.element["@type"] == "Experiment") {
-                        identifier = node.data.element.identifier;
-                        break; 
+                    identifier = node.data.element.identifier;
+                    break;
                 }
             }
-                
+
             // Experiment ID (same as identifier)
             experimentId = identifier;
-        
+
         } else if (node.data.type && node.data.type == "plate_container") {
 
             // If there are no (loaded) children (yet), just return
             if (!node.childList || node.childList.length == 0) {
                 if (node._isLoading) {
-                    this.displayStatus("Please reselect this node to " + 
-                    "display export option.</br />", "info");
+                    this.displayStatus("Please reselect this node to " +
+                        "display export option.</br />", "info");
                 }
                 return;
             }
 
             // Do we have real samples?
-            if (node.childList.length == 1 && 
-                node.childList[0].data && 
+            if (node.childList.length == 1 &&
+                node.childList[0].data &&
                 node.childList[0].data.icon == "empty.png" &&
-                node.childList[0].data.title === "<i>None</i>"!= -1) {
-                    return;
+                node.childList[0].data.title === "<i>None</i>" != -1) {
+                return;
             }
 
             // Empty specimen
             specimenName = "";
-            
+
             // All plates in the experiment
             type = DATAMODEL.EXPERIMENT_PREFIX + "_ALL_PLATES";
-                
+
             // Walk up the tree until we reach the experiment
             while (node.parent) {
                 node = node.parent;
-                if (node.data.element && 
+                if (node.data.element &&
                     node.data.element["@type"] == "Experiment") {
-                        identifier = node.data.element.identifier;
-                        break; 
+                    identifier = node.data.element.identifier;
+                    break;
                 }
             }
-                
+
             // Experiment ID (same as identifier)
             experimentId = identifier;
 
         }
-        
+
     }
 
     // If no relevant type found, just return here
@@ -375,23 +376,23 @@ DataViewer.prototype.displayExportAction = function(node) {
     if (CONFIG['enableExportToUserFolder'] == true) {
 
         $("#detailViewAction").append(
-                "<span><a class=\"btn btn-xs btn-primary\" " +
-                "href=\"#\" onclick='callAggregationPlugin(\"" +
-                experimentId  + "\", \"" + type + "\", \"" + identifier +
-                "\", \"" + specimenName + "\", \"normal\"); return false;'>" +
-                "<img src=\"img/export.png\" />&nbsp;" +
-                "Export to your folder</a></span>&nbsp;");
-
-    }
-        
-    // Build and display the call for a zip archive
-    $("#detailViewAction").append(
             "<span><a class=\"btn btn-xs btn-primary\" " +
             "href=\"#\" onclick='callAggregationPlugin(\"" +
-            experimentId  + "\", \"" + type + "\", \"" + identifier +
-            "\", \"" + specimenName + "\", \"zip\"); return false;'>" +
-            "<img src=\"img/zip.png\" />&nbsp;" +
-            "Download archive</a></span>&nbsp;");
+            experimentId + "\", \"" + type + "\", \"" + identifier +
+            "\", \"" + specimenName + "\", \"normal\"); return false;'>" +
+            "<img src=\"img/export.png\" />&nbsp;" +
+            "Export to your folder</a></span>&nbsp;");
+
+    }
+
+    // Build and display the call for a zip archive
+    $("#detailViewAction").append(
+        "<span><a class=\"btn btn-xs btn-primary\" " +
+        "href=\"#\" onclick='callAggregationPlugin(\"" +
+        experimentId + "\", \"" + type + "\", \"" + identifier +
+        "\", \"" + specimenName + "\", \"zip\"); return false;'>" +
+        "<img src=\"img/zip.png\" />&nbsp;" +
+        "Download archive</a></span>&nbsp;");
 };
 
 
@@ -400,7 +401,7 @@ DataViewer.prototype.displayExportAction = function(node) {
  * @param node: DataTree node
  */
 DataViewer.prototype.displayDownloadAction = function(node) {
-    
+
     // Build and display the call
     if (node.data.element && node.data.element.hasOwnProperty("url")) {
         $("#detailViewAction").append(
@@ -429,7 +430,7 @@ DataViewer.prototype.displayStatus = function(status, level) {
 
     // Make sure the level is valid
     if (["default", "success", "info", "warning", "danger"].indexOf(level) == -1) {
-        console.log("Unknown level: reset to 'info'.")
+        console.log("Unknown level: reset to 'info'.");
         level = "default";
     }
 
@@ -501,19 +502,36 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
     var form = $("<form>").addClass("form-group").attr("id", "parameter_form");
     detailViewSampleID.append(form);
     var formId = $("#parameter_form");
-    var select =  $("<select>").addClass("form_control").attr("id", "parameter_form_select");
-    formId.append(select);
-    var selectId = $("#parameter_form_select");
+
+    formId.append($("<label>").attr("for", "parameter_form_select_X_axis").html("X axis"));
+    var selectXAxis = $("<select>").addClass("form_control").attr("id", "parameter_form_select_X_axis");
+    formId.append(selectXAxis);
+    var selectXAxisId = $("#parameter_form_select_X_axis");
+
+    formId.append($("<label>").attr("for", "parameter_form_select_Y_axis").html("Y axis"));
+    var selectYAxis = $("<select>").addClass("form_control").attr("id", "parameter_form_select_Y_axis");
+    formId.append(selectYAxis);
+    var selectYAxisId = $("#parameter_form_select_Y_axis");
 
     // Add all options
     for (var i = 0; i < node.data.parameterInfo.numParameters; i++) {
         var name = node.data.parameterInfo["names"][i];
         var compositeName = node.data.parameterInfo["compositeNames"][i];
-        selectId.append($("<option>")
+        selectXAxisId.append($("<option>")
+            .attr("value", name)
+            .text(compositeName));
+        selectYAxisId.append($("<option>")
             .attr("value", name)
             .text(compositeName));
     }
-}
+
+    // Pre-select some parameters
+    selectXAxisId.val(node.data.parameterInfo["names"][0]);
+    selectYAxisId.val(node.data.parameterInfo["names"][1]);
+
+    // Add "Plot" button
+    formId.append($("<input>").attr("type", "button").attr("value", "Plot"));
+};
 
 /**
  * Prepare a title div to be added to the page.
@@ -525,10 +543,10 @@ DataViewer.prototype.prepareTitle = function(title, level) {
 
     // Make sure the level is valid
     if (["default", "success", "info", "warning", "danger"].indexOf(level) == -1) {
-        console.log("Unknown level: reset to 'info'.")
+        console.log("Unknown level: reset to 'info'.");
         level = "default";
     }
 
     return ($("<p>").append($("<span>").addClass("label").addClass("label-" + level).text(title)));
 
-}
+};
