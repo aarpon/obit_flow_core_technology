@@ -106,14 +106,15 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
     // Store some references
     var statusID = $("#status");
     var detailViewActionID = $("#detailViewAction");
-    var detailViewStatusID = $("#detailViewStatus");
     var detailViewSampleID = $("#detailViewSample");
 
     // Clear previous views
     statusID.empty();
     detailViewActionID.empty();
-    detailViewStatusID.empty();
     detailViewSampleID.empty();
+
+    // Display the node name
+    detailViewSampleID.append($("<h4>").html(node.data.title));
 
     // Adapt the display depending on the element type
     if (node.data.element) {
@@ -133,13 +134,13 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
 
                 // This code is specific for the BD FACS ARIA sorter
                 if (node.data.element.sampleTypeCode == "FACS_ARIA_WELL" ||
-                    node.data.element.sampleTypeCode == "FCS_ARIA_TUBE") {
+                    node.data.element.sampleTypeCode == "FACS_ARIA_TUBE") {
 
                     var sortType = "Standard sort";
                     if (node.data.element.properties[node.data.element.sampleTypeCode + "_ISINDEXSORT"] == "true") {
                         sortType = "Index sort";
                     }
-                    detailViewSampleID.append($("<p>").html(sortType));
+                    detailViewSampleID.append(this.prepareTitle(sortType));
                 }
 
                 break;
@@ -430,7 +431,6 @@ DataViewer.prototype.displayStatus = function(status, level) {
 
     // Make sure the level is valid
     if (["default", "success", "info", "warning", "danger"].indexOf(level) == -1) {
-        console.log("Unknown level: reset to 'info'.");
         level = "default";
     }
 
@@ -543,7 +543,6 @@ DataViewer.prototype.prepareTitle = function(title, level) {
 
     // Make sure the level is valid
     if (["default", "success", "info", "warning", "danger"].indexOf(level) == -1) {
-        console.log("Unknown level: reset to 'info'.");
         level = "default";
     }
 
