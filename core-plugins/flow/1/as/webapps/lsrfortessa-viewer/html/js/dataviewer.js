@@ -22,7 +22,7 @@ function DataViewer() {
 DataViewer.prototype.displayExperimentInfo = function(exp) {
 
     // Display the experiment name
-    $("#experimentNameView").html("<h2>" + exp.properties.LSR_FORTESSA_EXPERIMENT_NAME + "</h2>")
+    $("#experimentNameView").html("<h2>" + exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_NAME"] + "</h2>")
 
     // Display the experiment info
     var detailView = $("#detailView");
@@ -58,7 +58,7 @@ DataViewer.prototype.displayExperimentInfo = function(exp) {
     experimentTagView.append($("<p>").html(metaprojects));
 
     // Display the experiment description
-    var description = exp.properties.LSR_FORTESSA_EXPERIMENT_DESCRIPTION;
+    var description = exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_DESCRIPTION"];
     if (undefined === description || description == "") {
         description = "<i>No description provided.</i>";
     }
@@ -66,12 +66,12 @@ DataViewer.prototype.displayExperimentInfo = function(exp) {
     experimentDescriptionView.append($("<p>").html(description));
 
     // Display the acquisition details
-    var acqDate = exp.properties.LSR_FORTESSA_EXPERIMENT_DATE;
+    var acqDate = exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_DATE"];
 
     var acqDetails = "<p>Acquired on " + acqDate.substring(0, 10) + " on " +
-        exp.properties.LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE + " by " +
-        exp.properties.LSR_FORTESSA_EXPERIMENT_OWNER + " using " +
-        exp.properties.LSR_FORTESSA_EXPERIMENT_ACQ_SOFTWARE + ".</p>";
+        exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_HARDWARE"] + " by " +
+        exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_OWNER"] + " using " +
+        exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_SOFTWARE"] + ".</p>";
     experimentAcquisitionDetailsView.append(this.prepareTitle("Acquisition details"));
     experimentAcquisitionDetailsView.append($("<p>").html(acqDetails));
 
@@ -122,21 +122,33 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
 
             case "Sample":
 
-                if (node.data.element.sampleTypeCode == "LSR_FORTESSA_PLATE") {
+                if (node.data.element.sampleTypeCode == (DATAMODEL.EXPERIMENT_PREFIX + "_PLATE")) {
 
                     // Update details
                     detailViewSampleID.append(this.prepareTitle("Plate geometry"));
-                    detailViewSampleID.append($("<p>").html(node.data.element.properties.LSR_FORTESSA_PLATE_GEOMETRY));
+                    detailViewSampleID.append($("<p>").html(node.data.element.properties[DATAMODEL.EXPERIMENT_PREFIX + "_PLATE_GEOMETRY"]));
 
                 }
+
+                // This code is specific for the BD FACS ARIA sorter
+                if (node.data.element.sampleTypeCode == "FACS_ARIA_WELL" ||
+                    node.data.element.sampleTypeCode == "FCS_ARIA_TUBE") {
+
+                    var sortType = "Standard sort";
+                    if (node.data.element.properties[node.data.element.sampleTypeCode + "_ISINDEXSORT"] == "true") {
+                        sortType = "Index sort";
+                    }
+                    detailViewSampleID.append($("<p>").html(sortType));
+                }
+
                 break;
 
             case "DataSet":
 
-                if (node.data.element.dataSetTypeCode == "LSR_FORTESSA_FCSFILE") {
+                if (node.data.element.dataSetTypeCode == (DATAMODEL.EXPERIMENT_PREFIX + "_FCSFILE")) {
 
-                    // Old experiments might not have anything stored in LSR_FORTESSA_FCSFILE_PARAMETERS.
-                    if (! node.data.element.properties.LSR_FORTESSA_FCSFILE_PARAMETERS) {
+                    // Old experiments might not have anything stored in {exo_prefix}_FCSFILE_PARAMETERS.
+                    if (! node.data.element.properties[DATAMODEL.EXPERIMENT_PREFIX + "_FCSFILE_PARAMETERS"]) {
                         break;
                     }
 
@@ -215,7 +227,7 @@ DataViewer.prototype.displayExportAction = function(node) {
             specimenName = node.data.title; 
             
             // In case of a specimen, we filter WELLS or TUBES for the 
-            // associated property LSR_FORTESSA_SPECIMEN.
+            // associated property {exp_prefix}_SPECIMEN.
             // We must treat the two cases differently, though.
             //
             // In the case of wells, we can make use of the fact that 
@@ -225,7 +237,7 @@ DataViewer.prototype.displayExportAction = function(node) {
             //
             // In the case of tubes, they do not have a parent, so we 
             // simply need to get all tubes in the experiment and check
-            // that their LSR_FORTESSA_SPECIMEN property matches the
+            // that their {exp_prefix}_SPECIMEN property matches the
             // given specimen.
              
             // Do we have a parent?
@@ -235,10 +247,10 @@ DataViewer.prototype.displayExportAction = function(node) {
                 var parent = node.parent;
                 
                 if (parent.data.element["@type"] == "Sample" &&
-                    parent.data.element.sampleTypeCode == "LSR_FORTESSA_PLATE") {
+                    parent.data.element.sampleTypeCode == (DATAMODEL.EXPERIMENT_PREFIX + "_PLATE")) {
 
                     // Type
-                    type = "LSR_FORTESSA_PLATE";
+                    type = DATAMODEL.EXPERIMENT_PREFIX + "_PLATE";
                     
                     // Get plate's identifier
                     identifier = parent.data.element.identifier;
@@ -251,7 +263,7 @@ DataViewer.prototype.displayExportAction = function(node) {
             } else {
                 
                 // We set the parent to point to the experiment
-                type = "LSR_FORTESSA_TUBESET";
+                type = DATAMODEL.EXPERIMENT_PREFIX + "_TUBESET";
                 
                 // Walk up the tree until we reach the experiment
                 while (node.parent) {
@@ -283,7 +295,7 @@ DataViewer.prototype.displayExportAction = function(node) {
             if (node.childList.length == 1 && 
                 node.childList[0].data && 
                 node.childList[0].data.icon == "empty.png" &&
-                node.childList[0].data.title === "<i>None</i>"!= -1) {
+                node.childList[0].data.title === "<i>None</i>" != -1) {
                     return;
             }
 
@@ -294,7 +306,7 @@ DataViewer.prototype.displayExportAction = function(node) {
             specimenName = "";
             
             // Tubeset
-            type = "LSR_FORTESSA_TUBESET";
+            type = DATAMODEL.EXPERIMENT_PREFIX + "_TUBESET";
                 
             // Walk up the tree until we reach the experiment
             while (node.parent) {
@@ -332,7 +344,7 @@ DataViewer.prototype.displayExportAction = function(node) {
             specimenName = "";
             
             // All plates in the experiment
-            type = "LSR_FORTESSA_ALL_PLATES";
+            type = DATAMODEL.EXPERIMENT_PREFIX + "_ALL_PLATES";
                 
             // Walk up the tree until we reach the experiment
             while (node.parent) {
