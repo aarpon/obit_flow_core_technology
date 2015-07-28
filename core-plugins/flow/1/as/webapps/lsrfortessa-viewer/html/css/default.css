@@ -3,8 +3,15 @@ body {
     margin-right: 20px;
 }
 
-h2 {
+label {
+    margin-left: 5px;
+    margin-right: 5px;
+    font-weight: bold;
+}
 
+input {
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 #experimentNameView {
@@ -30,10 +37,9 @@ h2 {
 }
 
 #detailViewAction {
-    min-height: 40px;
+    min-height: 30px;
     vertical-align: middle;
     text-align: center;
-    border-bottom: 1pt solid;
 }
 
 #detailViewSample {
