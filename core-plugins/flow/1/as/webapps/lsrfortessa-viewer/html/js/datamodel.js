@@ -455,7 +455,7 @@ DataModel.prototype.toDynaTree = function(response, node) {
 
         switch (elementType) {
 
-            case (dataModelObj + "_PLATE"):
+            case (dataModelObj.EXPERIMENT_PREFIX + "_PLATE"):
 
                 res.push({
                     title: sample.properties[dataModelObj.EXPERIMENT_PREFIX + "_PLATE_NAME"],
@@ -468,7 +468,7 @@ DataModel.prototype.toDynaTree = function(response, node) {
                 });
                 break;
 
-            case (dataModelObj + "_WELL"):
+            case (dataModelObj.EXPERIMENT_PREFIX + "_WELL"):
 
                 // The well is a child of a specimen
                 var specimenNode = null;
