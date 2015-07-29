@@ -771,7 +771,6 @@ DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identif
                 function(url) {
                     var downloadString =
                         '<img src="img/download.png" />&nbsp;<a href="' + url + '">Download</a>!';
-                    //'<a href="' + url + '"><img src = "img/download.png" />&nbsp;Download</a>';
                     $("#download_url_span").html(downloadString);
                 });
     });

@@ -370,30 +370,47 @@ DataViewer.prototype.displayExportAction = function(node) {
         return;
     }
 
-    // Build and display the call
-    callAggregationPlugin = DATAMODEL.copyDatasetsToUserDir;
-
     // Display the "Export to your folder" button only if enabled in the configuration file
     if (CONFIG['enableExportToUserFolder'] == true) {
 
-        $("#detailViewAction").append(
-            "<span><a class=\"btn btn-xs btn-primary\" " +
-            "href=\"#\" onclick='callAggregationPlugin(\"" +
-            experimentId + "\", \"" + type + "\", \"" + identifier +
-            "\", \"" + specimenName + "\", \"normal\"); return false;'>" +
-            "<img src=\"img/export.png\" />&nbsp;" +
-            "Export to your folder</a></span>&nbsp;");
+        var img = $("<img>")
+            .attr("src", "img/export.png");
+
+        var link = $("<a>")
+            .addClass("btn btn-xs btn-primary")
+            .attr("href", "#")
+            .html("&nbsp;Export to your folder")
+            .click(function() {
+                DATAMODEL.copyDatasetsToUserDir(
+                    experimentId, type, identifier,
+                    specimenName, "normal");
+                return false;
+            });
+
+        link.prepend(img);
+
+        $("#detailViewAction").append(link);
 
     }
 
-    // Build and display the call for a zip archive
-    $("#detailViewAction").append(
-        "<span><a class=\"btn btn-xs btn-primary\" " +
-        "href=\"#\" onclick='callAggregationPlugin(\"" +
-        experimentId + "\", \"" + type + "\", \"" + identifier +
-        "\", \"" + specimenName + "\", \"zip\"); return false;'>" +
-        "<img src=\"img/zip.png\" />&nbsp;" +
-        "Download archive</a></span>&nbsp;");
+    var img = $("<img>")
+        .attr("src", "img/zip.png");
+
+    var link = $("<a>")
+        .addClass("btn btn-xs btn-primary")
+        .attr("href", "#")
+        .html("&nbsp;Download archive")
+        .click(function() {
+            DATAMODEL.copyDatasetsToUserDir(
+                experimentId, type, identifier,
+                specimenName, "zip");
+            return false;
+        });
+
+    link.prepend(img);
+
+    $("#detailViewAction").append(link);
+
 };
 
 
@@ -405,11 +422,19 @@ DataViewer.prototype.displayDownloadAction = function(node) {
 
     // Build and display the call
     if (node.data.element && node.data.element.hasOwnProperty("url")) {
-        $("#detailViewAction").append(
-            "<span><a class=\"btn btn-xs btn-primary\" " +
-            "href=\"" + node.data.element.url + "\">" +
-            "<img src=\"img/download.png\" />&nbsp;Download " +
-            node.data.element.filename + "</a></span>");
+
+        var img = $("<img>")
+            .attr("src", "img/download.png");
+
+        var link = $("<a>")
+            .addClass("btn btn-xs btn-primary")
+            .attr("href", node.data.element.url)
+            .html("&nbsp;Download " + node.data.element.filename)
+
+        link.prepend(img);
+
+        $("#detailViewAction").append(link);
+
     }
 };
 
@@ -434,7 +459,10 @@ DataViewer.prototype.displayStatus = function(status, level) {
         level = "default";
     }
 
-    var d = $("<div>").addClass("alert alert-dismissable fade in").addClass("alert-" + level).html(status);
+    var d = $("<div>")
+        .addClass("alert fade in")
+        .addClass("alert-" + level)
+        .html(status);
     status_div.append(d);
 
 };
@@ -492,11 +520,10 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
     // Update details
     var detailViewSampleID = $("#detailViewSample");
 
-    detailViewSampleID.append(this.prepareTitle("Number of events"));
-    detailViewSampleID.append($("<p>").html(node.data.parameterInfo.numEvents));
-
-    detailViewSampleID.append(this.prepareTitle("Number of parameters"));
-    detailViewSampleID.append($("<p>").html(node.data.parameterInfo.numParameters));
+    detailViewSampleID.append($("<p>").html("This file contains " +
+        node.data.parameterInfo.numParameters + " parameters and " +
+        node.data.parameterInfo.numEvents + " events.")
+    );
 
     // Create the form
     var form = $("<form>").addClass("form-group").attr("id", "parameter_form");
