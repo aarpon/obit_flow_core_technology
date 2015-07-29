@@ -530,7 +530,21 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
     selectYAxisId.val(node.data.parameterInfo["names"][1]);
 
     // Add "Plot" button
-    formId.append($("<input>").attr("type", "button").attr("value", "Plot"));
+    var plotButton = $("<input>")
+        .attr("type", "button")
+        .attr("value", "Plot")
+        .click(function() {
+
+            // Get the selected parameters
+            var paramX = selectXAxisId.val();
+            var paramY = selectYAxisId.val();
+
+            DATAMODEL.generateFCSPlot(
+                node.data.element.code,
+                paramX,
+                paramY);
+        });
+    formId.append(plotButton);
 };
 
 /**

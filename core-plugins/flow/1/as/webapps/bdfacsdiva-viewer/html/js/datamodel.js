@@ -668,14 +668,14 @@ DataModel.prototype.getTubes = function(expCode, node) {
 /**
  * Call an aggregation plug-in to copy the datasets associated to selected
  * node to the user folder.
- * @param {type} ?
- * @param {type} ?
+ * @param string Experiment openBIS ID
+ * @param type op
  * @param {type} ?
  * @returns {tubes} ?
  */
 DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identifier, specimen, mode) {
 
-    // Add call to the aggregation service
+    // Parameters for the aggregation service
     var parameters = {
         experimentId: experimentId,
         entityType: type,
@@ -688,8 +688,11 @@ DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identif
     DATAVIEWER.displayStatus("Please wait while processing your request. This might take a while...", "info");
 
 	// Must use global object
-	DATAMODEL.openbisServer.createReportFromAggregationService("DSS1",
-	DATAMODEL.SERVER_SIDE_COPY_PLUGIN, parameters, function(response) {
+	DATAMODEL.openbisServer.createReportFromAggregationService(
+        CONFIG.datastoreServerCode,
+        DATAMODEL.SERVER_SIDE_COPY_PLUGIN,
+        parameters,
+        function(response) {
 
 	    var status;
 	    var unexpected = "Sorry, unexpected feedback from server " +
@@ -773,6 +776,79 @@ DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identif
                 });
     });
 };
+
+/**
+ * Gerenate a scatter plot for FCS file of given code and parameters.
+ * @param code string openBIS code of the FCS file
+ * @param paramX string Name of the parameter for the X axis
+ * @param paramY string Name of the parameter for the Y axis
+ */
+DataModel.prototype.generateFCSPlot = function(code, paramX, paramY) {
+
+    // Parameters for the aggregation service
+    var parameters = {
+        code: code,
+        paramX: paramX,
+        paramY: paramY
+    };
+
+    // Message
+    var unexpected = "Sorry, unexpected feedback from server " +
+        "obtained. Please contact your administrator.";
+
+    // Returned parameters
+    var r_Success;
+    var r_ErrorMessage;
+
+    // Inform the user that we are about to process the request
+    DATAVIEWER.displayStatus("Please wait while processing your request. This might take a while...", "info");
+
+    // Must use global object
+    DATAMODEL.openbisServer.createReportFromAggregationService(
+        CONFIG.datastoreServerCode,
+        "generate_fcs_plot",
+        parameters,
+        function (response) {
+
+            var status;
+            var level;
+            var row;
+
+            if (response.error) {
+                status = "Sorry, could not process request.";
+                level = "error";
+                r_Success = false;
+            } else {
+                status = "";
+                if (response.result.rows.length != 1) {
+                    status = unexpected;
+                    level = "error";
+                } else {
+                    row = response.result.rows[0];
+                    if (row.length != 2) {
+                        status = unexpected;
+                        level = "error";
+                    } else {
+
+                        // Extract returned values for clarity
+                        r_Success = row[0].value;
+                        r_ErrorMessage = row[1].value;
+
+                        if (r_Success == true) {
+                            status = "<b>Congratulations!</b> " + r_ErrorMessage;
+                            level = "success";
+                        } else {
+                            status = "Sorry, there was an error: \"" +
+                                r_ErrorMessage + "\".";
+                            level = "error";
+                        }
+                    }
+                }
+            }
+            DATAVIEWER.displayStatus(status, level);
+
+        });
+}
 
 /**
  * Get, store and display the attachment info

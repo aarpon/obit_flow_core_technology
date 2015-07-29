@@ -4,7 +4,8 @@
 
 CONFIG = {
 
-    'enableExportToUserFolder': true
+    'enableExportToUserFolder': true,
+    'datastoreServerCode': "DSS1"
 
 }
 
