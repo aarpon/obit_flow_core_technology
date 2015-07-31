@@ -710,18 +710,18 @@ DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identif
 
 	    if (response.error) {
 	        status = "Sorry, could not process request.";
-	        level = "error";
+	        level = "danger";
             r_Success = false;
 	    } else {
             status = "";
             if (response.result.rows.length != 1) {
                 status = unexpected;
-                level = "error";
+                level = "danger";
             } else {
                 row = response.result.rows[0];
                 if (row.length != 6) {
                     status = unexpected;
-                    level = "error";
+                    level = "danger";
                 } else {
 
                     // Extract returned values for clarity
@@ -758,7 +758,7 @@ DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identif
                         } else {
                             status = "Sorry, there was an error packaging your files for download!";
                         }
-                        level = "error";
+                        level = "danger";
                     }
                 }
             }
@@ -798,6 +798,8 @@ DataModel.prototype.generateFCSPlot = function(code, paramX, paramY) {
     // Returned parameters
     var r_Success;
     var r_ErrorMessage;
+    var r_XData;
+    var r_YData;
 
     // Inform the user that we are about to process the request
     DATAVIEWER.displayStatus("Please wait while processing your request. This might take a while...", "info");
@@ -815,31 +817,42 @@ DataModel.prototype.generateFCSPlot = function(code, paramX, paramY) {
 
             if (response.error) {
                 status = "Sorry, could not process request.";
-                level = "error";
+                level = "danger";
                 r_Success = false;
             } else {
                 status = "";
                 if (response.result.rows.length != 1) {
                     status = unexpected;
-                    level = "error";
+                    level = "danger";
                 } else {
                     row = response.result.rows[0];
-                    if (row.length != 2) {
+                    if (row.length != 4) {
                         status = unexpected;
-                        level = "error";
+                        level = "danger";
                     } else {
 
                         // Extract returned values for clarity
                         r_Success = row[0].value;
                         r_ErrorMessage = row[1].value;
 
+                        // TODO: Format properly
+                        r_XData = row[2].value;
+                        r_YData = row[3].value;
+
                         if (r_Success == true) {
                             status = "<b>Congratulations!</b> " + r_ErrorMessage;
                             level = "success";
+
+                            DATAVIEWER.plotFCSData(
+                                r_XData,
+                                r_YData,
+                                paramX,
+                                paramY);
+
                         } else {
                             status = "Sorry, there was an error: \"" +
                                 r_ErrorMessage + "\".";
-                            level = "error";
+                            level = "danger";
                         }
                     }
                 }

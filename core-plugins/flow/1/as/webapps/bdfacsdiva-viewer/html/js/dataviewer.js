@@ -590,3 +590,84 @@ DataViewer.prototype.prepareTitle = function(title, level) {
     return ($("<p>").append($("<span>").addClass("label").addClass("label-" + level).text(title)));
 
 };
+
+/**
+ * Display a scatter plit
+ * @param xData list of X points
+ * @param yData list of Y points
+ * @param xLabel X label
+ * @param yLabel Y label
+ *
+ * @see http://swizec.com/blog/quick-scatterplot-tutorial-for-d3-js/swizec/5337
+ */
+DataViewer.prototype.plotFCSData = function(xData, yData, xLabel, yLabel) {
+
+    // TODO: Optimize this!
+    var xData = JSON.parse(xData);
+    var yData = JSON.parse(yData);
+
+    // Size and margins for the chart
+    var width = 400
+    var height = 400;
+    var pad = 50;
+    var left_pad = 200;
+
+    // Clear the plot div
+    $('#detailViewPlot').empty();
+
+    // Add an svg element
+    var svg = d3.select("#detailViewPlot").append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    // Set up scalings
+    var x = d3.scale.linear()
+            .domain([0, d3.max(xData)])
+            .range([left_pad, width - pad]);
+    var y = d3.scale.linear()
+            .domain([0, d3.max(yData)])
+            .range([height - pad * 2, pad]);
+
+    // Create the axes
+    var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom");
+    var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left");
+
+    // Append the axes
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0, " + (height - pad) + ")")
+        .call(xAxis);
+
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(" + (left_pad - pad) + ", 0)")
+        .call(yAxis);
+
+    // Append the axis labels
+    svg.append("text")      // text label for the x axis
+        .attr("x", width / 2 + pad)
+        .attr("y",  height)
+        .style("text-anchor", "middle")
+        .text(xLabel);
+
+
+    // Append the axis labels
+    svg.append("text")      // text label for the x axis
+        .attr("x", pad)
+        .attr("y",  height / 2)
+        .style("text-anchor", "middle")
+        .text(yLabel);
+
+    svg.selectAll("circle")
+        .data(yData)
+        .enter().append("svg:circle")
+        .attr("cy", function (d) { return y(d); })
+        .attr("cx", function (d, i) { return x(xData[i]); })
+        .attr("r", 3)
+        .style("opacity", 0.6);
+
+};

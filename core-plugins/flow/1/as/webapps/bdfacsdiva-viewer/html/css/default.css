@@ -41,3 +41,22 @@ input {
     vertical-align: middle;
     text-align: center;
 }
+
+#detailViewPlot {
+    text-align: center;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #eee;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-size: 11px;
+}
+
+.circle {
+    fill: #222;
+}
