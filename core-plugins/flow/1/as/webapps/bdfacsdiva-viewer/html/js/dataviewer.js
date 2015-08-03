@@ -592,7 +592,32 @@ DataViewer.prototype.prepareTitle = function(title, level) {
 };
 
 /**
- * Display a scatter plit
+ * Display a scatter plot
+ * @param xData list of X points
+ * @param yData list of Y points
+ * @param xLabel X label
+ * @param yLabel Y label
+ */
+DataViewer.prototype.plotFCSData = function(xData, yData, xLabel, yLabel) {
+
+    //this.plotFCSDataD3(xData, yData, xLabel, yLabel);
+
+    // TODO: Optimize this!
+    var xData = JSON.parse(xData);
+    var yData = JSON.parse(yData);
+
+    // TODO: Make this server-side!
+    var data = [];
+    for (var i = 0; i < xData.length; i++) {
+        data.push([parseFloat(xData[i]), parseFloat(yData[i])]);
+
+    }
+    this.plotFCSDataHC(data, xLabel, yLabel);
+
+};
+
+/**
+ * Display a scatter plot using D3
  * @param xData list of X points
  * @param yData list of Y points
  * @param xLabel X label
@@ -600,7 +625,7 @@ DataViewer.prototype.prepareTitle = function(title, level) {
  *
  * @see http://swizec.com/blog/quick-scatterplot-tutorial-for-d3-js/swizec/5337
  */
-DataViewer.prototype.plotFCSData = function(xData, yData, xLabel, yLabel) {
+DataViewer.prototype.plotFCSDataD3 = function(xData, yData, xLabel, yLabel) {
 
     // TODO: Optimize this!
     var xData = JSON.parse(xData);
@@ -622,19 +647,19 @@ DataViewer.prototype.plotFCSData = function(xData, yData, xLabel, yLabel) {
 
     // Set up scalings
     var x = d3.scale.linear()
-            .domain([0, d3.max(xData)])
-            .range([left_pad, width - pad]);
+        .domain([0, d3.max(xData)])
+        .range([left_pad, width - pad]);
     var y = d3.scale.linear()
-            .domain([0, d3.max(yData)])
-            .range([height - pad * 2, pad]);
+        .domain([0, d3.max(yData)])
+        .range([height - pad * 2, pad]);
 
     // Create the axes
     var xAxis = d3.svg.axis()
-            .scale(x)
-            .orient("bottom");
+        .scale(x)
+        .orient("bottom");
     var yAxis = d3.svg.axis()
-            .scale(y)
-            .orient("left");
+        .scale(y)
+        .orient("left");
 
     // Append the axes
     svg.append("g")
@@ -654,7 +679,6 @@ DataViewer.prototype.plotFCSData = function(xData, yData, xLabel, yLabel) {
         .style("text-anchor", "middle")
         .text(xLabel);
 
-
     // Append the axis labels
     svg.append("text")      // text label for the x axis
         .attr("x", pad)
@@ -671,3 +695,84 @@ DataViewer.prototype.plotFCSData = function(xData, yData, xLabel, yLabel) {
         .style("opacity", 0.6);
 
 };
+
+/**
+ * Display a scatter plot using HighCharts
+ * @param xData list of X points
+ * @param yData list of Y points
+ * @param xLabel X label
+ * @param yLabel Y label
+ */
+DataViewer.prototype.plotFCSDataHC = function(data, xLabel, yLabel) {
+
+    $('#detailViewPlot').highcharts({
+        chart: {
+            type: 'scatter',
+            zoomType: 'xy'
+        },
+        title: {
+            text: yLabel + " vs. " + xLabel
+        },
+        subtitle: {
+            text: ''
+        },
+        xAxis: {
+            title: {
+                enabled: true,
+                text: xLabel
+            },
+            startOnTick: true,
+            endOnTick: true,
+            showLastLabel: true
+        },
+        yAxis: {
+            title: {
+                text: yLabel
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'left',
+            verticalAlign: 'top',
+            x: 100,
+            y: 70,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF',
+            borderWidth: 1
+        },
+        plotOptions: {
+            scatter: {
+                marker: {
+                    radius: 5,
+                    states: {
+                        hover: {
+                            enabled: true,
+                            lineColor: 'rgb(100,100,100)'
+                        }
+                    }
+                },
+                states: {
+                    hover: {
+                        marker: {
+                            enabled: false
+                        }
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<b>{series.name}</b><br>',
+                    pointFormat: '{point.x}, {point.y}'
+                }
+            }
+        },
+        series: [{
+            name: 'Lomm',
+            color: 'rgba(223, 83, 83, .5)',
+            data: data
+        }]
+    });
+};
+
+
+
+
+
