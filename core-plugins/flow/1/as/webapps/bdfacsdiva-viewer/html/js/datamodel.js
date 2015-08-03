@@ -798,8 +798,7 @@ DataModel.prototype.generateFCSPlot = function(code, paramX, paramY) {
     // Returned parameters
     var r_Success;
     var r_ErrorMessage;
-    var r_XData;
-    var r_YData;
+    var r_Data;
 
     // Inform the user that we are about to process the request
     DATAVIEWER.displayStatus("Please wait while processing your request. This might take a while...", "info");
@@ -826,7 +825,7 @@ DataModel.prototype.generateFCSPlot = function(code, paramX, paramY) {
                     level = "danger";
                 } else {
                     row = response.result.rows[0];
-                    if (row.length != 4) {
+                    if (row.length != 3) {
                         status = unexpected;
                         level = "danger";
                     } else {
@@ -836,16 +835,14 @@ DataModel.prototype.generateFCSPlot = function(code, paramX, paramY) {
                         r_ErrorMessage = row[1].value;
 
                         // TODO: Format properly
-                        r_XData = row[2].value;
-                        r_YData = row[3].value;
+                        r_Data = row[2].value;
 
                         if (r_Success == true) {
-                            status = "<b>Congratulations!</b> " + r_ErrorMessage;
+                            status = r_ErrorMessage;
                             level = "success";
 
                             DATAVIEWER.plotFCSData(
-                                r_XData,
-                                r_YData,
+                                r_Data,
                                 paramX,
                                 paramY);
 
@@ -857,7 +854,12 @@ DataModel.prototype.generateFCSPlot = function(code, paramX, paramY) {
                     }
                 }
             }
-            DATAVIEWER.displayStatus(status, level);
+            // We only display errors
+            if (r_Success == false) {
+                DATAVIEWER.displayStatus(status, level);
+            } else {
+                DATAVIEWER.hideStatus();
+            }
 
         });
 }

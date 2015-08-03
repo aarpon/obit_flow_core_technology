@@ -468,6 +468,13 @@ DataViewer.prototype.displayStatus = function(status, level) {
 };
 
 /**
+ * Hide the status div.
+ */
+DataViewer.prototype.hideStatus = function() {
+    $("#status").hide();
+};
+
+/**
  * Display attachment info and link to the Attachments tab.
  * @param attachments: list of attachments
  */
@@ -592,31 +599,6 @@ DataViewer.prototype.prepareTitle = function(title, level) {
 };
 
 /**
- * Display a scatter plot
- * @param xData list of X points
- * @param yData list of Y points
- * @param xLabel X label
- * @param yLabel Y label
- */
-DataViewer.prototype.plotFCSData = function(xData, yData, xLabel, yLabel) {
-
-    //this.plotFCSDataD3(xData, yData, xLabel, yLabel);
-
-    // TODO: Optimize this!
-    var xData = JSON.parse(xData);
-    var yData = JSON.parse(yData);
-
-    // TODO: Make this server-side!
-    var data = [];
-    for (var i = 0; i < xData.length; i++) {
-        data.push([parseFloat(xData[i]), parseFloat(yData[i])]);
-
-    }
-    this.plotFCSDataHC(data, xLabel, yLabel);
-
-};
-
-/**
  * Display a scatter plot using D3
  * @param xData list of X points
  * @param yData list of Y points
@@ -703,7 +685,10 @@ DataViewer.prototype.plotFCSDataD3 = function(xData, yData, xLabel, yLabel) {
  * @param xLabel X label
  * @param yLabel Y label
  */
-DataViewer.prototype.plotFCSDataHC = function(data, xLabel, yLabel) {
+DataViewer.prototype.plotFCSData = function(data, xLabel, yLabel) {
+
+    // Make sure to have a proper array
+    data = JSON.parse(data);
 
     $('#detailViewPlot').highcharts({
         chart: {
@@ -721,6 +706,7 @@ DataViewer.prototype.plotFCSDataHC = function(data, xLabel, yLabel) {
                 enabled: true,
                 text: xLabel
             },
+            type: 'linear',
             startOnTick: true,
             endOnTick: true,
             showLastLabel: true
@@ -728,22 +714,13 @@ DataViewer.prototype.plotFCSDataHC = function(data, xLabel, yLabel) {
         yAxis: {
             title: {
                 text: yLabel
-            }
-        },
-        legend: {
-            layout: 'vertical',
-            align: 'left',
-            verticalAlign: 'top',
-            x: 100,
-            y: 70,
-            floating: true,
-            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF',
-            borderWidth: 1
+            },
+            type: 'linear'
         },
         plotOptions: {
             scatter: {
                 marker: {
-                    radius: 5,
+                    radius: 3,
                     states: {
                         hover: {
                             enabled: true,
@@ -759,13 +736,13 @@ DataViewer.prototype.plotFCSDataHC = function(data, xLabel, yLabel) {
                     }
                 },
                 tooltip: {
-                    headerFormat: '<b>{series.name}</b><br>',
-                    pointFormat: '{point.x}, {point.y}'
+                    headerFormat: '',
+                    pointFormat: '{point.x:.2f}, {point.y:.2f}'
                 }
             }
         },
         series: [{
-            name: 'Lomm',
+            name: '',
             color: 'rgba(223, 83, 83, .5)',
             data: data
         }]
