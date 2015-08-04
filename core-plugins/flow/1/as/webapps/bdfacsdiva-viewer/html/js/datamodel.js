@@ -782,7 +782,23 @@ DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identif
  * @param paramX string Name of the parameter for the X axis
  * @param paramY string Name of the parameter for the Y axis
  */
-DataModel.prototype.generateFCSPlot = function(code, paramX, paramY) {
+DataModel.prototype.generateFCSPlot = function(node, code, paramX, paramY, numEvents) {
+
+    // Check whether the data for the plot is already cached
+    if (node.data.cached) {
+        var key = code + "_" + paramX + "_" + paramY + "_" + numEvents.toString();
+        if (node.data.cached.hasOwnProperty(key)) {
+
+            // Plot the cached data
+            DATAVIEWER.plotFCSData(
+                node.data.cached[key],
+                paramX,
+                paramY);
+
+            // Return immediately
+            return;
+        }
+    }
 
     // Parameters for the aggregation service
     var parameters = {
@@ -833,18 +849,24 @@ DataModel.prototype.generateFCSPlot = function(code, paramX, paramY) {
                         // Extract returned values for clarity
                         r_Success = row[0].value;
                         r_ErrorMessage = row[1].value;
-
-                        // TODO: Format properly
                         r_Data = row[2].value;
 
                         if (r_Success == true) {
                             status = r_ErrorMessage;
                             level = "success";
 
+                            // Plot the data
                             DATAVIEWER.plotFCSData(
                                 r_Data,
                                 paramX,
                                 paramY);
+
+                            // Cache it
+                            if (! node.data.cached) {
+                                node.data.cached = {};
+                            }
+                            var key = code + "_" + paramX + "_" + paramY + "_" + numEvents.toString();
+                            node.data.cached[key] = r_Data;
 
                         } else {
                             status = "Sorry, there was an error: \"" +

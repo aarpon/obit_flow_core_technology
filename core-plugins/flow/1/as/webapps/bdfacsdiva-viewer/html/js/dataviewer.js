@@ -573,10 +573,15 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
             var paramX = selectXAxisId.val();
             var paramY = selectYAxisId.val();
 
+            // TODO Make this a parameter the user can pick
+            var numEvents = 20000;
+
             DATAMODEL.generateFCSPlot(
+                node,
                 node.data.element.code,
                 paramX,
-                paramY);
+                paramY,
+                numEvents);
         });
     formId.append(plotButton);
 };
@@ -720,7 +725,7 @@ DataViewer.prototype.plotFCSData = function(data, xLabel, yLabel) {
         plotOptions: {
             scatter: {
                 marker: {
-                    radius: 3,
+                    radius: 1,
                     states: {
                         hover: {
                             enabled: true,
