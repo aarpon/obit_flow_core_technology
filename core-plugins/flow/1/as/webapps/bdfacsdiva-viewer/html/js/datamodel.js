@@ -826,7 +826,7 @@ DataModel.prototype.generateFCSPlot = function(node, code, paramX, paramY, maxNu
     // Must use global object
     DATAMODEL.openbisServer.createReportFromAggregationService(
         CONFIG.datastoreServerCode,
-        "generate_fcs_plot",
+        "retrieve_fcs_events",
         parameters,
         function (response) {
 
@@ -922,7 +922,12 @@ DataModel.prototype.retrieveAndDisplayAttachments = function() {
 
 };
 
-DataModel.prototype.getAndAddParemeterInfoForDatasets = function(node, action) {
+/**
+ * Add parameter information to the FCS nodes
+ * @param node An FCS file DynaTree node
+ * @param action Function that renders the node.
+ */
+DataModel.prototype.getAndAddParameterInfoForDatasets = function(node, action) {
 
     // Consistency check on the node
     try {

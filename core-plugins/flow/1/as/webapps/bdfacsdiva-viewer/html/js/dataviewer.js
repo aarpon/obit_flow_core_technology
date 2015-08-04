@@ -97,24 +97,39 @@ DataViewer.prototype.drawTree = function(tree) {
  */
 DataViewer.prototype.displayDetailsAndActions = function(node) {
 
-    // In theory, an unselectable node should not be selectable
-    // - we build in an additional check here
-    if (node.data.unselectable === true) {
-        return;
-    }
-
     // Store some references
     var statusID = $("#status");
     var detailViewActionID = $("#detailViewAction");
     var detailViewSampleID = $("#detailViewSample");
+    var detailViewPlotID = $('#detailViewPlot')
 
     // Clear previous views
     statusID.empty();
     detailViewActionID.empty();
     detailViewSampleID.empty();
+    detailViewPlotID.empty();
+
+    // In theory, an unselectable node should not be selectable
+    // - we build in an additional check here
+    if (node.data.unselectable === true) {
+
+        return;
+    }
 
     // Display the node name
     detailViewSampleID.append($("<h4>").html(node.data.title));
+
+    if (node.data.type) {
+        if (node.data.type == "plate_container") {
+            detailViewSampleID.append($("<p>").html("This is the set of all plates contained in this experiment."));
+        } else if (node.data.type == "tubesets") {
+            detailViewSampleID.append($("<p>").html("This is the virtual set of all tubes contained in this experiment."));
+        } else if (node.data.type == "specimen") {
+            detailViewSampleID.append($("<p>").html("This is a specimen."));
+        } else {
+            // Ignore
+        }
+    }
 
     // Adapt the display depending on the element type
     if (node.data.element) {
@@ -122,13 +137,19 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
         // Samples
         switch (node.data.element["@type"]) {
 
+            case "Experiment":
+
+                detailViewSampleID.append($("<p>").html("This experiment was registered on " +
+                    (new Date(node.data.element.registrationDetails.registrationDate)).toDateString() + "."));
+                break;
+
             case "Sample":
 
                 if (node.data.element.sampleTypeCode == (DATAMODEL.EXPERIMENT_PREFIX + "_PLATE")) {
 
                     // Update details
-                    detailViewSampleID.append(this.prepareTitle("Plate geometry"));
-                    detailViewSampleID.append($("<p>").html(node.data.element.properties[DATAMODEL.EXPERIMENT_PREFIX + "_PLATE_GEOMETRY"]));
+                    detailViewSampleID.append($("<p>").html("This plate has geometry " +
+                        node.data.element.properties[DATAMODEL.EXPERIMENT_PREFIX + "_PLATE_GEOMETRY"] + "."));
 
                 }
 
@@ -136,11 +157,11 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
                 if (node.data.element.sampleTypeCode == "FACS_ARIA_WELL" ||
                     node.data.element.sampleTypeCode == "FACS_ARIA_TUBE") {
 
-                    var sortType = "Standard sort";
+                    var sortType = "This is a standard sort.";
                     if (node.data.element.properties[node.data.element.sampleTypeCode + "_ISINDEXSORT"] == "true") {
-                        sortType = "Index sort";
+                        sortType = "This is an index sort.";
                     }
-                    detailViewSampleID.append(this.prepareTitle(sortType));
+                    detailViewSampleID.append($("<p>").html(sortType));
                 }
 
                 break;
@@ -149,13 +170,14 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
 
                 if (node.data.element.dataSetTypeCode == (DATAMODEL.EXPERIMENT_PREFIX + "_FCSFILE")) {
 
-                    // Old experiments might not have anything stored in {exo_prefix}_FCSFILE_PARAMETERS.
+                    // Old experiments might not have anything stored in {exp_prefix}_FCSFILE_PARAMETERS.
                     if (!node.data.element.properties[DATAMODEL.EXPERIMENT_PREFIX + "_FCSFILE_PARAMETERS"]) {
-                        break;
+                        detailViewSampleID.append($("<p>").html(
+                            "Sorry, there is no parameter information stored for this file."));
                     }
 
                     // Retrieve and store the parameter information
-                    DATAMODEL.getAndAddParemeterInfoForDatasets(node, function() {
+                    DATAMODEL.getAndAddParameterInfoForDatasets(node, function() {
 
                         // Display the form to be used for parameter plotting
                         DATAVIEWER.renderParameterSelectionForm(node);
@@ -225,7 +247,6 @@ DataViewer.prototype.displayExportAction = function(node) {
         if (node.data.type && node.data.type == "specimen") {
 
             // Get the specimen name.
-            // TODO: Use a dedicate property
             specimenName = node.data.title;
 
             // In case of a specimen, we filter WELLS or TUBES for the 
@@ -287,8 +308,7 @@ DataViewer.prototype.displayExportAction = function(node) {
             // If there are no (loaded) children (yet), just return
             if (!node.childList || node.childList.length == 0) {
                 if (node._isLoading) {
-                    this.displayStatus("Please reselect this node to " +
-                        "display export option.</br />", "info");
+                    this.displayStatus("The actions for this node will be displayed next time you select it.</br />", "info");
                 }
                 return;
             }
@@ -328,8 +348,7 @@ DataViewer.prototype.displayExportAction = function(node) {
             // If there are no (loaded) children (yet), just return
             if (!node.childList || node.childList.length == 0) {
                 if (node._isLoading) {
-                    this.displayStatus("Please reselect this node to " +
-                        "display export option.</br />", "info");
+                    this.displayStatus("The actions for this node will be displayed next time you select it.</br />", "info");
                 }
                 return;
             }
@@ -643,6 +662,9 @@ DataViewer.prototype.plotFCSData = function(data, xLabel, yLabel) {
             type: 'linear'
         },
         plotOptions: {
+            area: {
+                turboThreshold: 10
+            },
             scatter: {
                 marker: {
                     radius: 1,
