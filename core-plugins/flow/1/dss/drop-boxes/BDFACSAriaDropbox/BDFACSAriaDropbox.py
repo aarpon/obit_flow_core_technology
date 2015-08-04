@@ -39,7 +39,8 @@ class Processor:
         self._username = ""
 
         # Set up logging
-        logging.basicConfig(filename=logFile, level=logging.DEBUG)
+        logging.basicConfig(filename=logFile, level=logging.DEBUG, 
+                        format='%(asctime)-15s %(levelname)s: %(message)s')
         self._logger = logging.getLogger("BDFACSAria")
 
 
