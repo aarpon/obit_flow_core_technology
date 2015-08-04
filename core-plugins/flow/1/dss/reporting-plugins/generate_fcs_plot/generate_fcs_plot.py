@@ -20,10 +20,10 @@ import com.xhaus.jyson.JysonCodec as json
 
 def setUpLogging():
     """Sets up logging and returns the logger object."""
-    
+
     # Get path to containing folder
     # __file__ does not work (reliably) in Jython
-    rpPath = "../core-plugins/flow/1/dss/reporting-plugins/generate_fcs_plots"
+    rpPath = "../core-plugins/flow/1/dss/reporting-plugins/generate_fcs_plot"
 
     # Path to the logs subfolder
     logPath = os.path.join(rpPath, "logs")
@@ -42,7 +42,7 @@ def setUpLogging():
 
     return _logger
 
-    
+
 def getFileForCode(code):
     """
     Get the path to the FCS file that is associated to the given dataSet.
@@ -97,16 +97,24 @@ def aggregate(parameters, tableBuilder):
     # Get the entity code
     paramY = parameters.get("paramY")
 
+    # Number of events known to be in the file
+    numEvents = int(parameters.get("numEvents"))
+
+    # Maximum number of events to return
+    maxNumEvents = int(parameters.get("maxNumEvents"))
+
     # Log parameter info
     _logger.info("Requested plot for dataset " + code + 
                 " and parameters (" + paramX + ", " + paramY + ")")
+    _logger.info("Number of events in file: " + str(numEvents) + 
+                "; maximum number of events to return: " + str(maxNumEvents))
 
     # Get the FCS file to process
     dataSetFiles = getFileForCode(code)
 
     # Prepare the data
     dataJSON = ""
-    
+
     message = ""
 
     if len(dataSetFiles) != 1:
@@ -141,7 +149,7 @@ def aggregate(parameters, tableBuilder):
 
                 message = "Could not process file " + os.path.basename(fcsFile)
                 success = False
-                
+
                 # Log error
                 _logger.error(message)
 
@@ -152,29 +160,29 @@ def aggregate(parameters, tableBuilder):
 
                     message = "Could not write data to CSV file " + os.path.basename(csvFile)
                     success = False
-                    
+
                     # Log error
                     _logger.error(message)
-                    
+
                 else:
-                    
+
                     # The CSV file was successfully generated
                     message = "The CVS file " + os.path.basename(csvFile) + " was successfully created!"
                     success = True
 
                     # Log
                     _logger.info(message)
-                    
+
         else:
 
             message = "The CVS file " + os.path.basename(csvFile) + " already exists in the session. Re-using it."
             success = True
-            
+
             # Log
             _logger.info(message)
 
         if success:
-            
+
             # Read the file
             content = csv.reader(open(csvFile))
 
@@ -188,14 +196,27 @@ def aggregate(parameters, tableBuilder):
             # Prepare the data array
             data = []
 
+            # Calculate the sampling step
+            if maxNumEvents >= numEvents:
+                step = 1
+            else:
+                step = int(float(numEvents) / float(maxNumEvents))
+                if step == 0:
+                    step = 1
+
             # Now collect all data
+            i = 0
             for row in content:
 
-                data.append([float(row[indxX]), float(row[indxY])])        
+                if i % step == 0:
+
+                    data.append([float(row[indxX]), float(row[indxY])])
+
+                i = i + 1
 
             # JSON encode the data array
             dataJSON = json.dumps(data) 
-            
+
             # Log
             _logger.info("Successfully processed file " + csvFile)
 

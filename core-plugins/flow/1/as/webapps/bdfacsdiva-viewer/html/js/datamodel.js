@@ -98,7 +98,7 @@ DataModel.prototype.buildInitialTree = function() {
         {
             persist: false,
             imagePath: "./third-party/dynatree/skin/",
-            minExpandLevel: 2,             
+            minExpandLevel: 2,
             selectMode: 1,
             autoFocus: false,
             keyboard: true,
@@ -778,15 +778,17 @@ DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identif
 
 /**
  * Gerenate a scatter plot for FCS file of given code and parameters.
+ * @param node DynaTree node Node from the experiment structure tree.
  * @param code string openBIS code of the FCS file
  * @param paramX string Name of the parameter for the X axis
  * @param paramY string Name of the parameter for the Y axis
+ * @param maxNumEvents int Maximum number of events to be retrieved from the server.
  */
-DataModel.prototype.generateFCSPlot = function(node, code, paramX, paramY, numEvents) {
+DataModel.prototype.generateFCSPlot = function(node, code, paramX, paramY, maxNumEvents) {
 
     // Check whether the data for the plot is already cached
     if (node.data.cached) {
-        var key = code + "_" + paramX + "_" + paramY + "_" + numEvents.toString();
+        var key = code + "_" + paramX + "_" + paramY + "_" + maxNumEvents.toString();
         if (node.data.cached.hasOwnProperty(key)) {
 
             // Plot the cached data
@@ -804,7 +806,9 @@ DataModel.prototype.generateFCSPlot = function(node, code, paramX, paramY, numEv
     var parameters = {
         code: code,
         paramX: paramX,
-        paramY: paramY
+        paramY: paramY,
+        numEvents: node.data.parameterInfo['numEvents'],
+        maxNumEvents: maxNumEvents
     };
 
     // Message
@@ -865,7 +869,7 @@ DataModel.prototype.generateFCSPlot = function(node, code, paramX, paramY, numEv
                             if (! node.data.cached) {
                                 node.data.cached = {};
                             }
-                            var key = code + "_" + paramX + "_" + paramY + "_" + numEvents.toString();
+                            var key = code + "_" + paramX + "_" + paramY + "_" + maxNumEvents.toString();
                             node.data.cached[key] = r_Data;
 
                         } else {
@@ -889,7 +893,7 @@ DataModel.prototype.generateFCSPlot = function(node, code, paramX, paramY, numEv
 /**
  * Get, store and display the attachment info
  */
-DataModel.prototype.retrieveAndDisplayAttachments = function(action) {
+DataModel.prototype.retrieveAndDisplayAttachments = function() {
 
     // Get attachments
     var experimentId = {
@@ -907,7 +911,7 @@ DataModel.prototype.retrieveAndDisplayAttachments = function(action) {
             console.log("There was an error retrieving the attachments for current experiment!");
         } else {
 
-            // Store the atatchment array
+            // Store the attachment array
             dataModelObj.attachments = response.result;
 
             // Display the info
