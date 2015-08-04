@@ -777,7 +777,7 @@ DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identif
 };
 
 /**
- * Gerenate a scatter plot for FCS file of given code and parameters.
+ * Generate a scatter plot for FCS file of given code and parameters.
  * @param node DynaTree node Node from the experiment structure tree.
  * @param code string openBIS code of the FCS file
  * @param paramX string Name of the parameter for the X axis
@@ -886,6 +886,84 @@ DataModel.prototype.generateFCSPlot = function(node, code, paramX, paramY, maxNu
             } else {
                 DATAVIEWER.hideStatus();
             }
+
+        });
+}
+
+/**
+ * Update an outdated experiment.
+ * @param expPermId string Experiment perm identifier.
+ */
+DataModel.prototype.updateOutdatedExperiment = function(expPermId, dataSetType) {
+
+    // Check that this is an experiment node
+
+    // Parameters for the aggregation service
+    var parameters = {
+        expPermId: expPermId,
+        dataSetType: dataSetType
+    };
+
+    // Message
+    var unexpected = "Sorry, unexpected feedback from server " +
+        "obtained. Please contact your administrator.";
+
+    // Returned parameters
+    var r_Success;
+    var r_ErrorMessage;
+
+    // Inform the user that we are about to process the request
+    DATAVIEWER.displayStatus("Please wait while processing your request. This might take a while...", "info");
+
+    // Must use global object
+    DATAMODEL.openbisServer.createReportFromAggregationService(
+        CONFIG.datastoreServerCode,
+        "update_outdated_experiment",
+        parameters,
+        function (response) {
+
+            var status;
+            var level;
+            var row;
+
+            if (response.error) {
+                status = "Sorry, could not process request.";
+                level = "danger";
+                r_Success = false;
+            } else {
+                status = "";
+                if (response.result.rows.length != 1) {
+                    status = unexpected;
+                    level = "danger";
+                } else {
+                    row = response.result.rows[0];
+                    if (row.length != 2) {
+                        status = unexpected;
+                        level = "danger";
+                    } else {
+
+                        // Extract returned values for clarity
+                        r_Success = row[0].value;
+                        r_ErrorMessage = row[1].value;
+
+                        if (r_Success == true) {
+                            status = r_ErrorMessage;
+                            level = "success";
+
+                        } else {
+                            status = "Sorry, there was an error: \"" +
+                                r_ErrorMessage + "\".";
+                            level = "danger";
+                        }
+                    }
+                }
+            }
+            // We only display errors
+            //if (r_Success == false) {
+                DATAVIEWER.displayStatus(status, level);
+            //} else {
+            //    DATAVIEWER.hideStatus();
+            //}
 
         });
 }

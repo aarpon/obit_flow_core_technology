@@ -173,7 +173,20 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
                     // Old experiments might not have anything stored in {exp_prefix}_FCSFILE_PARAMETERS.
                     if (!node.data.element.properties[DATAMODEL.EXPERIMENT_PREFIX + "_FCSFILE_PARAMETERS"]) {
                         detailViewSampleID.append($("<p>").html(
-                            "Sorry, there is no parameter information stored for this file."));
+                            "Sorry, there is no parameter information stored for this file. "));
+
+                        // Add "Update" button
+                        var updateButton = $("<input>")
+                            .attr("type", "button")
+                            .attr("value", "Update")
+                            .click(function() {
+
+                                DATAMODEL.updateOutdatedExperiment(DATAMODEL.exp.permId,
+                                node.data.element.dataSetTypeCode);
+                            });
+                        detailViewSampleID.append(updateButton);
+
+                        return;
                     }
 
                     // Retrieve and store the parameter information

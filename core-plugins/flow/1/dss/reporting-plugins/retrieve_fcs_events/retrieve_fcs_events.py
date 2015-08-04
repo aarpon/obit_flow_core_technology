@@ -23,7 +23,7 @@ def setUpLogging():
 
     # Get path to containing folder
     # __file__ does not work (reliably) in Jython
-    rpPath = "../core-plugins/flow/1/dss/reporting-plugins/generate_fcs_plot"
+    rpPath = "../core-plugins/flow/1/dss/reporting-plugins/retrieve_fcs_events"
 
     # Path to the logs subfolder
     logPath = os.path.join(rpPath, "logs")
@@ -33,7 +33,7 @@ def setUpLogging():
         os.makedirs(logPath)
 
     # Path for the log file
-    logFile = os.path.join(logPath, "generate_fcs_plot_log.txt")
+    logFile = os.path.join(logPath, "log.txt")
 
     # Create the logger
     logging.basicConfig(filename=logFile, level=logging.DEBUG, 
@@ -104,7 +104,7 @@ def aggregate(parameters, tableBuilder):
     maxNumEvents = int(parameters.get("maxNumEvents"))
 
     # Log parameter info
-    _logger.info("Requested plot for dataset " + code + 
+    _logger.info("Requested events for dataset " + code + 
                 " and parameters (" + paramX + ", " + paramY + ")")
     _logger.info("Number of events in file: " + str(numEvents) + 
                 "; maximum number of events to return: " + str(maxNumEvents))
