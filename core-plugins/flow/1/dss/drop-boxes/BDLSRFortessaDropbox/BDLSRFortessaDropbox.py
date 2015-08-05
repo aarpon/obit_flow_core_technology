@@ -732,7 +732,7 @@ def process(transaction):
         os.makedirs(logPath)
 
     # Path for the log file
-    logFile = os.path.join(logPath, "registration_log.txt")
+    logFile = os.path.join(logPath, "log.txt")
 
     # Create a Processor
     processor = Processor(transaction, logFile)

@@ -44,6 +44,23 @@ class Processor:
         self._logger = logging.getLogger("BDFACSAria")
 
 
+    def dictToXML(self, d):
+        """Converts a dictionary into an XML string."""
+
+        # Create an XML node
+        node = xml.Element("Parameters")
+
+        # Add all attributes to the XML node
+        for k, v in d.iteritems():
+            node.set(k, v)
+
+        # Convert to XML string
+        xmlString = xml.tostring(node, encoding="UTF-8")
+
+        # Return the XML string
+        return xmlString
+
+
     def createExperiment(self, expId, expName,
                          expType="FACS_ARIA_EXPERIMENT"):
         """Create an experiment with given Experiment ID extended with the addition
@@ -287,6 +304,22 @@ class Processor:
 
         # Set the file type
         dataset.setFileFormatType("FCS")
+        
+        # Get the parameter node
+        for parameterNode in fcsFileNode:
+
+            if parameterNode.tag != "FCSFileParamList":
+                msg = "Expected FSC File Parameter List node!"
+                self._logger.error(msg)
+                raise Exception(msg)
+
+            parametersXML = self.dictToXML(parameterNode.attrib)
+
+            # Store the parameters in the FACS_ARIA_FCSFILE_PARAMETERS property
+            dataset.setPropertyValue("FACS_ARIA_FCSFILE_PARAMETERS", parametersXML)
+            
+            # Log the parameters
+            self._logger.info("FCS file parameters (XML): " + str(parametersXML))
 
         # Assign the file to the dataset (we will use the absolute path)
         fileName = fcsFileNode.attrib.get("relativeFileName")
@@ -709,7 +742,7 @@ def process(transaction):
         os.makedirs(logPath)
 
     # Path for the log file
-    logFile = os.path.join(logPath, "registration_log.txt")
+    logFile = os.path.join(logPath, "log.txt")
 
     # Create a Processor
     processor = Processor(transaction, logFile)
