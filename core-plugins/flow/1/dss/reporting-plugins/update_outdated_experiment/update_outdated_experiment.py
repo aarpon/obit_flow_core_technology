@@ -12,6 +12,53 @@ from ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.SearchCriteria import Ma
 import ch.ethz.scu.obit.bdfacsdivafcs.readers.FCSReader as FCSReader
 import java.io.File
 
+
+def dictToXML(self, d):
+    """Converts a dictionary into an XML string."""
+
+    # Create an XML node
+    node = xml.Element("Parameters")
+
+    # Add all attributes to the XML node
+    for k, v in d.iteritems():
+        node.set(k, v)
+
+    # Convert to XML string
+    xmlString = xml.tostring(node, encoding="UTF-8")
+
+    # Return the XML string
+    return xmlString
+
+
+def formatExpDateForPostgreSQL(dateStr):
+    """Format the experiment date to be compatible with postgreSQL's
+    'timestamp' data type.
+
+    @param Date stored in the FCS file, in the form 01-JAN-2013
+    @return Date in the form 2013-01-01
+    """
+
+    monthMapper = {'JAN': '01', 'FEB': '02', 'MAR': '03', 'APR': '04',
+                   'MAY': '05', 'JUN': '06', 'JUL': '07', 'AUG': '08',
+                   'SEP': '09', 'OCT': '10', 'NOV': '11', 'DEC': '12'}
+
+    # Separate the date into day, month, and year
+    (day, month, year) = dateStr.split("-")
+
+    # Try mapping the month to digits (e.g. "06"). If the mapping does
+    # not work, return "NOT_FOUND"
+    month = monthMapper.get(month, "NOT_FOUND")
+
+    # Build the date in the correct format. If the month was not found,
+    # return 01-01-1970
+    if (month == "NOT_FOUND"):
+        self._logger.info("Invalid experiment date %s found. " \
+                     "Reverting to 1970/01/01." % dateStr)
+        return "1970-01-01"
+    else:
+        return (year + "-" + month + "-" + day)
+
+
 def setUpLogging():
     """Sets up logging and returns the logger object."""
 
@@ -63,10 +110,10 @@ def process(transaction, parameters, tableBuilder):
     """Update old flow experiments that have some missing or incorrect information.
     
     """
-    
+
     # Set up logging
     _logger = setUpLogging()
-    
+
     # Prepare the return table
     tableBuilder.addHeader("success")
     tableBuilder.addHeader("message")
@@ -83,28 +130,27 @@ def process(transaction, parameters, tableBuilder):
                 " and FCS files of type " + dataSetType + ".")
 
     # Get the experiment
-    # TODO: Retrieve an Experiment, not an ImmutableExperiment!
     expCriteria = SearchCriteria()
     expCriteria.addMatchClause(MatchClause.createAttributeMatch(MatchClauseAttribute.PERM_ID, expPermId))
     experiments = searchService.searchForExperiments(expCriteria)
 
     # If we did not get the experiment, return here with an error
     if len(experiments) != 1:
-        
+
         # Prepare the return arguments
         success = False
         message = "The experiment with permID " + expPermId + " could not be found."
 
         # Log the error
         _logger.error(message)
-        
+
         # Add the results to current row
         row.setCell("success", success)
         row.setCell("message", message)
 
         # Return here
         return
-    
+
     # Get the experiment
     experiment = experiments[0]
 
@@ -121,58 +167,17 @@ def process(transaction, parameters, tableBuilder):
     expCriteria.addMatchClause(MatchClause.createAttributeMatch(MatchClauseAttribute.PERM_ID, expPermId))
     searchCriteria.addSubCriteria(SearchSubCriteria.createExperimentCriteria(expCriteria))
     dataSets = searchService.searchForDataSets(searchCriteria)
-    
+
+    # Log
+    _logger.info("Retrieved " + str(len(dataSets)) + " dataset(s) for experiment with permId " + expPermId + ".")
+
     # If we did not get the datasets, return here with an error
     if dataSets is None:
-        
+
         # Prepare the return arguments
         success = False
         message = "No FCS files could be found for experiment with permID " + expPermId + "."
 
-        # Log the error
-        _logger.error(message)
-        
-        # Add the results to current row
-        row.setCell("success", success)
-        row.setCell("message", message)
-
-        # Return here
-        return        
-    
-    # Get the file from the first dataset
-    files = getFileForCode(dataSets[0].getDataSetCode())
-    if len(files) != 1:
-        
-        # Prepare the return arguments
-        success = False
-        message = "Could not retrieve the FCS file to process!"
-                
-        # Log the error
-        _logger.error(message)
-
-        # Add the results to current row
-        row.setCell("success", success)
-        row.setCell("message", message)
-
-        # Return here
-        return        
-
-    # Get the file
-    fcsFile = files[0]
-
-    # Log
-    _logger.info("Reading file " + fcsFile + ".")    
-                
-    # Open the FCS file
-    reader = FCSReader(java.io.File(fcsFile), True);
-
-    # Parse the file with data
-    if not reader.parse():
-
-        # Prepare the return arguments
-        success = False
-        message = "Could not process file " + os.path.basename(fcsFile)
-                
         # Log the error
         _logger.error(message)
 
@@ -183,6 +188,56 @@ def process(transaction, parameters, tableBuilder):
         # Return here
         return
 
+    # Get the file from the first dataset
+    files = getFileForCode(dataSets[0].getDataSetCode())
+    if len(files) != 1:
+
+        # Prepare the return arguments
+        success = False
+        message = "Could not retrieve the FCS file to process!"
+
+        # Log the error
+        _logger.error(message)
+
+        # Add the results to current row
+        row.setCell("success", success)
+        row.setCell("message", message)
+
+        # Return here
+        return
+
+    # Get the file
+    fcsFile = files[0]
+
+    # Log
+    _logger.info("Reading file " + fcsFile + ".")
+
+    # Open the FCS file
+    reader = FCSReader(java.io.File(fcsFile), False)
+
+    # Parse the file with data
+    if not reader.parse():
+
+        # Prepare the return arguments
+        success = False
+        message = "Could not process file " + os.path.basename(fcsFile)
+
+        # Log the error
+        _logger.error(message)
+
+        # Add the results to current row
+        row.setCell("success", success)
+        row.setCell("message", message)
+
+        # Return here
+        return
+
+    #
+    #
+    # EXPERIMENT NAME
+    #
+    #
+
     # Get the experiment name from the file
     expNameFromFile = reader.getCustomKeyword("EXPERIMENT NAME")
 
@@ -191,22 +246,99 @@ def process(transaction, parameters, tableBuilder):
 
     # Are the experiment names matching?
     if expNameFromFile == currentExpName:
-        
-        # Log
-        _logger.info("Registered experiment name matches the experiment name from the FCS file.")   
-    
-    else:
-        
-        # TODO: Retrieve an Experiment, not an ImmutableExperiment!
-        
-        # Update the registered Experiment name
-        experiment.setPropertyValue(experimentType + "_NAME", expNameFromFile)
 
         # Log
-        _logger.info("Updated registered experiment name from '" + currentExpName + "' to '" + expNameFromFile + "'.")   
-         
-        success = True
-        message = "Currently registered experiment name is " + currentExpName + " while the experiment name from the file is " + expNameFromFile + " ."
+        _logger.info("Registered experiment name matches the experiment name from the FCS file.")
+
+    else:
+
+        # We need the Experiment to be mutable
+        mutableExperiment = transaction.makeExperimentMutable(experiment)
+
+        # Update the registered Experiment name
+        mutableExperiment.setPropertyValue(experimentType + "_NAME", expNameFromFile)
+
+        # Log
+        _logger.info("Updated registered experiment name from '" + currentExpName + "' to '" + expNameFromFile + "'.")
+
+    #
+    #
+    # FCS FILE PARAMETERS AND ACQUISITION DATE
+    #
+    #
+
+    hardwareString = experimentType[0:experimentType.find("_EXPERIMENT")]
+    parameterProperty = hardwareString + "_FCSFILE_PARAMETERS"
+    acqDateProperty = hardwareString + "_FCSFILE_ACQ_DATE"
+
+    # Log
+    _logger.info("Checking properties of " + str(len(dataSets)) + " file(s).")
+
+    for dataSet in dataSets:
+
+        # Check whether the parameters are stored for the file
+        parameters = dataSet.getPropertyValue(parameterProperty)
+
+        # Check whether the acquisition date is stored for the file
+        acqDate = dataSet.getPropertyValue(acqDateProperty)
+
+        if parameters is None or acqDate is None:
+
+            # Make the DataSet mutable for update
+            mutableDataSet = transaction.makeDataSetMutable(dataSet)
+
+            # Get the file from the dataset
+            files = getFileForCode(dataSet.getDataSetCode())
+            if len(files) != 1:
+
+                # Prepare the return arguments
+                success = False
+                message = "Could not retrieve the FCS file to process!"
+
+                # Log the error
+                _logger.error(message)
+
+                # Add the results to current row
+                row.setCell("success", success)
+                row.setCell("message", message)
+
+                # Return here
+                return     
+    
+            # Get the FCS file
+            fcsFile = files[0]
+
+            # Open and parse the FCS file
+            reader = FCSReader(java.io.File(fcsFile), True);
+
+            # Parse the file with data
+            if not reader.parse():
+
+                # Prepare the return arguments
+                success = False
+                message = "Could not process file " + os.path.basename(fcsFile)
+
+                # Log the error
+                _logger.error(message)
+
+                # Add the results to current row
+                row.setCell("success", success)
+                row.setCell("message", message)
+
+                # Return here
+                return            
+
+            if acqDate is None:
+
+                # Get and format the acquisition date
+                dateStr = formatExpDateForPostgreSQL(reader.getStandardKeyword("$DATE"))
+
+                # Update the dataSet
+                mutableDataSet.setPropertyValue(acqDateProperty, dateStr)
+
+                # Log
+                _logger.info("The acquisition date of file " + str(fcsFile) + " was set to: " + dateStr + ".") 
+
 
     success = True
     message = "All done."
