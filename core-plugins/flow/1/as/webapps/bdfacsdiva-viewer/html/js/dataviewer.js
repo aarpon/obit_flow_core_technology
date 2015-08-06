@@ -598,11 +598,14 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
     for (var i = 0; i < node.data.parameterInfo.numParameters; i++) {
         var name = node.data.parameterInfo["names"][i];
         var compositeName = node.data.parameterInfo["compositeNames"][i];
+        var display = node.data.parameterInfo["display"][i];
         selectXAxisId.append($("<option>")
             .attr("value", name)
+            .attr("data", display)
             .text(compositeName));
         selectYAxisId.append($("<option>")
             .attr("value", name)
+            .attr("data", display)
             .text(compositeName));
     }
 
@@ -616,9 +619,14 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
         .attr("value", "Plot")
         .click(function() {
 
-            // Get the selected parameters
-            var paramX = selectXAxisId.val();
-            var paramY = selectYAxisId.val();
+            // Get the selected parameters and their display
+            var selectedX = selectXAxisId.find(":selected");
+            var selectedY = selectYAxisId.find(":selected");
+
+            var paramX = selectedX.val();
+            var displayX = selectedX.attr("data");
+            var paramY = selectedY.val();
+            var displayY = selectedY.attr("data");
 
             // TODO Make this a parameter the user can pick
             var numEvents = 10000;
@@ -628,6 +636,8 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
                 node.data.element.code,
                 paramX,
                 paramY,
+                displayX,
+                displayY,
                 numEvents);
         });
     formId.append(plotButton);
@@ -652,15 +662,33 @@ DataViewer.prototype.prepareTitle = function(title, level) {
 
 /**
  * Display a scatter plot using HighCharts
- * @param xData list of X points
- * @param yData list of Y points
+ * @param data list of (X, Y) points
  * @param xLabel X label
  * @param yLabel Y label
+ * @param displayX string Display type of the parameter for the X axis ("LIN" or "LOG)
+ * @param displayY string Display type of the parameter for the Y axis ("LIN" or "LOG)
  */
-DataViewer.prototype.plotFCSData = function(data, xLabel, yLabel) {
+DataViewer.prototype.plotFCSData = function(data, xLabel, yLabel, xDisplay, yDisplay) {
 
     // Make sure to have a proper array
     data = JSON.parse(data);
+
+    // Axis type
+    // Currently, we force the axes scaling to be linear in all cases, since some parameters are reported
+    // to have LOG scaling in the FCS file but have negative or zero values.
+
+    var xType = "linear";
+    /*
+    if (xDisplay == "LOG") {
+        xType = 'logarithmic';
+    }
+    */
+    var yType = "linear";
+    /*
+    if (yDisplay == "LOG") {
+        yType = 'logarithmic';
+    }
+    */
 
     $('#detailViewPlot').highcharts({
         chart: {
@@ -678,7 +706,7 @@ DataViewer.prototype.plotFCSData = function(data, xLabel, yLabel) {
                 enabled: true,
                 text: xLabel
             },
-            type: 'linear',
+            type: xType,
             startOnTick: true,
             endOnTick: true,
             showLastLabel: true
@@ -687,7 +715,7 @@ DataViewer.prototype.plotFCSData = function(data, xLabel, yLabel) {
             title: {
                 text: yLabel
             },
-            type: 'linear'
+            type: yType
         },
         plotOptions: {
             area: {

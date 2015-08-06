@@ -782,9 +782,11 @@ DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identif
  * @param code string openBIS code of the FCS file
  * @param paramX string Name of the parameter for the X axis
  * @param paramY string Name of the parameter for the Y axis
+ * @param displayX string Display type of the parameter for the X axis ("LIN" or "LOG)
+ * @param displayY string Display type of the parameter for the Y axis ("LIN" or "LOG)
  * @param maxNumEvents int Maximum number of events to be retrieved from the server.
  */
-DataModel.prototype.generateFCSPlot = function(node, code, paramX, paramY, maxNumEvents) {
+DataModel.prototype.generateFCSPlot = function(node, code, paramX, paramY, displayX, displayY, maxNumEvents) {
 
     // Check whether the data for the plot is already cached
     if (node.data.cached) {
@@ -795,7 +797,9 @@ DataModel.prototype.generateFCSPlot = function(node, code, paramX, paramY, maxNu
             DATAVIEWER.plotFCSData(
                 node.data.cached[key],
                 paramX,
-                paramY);
+                paramY,
+                displayX,
+                displayY);
 
             // Return immediately
             return;
@@ -863,7 +867,9 @@ DataModel.prototype.generateFCSPlot = function(node, code, paramX, paramY, maxNu
                             DATAVIEWER.plotFCSData(
                                 r_Data,
                                 paramX,
-                                paramY);
+                                paramY,
+                                displayX,
+                                displayY);
 
                             // Cache it
                             if (! node.data.cached) {
