@@ -894,7 +894,7 @@ DataModel.prototype.generateFCSPlot = function(node, code, paramX, paramY, maxNu
  * Update an outdated experiment.
  * @param expPermId string Experiment perm identifier.
  */
-DataModel.prototype.updateOutdatedExperiment = function(expPermId, dataSetType) {
+DataModel.prototype.upgradeExperiment = function(expPermId, dataSetType) {
 
     // Check that this is an experiment node
 
@@ -918,7 +918,7 @@ DataModel.prototype.updateOutdatedExperiment = function(expPermId, dataSetType) 
     // Must use global object
     DATAMODEL.openbisServer.createReportFromAggregationService(
         CONFIG.datastoreServerCode,
-        "update_outdated_experiment",
+        "upgrade_experiment",
         parameters,
         function (response) {
 
@@ -959,11 +959,10 @@ DataModel.prototype.updateOutdatedExperiment = function(expPermId, dataSetType) 
                 }
             }
             // We only display errors
-            //if (r_Success == false) {
-                DATAVIEWER.displayStatus(status, level);
-            //} else {
-            //    DATAVIEWER.hideStatus();
-            //}
+            DATAVIEWER.displayStatus(status, level);
+
+            // Reload the page after a short delay
+            setTimeout(function() {window.location.reload();}, 1000);
 
         });
 }
@@ -1035,6 +1034,7 @@ DataModel.prototype.getAndAddParameterInfoForDatasets = function(node, action) {
 
         var names = [];
         var compositeNames = [];
+        var display = []
 
         // Parameter numbering starts at 1
         for (var i = 1; i <= numParameters; i++) {
@@ -1049,7 +1049,12 @@ DataModel.prototype.getAndAddParameterInfoForDatasets = function(node, action) {
             if (pStr != "") {
                 composite = name + " (" + pStr + ")";
             }
-            compositeNames.push(composite);
+            compositeNames.push(composite)
+
+            // Store the display scale
+            var displ = parameters.getAttribute("P" + i + "DISPLAY");
+            display.push(displ)
+
         }
 
         // Store the parameter info
@@ -1057,7 +1062,8 @@ DataModel.prototype.getAndAddParameterInfoForDatasets = function(node, action) {
             "numParameters" : numParameters,
             "numEvents" : numEvents,
             "names" : names,
-            "compositeNames" : compositeNames
+            "compositeNames" : compositeNames,
+            "display" : display
         }
 
     }

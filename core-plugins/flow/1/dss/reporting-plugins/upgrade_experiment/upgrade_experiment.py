@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Ingestion service: create a project with user-defined name in given space
+# Ingestion service: upgrade an experiment structure to current version
 
 
 import os.path
@@ -11,17 +11,21 @@ from ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.SearchCriteria import Ma
 from ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.SearchCriteria import MatchClauseAttribute
 import ch.ethz.scu.obit.bdfacsdivafcs.readers.FCSReader as FCSReader
 import java.io.File
+import xml.etree.ElementTree as xml
 
 
-def dictToXML(self, d):
+def dictToXML(d):
     """Converts a dictionary into an XML string."""
 
     # Create an XML node
     node = xml.Element("Parameters")
 
     # Add all attributes to the XML node
-    for k, v in d.iteritems():
-        node.set(k, v)
+    it = d.entrySet().iterator()
+    while it.hasNext():
+        pair = it.next();
+        node.set(pair.getKey(), pair.getValue())
+        it.remove() # Avoids a ConcurrentModificationException
 
     # Convert to XML string
     xmlString = xml.tostring(node, encoding="UTF-8")
@@ -51,12 +55,10 @@ def formatExpDateForPostgreSQL(dateStr):
 
     # Build the date in the correct format. If the month was not found,
     # return 01-01-1970
-    if (month == "NOT_FOUND"):
-        self._logger.info("Invalid experiment date %s found. " \
-                     "Reverting to 1970/01/01." % dateStr)
+    if month == "NOT_FOUND":
         return "1970-01-01"
     else:
-        return (year + "-" + month + "-" + day)
+        return year + "-" + month + "-" + day
 
 
 def setUpLogging():
@@ -64,7 +66,7 @@ def setUpLogging():
 
     # Get path to containing folder
     # __file__ does not work (reliably) in Jython
-    rpPath = "../core-plugins/flow/1/dss/reporting-plugins/update_outdated_experiment"
+    rpPath = "../core-plugins/flow/1/dss/reporting-plugins/upgrade_experiment"
 
     # Path to the logs subfolder
     logPath = os.path.join(rpPath, "logs")
@@ -107,7 +109,8 @@ def getFileForCode(code):
 
 
 def process(transaction, parameters, tableBuilder):
-    """Update old flow experiments that have some missing or incorrect information.
+    """Update old flow experiments that have some missing or incorrect
+    information.
     
     """
 
@@ -158,7 +161,8 @@ def process(transaction, parameters, tableBuilder):
     experimentType = experiment.getExperimentType()
 
     # Log
-    _logger.info("Successfully retrieved Experiment with permId " + expPermId + " and type " + experimentType + ".")
+    _logger.info("Successfully retrieved Experiment with permId " + 
+                 expPermId + " and type " + experimentType + ".")
 
     # Retrieve all FCS files contained in the experiment
     searchCriteria = SearchCriteria()
@@ -169,14 +173,16 @@ def process(transaction, parameters, tableBuilder):
     dataSets = searchService.searchForDataSets(searchCriteria)
 
     # Log
-    _logger.info("Retrieved " + str(len(dataSets)) + " dataset(s) for experiment with permId " + expPermId + ".")
+    _logger.info("Retrieved " + str(len(dataSets)) +
+                 " dataset(s) for experiment with permId " + expPermId + ".")
 
     # If we did not get the datasets, return here with an error
     if dataSets is None:
 
         # Prepare the return arguments
         success = False
-        message = "No FCS files could be found for experiment with permID " + expPermId + "."
+        message = "No FCS files could be found for experiment with permID " + \
+            expPermId + "."
 
         # Log the error
         _logger.error(message)
@@ -248,7 +254,8 @@ def process(transaction, parameters, tableBuilder):
     if expNameFromFile == currentExpName:
 
         # Log
-        _logger.info("Registered experiment name matches the experiment name from the FCS file.")
+        _logger.info("Registered experiment name matches the experiment " +
+                     "name from the FCS file.")
 
     else:
 
@@ -259,7 +266,8 @@ def process(transaction, parameters, tableBuilder):
         mutableExperiment.setPropertyValue(experimentType + "_NAME", expNameFromFile)
 
         # Log
-        _logger.info("Updated registered experiment name from '" + currentExpName + "' to '" + expNameFromFile + "'.")
+        _logger.info("Updated registered experiment name from '" + 
+                     currentExpName + "' to '" + expNameFromFile + "'.")
 
     #
     #
@@ -326,22 +334,57 @@ def process(transaction, parameters, tableBuilder):
                 row.setCell("message", message)
 
                 # Return here
-                return            
+                return
 
             if acqDate is None:
 
                 # Get and format the acquisition date
-                dateStr = formatExpDateForPostgreSQL(reader.getStandardKeyword("$DATE"))
+                dateStr = formatExpDateForPostgreSQL(
+                    reader.getStandardKeyword("$DATE"))
 
                 # Update the dataSet
                 mutableDataSet.setPropertyValue(acqDateProperty, dateStr)
 
                 # Log
-                _logger.info("The acquisition date of file " + str(fcsFile) + " was set to: " + dateStr + ".") 
+                _logger.info("The acquisition date of file " + str(fcsFile) +
+                             " was set to: " + dateStr + ".") 
+
+            if parameters is None:
+
+                # Get the parameters 
+                parametersAttr = reader.parametersAttr
+
+                if parametersAttr is None:
+
+                    # Prepare the return arguments
+                    success = False
+                    message = "Could not read parameters from file " + \
+                    os.path.basename(fcsFile)
+
+                    # Log the error
+                    _logger.error(message)
+
+                    # Add the results to current row
+                    row.setCell("success", success)
+                    row.setCell("message", message)
+
+                    # Return here
+                    return
+
+                # Convert the parameters to XML
+                parametersXML = dictToXML(parametersAttr)
+
+                # Now store them in the dataSet
+                mutableDataSet.setPropertyValue(parameterProperty, parametersXML)
+
+                # Log
+                _logger.info("The parameters for file " + str(fcsFile) +
+                             " were successfully stored (in XML).") 
 
 
     success = True
-    message = "All done."
+    message = "Congratulations! The experiment was successfully upgraded " + \
+        "to the latest version."   
 
     # Add the results to current row
     row.setCell("success", success)

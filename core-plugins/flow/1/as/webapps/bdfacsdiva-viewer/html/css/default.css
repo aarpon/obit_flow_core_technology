@@ -46,6 +46,11 @@ input {
     text-align: center;
 }
 
+.fcsAcqDate {
+    font-size: 0.7em;
+    font-wight: normal;
+}
+
 .axis path,
 .axis line {
     fill: none;

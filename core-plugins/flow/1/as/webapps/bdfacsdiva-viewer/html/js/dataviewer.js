@@ -170,19 +170,34 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
 
                 if (node.data.element.dataSetTypeCode == (DATAMODEL.EXPERIMENT_PREFIX + "_FCSFILE")) {
 
+                    // Append the acquisition date if present
+                    if (node.data.element.properties[DATAMODEL.EXPERIMENT_PREFIX + "_FCSFILE_ACQ_DATE"]) {
+
+                        detailViewSampleID.empty();
+                        var title = $("<h4>").html(node.data.title);
+                        var regDate = new Date(node.data.element.properties[
+                            DATAMODEL.EXPERIMENT_PREFIX + "_FCSFILE_ACQ_DATE"]).toDateString();
+                        title.append($("<span>").addClass("fcsAcqDate").html(" (acquired " + regDate + ")"));
+                        detailViewSampleID.append(title);
+                    }
+
                     // Old experiments might not have anything stored in {exp_prefix}_FCSFILE_PARAMETERS.
                     if (!node.data.element.properties[DATAMODEL.EXPERIMENT_PREFIX + "_FCSFILE_PARAMETERS"]) {
                         detailViewSampleID.append($("<p>").html(
                             "Sorry, there is no parameter information stored for this file. "));
 
-                        // Add "Update" button
+                        // Add "Upgrade" button
                         var updateButton = $("<input>")
                             .attr("type", "button")
-                            .attr("value", "Update")
+                            .attr("value", "Upgrade")
                             .click(function() {
 
-                                DATAMODEL.updateOutdatedExperiment(DATAMODEL.exp.permId,
-                                node.data.element.dataSetTypeCode);
+                                // Disable the Upgrade button
+                                $(this).prop("disabled", true);
+
+                                // Call the server-side plug-in
+                                DATAMODEL.upgradeExperiment(DATAMODEL.exp.permId,
+                                    node.data.element.dataSetTypeCode);
                             });
                         detailViewSampleID.append(updateButton);
 
