@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 '''
-Aggregation plug-in to copy all FCS files under a specified FACSAria III element to the user folder.
+Aggregation plug-in to copy all FCS files under a specified BD FACS DIVA element
+to the user folder.or to the session workspace for download.
 @author: Aaron Ponti
 '''
 
@@ -97,8 +98,8 @@ class Mover():
     performs the actual copying.
     """
 
-    def __init__(self, experimentId, entityType, entityId, specimen, mode, \
-                 userId, properties):
+    def __init__(self, experimentId, experimentType, entityType, entityId,
+                 specimen, mode, userId, properties):
         '''Constructor'''
 
         # Store properties
@@ -106,6 +107,12 @@ class Mover():
 
         # Experiment identifier
         self._experimentId = experimentId
+
+        # Experiment type
+        self._experimentType = experimentType
+
+        # Set all relevant entity types for current experiment type
+        self._experimentPrefix = experimentType[0:experimentType.find("_EXPERIMENT")]
 
         # Experiment code
         # If no / is found, _experimentCode will be the same as _experimentId
@@ -154,7 +161,7 @@ class Mover():
 
         # Get the experiment name
         self._experimentName = \
-            self._experiment.getPropertyValue("FACS_ARIA_EXPERIMENT_NAME")
+            self._experiment.getPropertyValue(self._experimentPrefix + "_EXPERIMENT_NAME")
 
         # Export full path in user/tmp folder
         self._rootExportPath = os.path.join(self._userFolder, self._experimentCode)
@@ -204,38 +211,38 @@ class Mover():
             return False
 
         # Now process depending on the entity type
-        if self._entityType == "FACS_ARIA_EXPERIMENT":
+        if self._entityType == self._experimentPrefix + "_EXPERIMENT":
 
             # Copy all datasets contained in this experiment
             return self._copyDataSetsForExperiment()
 
-        elif self._entityType == "FACS_ARIA_ALL_PLATES":
+        elif self._entityType == self._experimentPrefix + "_ALL_PLATES":
 
             # Copy all datasets for all plates Experiment
             return self._copyDataSetsForPlates()
 
-        elif self._entityType == "FACS_ARIA_TUBESET":
+        elif self._entityType == self._experimentPrefix + "_TUBESET":
 
             # Copy all datasets for the tubes in the Experiment optionally
             # filtered by given specimen (if stored in self._specimen)
             return self._copyDataSetsForTubes()
 
-        elif self._entityType == "FACS_ARIA_PLATE":
+        elif self._entityType == self._experimentPrefix + "_PLATE":
 
             # Copy all the datasets contained in selected plate
             return self._copyDataSetsForPlate()
 
-        elif self._entityType == "FACS_ARIA_WELL":
+        elif self._entityType == self._experimentPrefix + "_WELL":
 
             # Copy the datasets contained in this well
             return self._copyDataSetsForWell()
 
-        elif self._entityType == "FACS_ARIA_TUBE":
+        elif self._entityType == self._experimentPrefix + "_TUBE":
 
             # Copy the datasets contained in this tube
             return self._copyDataSetsForTube()
 
-        elif self._entityType == "FACS_ARIA_FCSFILE":
+        elif self._entityType == self._experimentPrefix + "_FCSFILE":
 
             # Copy current FCS file sample
             return self._copyDataSetForFCSFileSample()
@@ -344,7 +351,7 @@ class Mover():
 
         # Get plate code and name
         plateCode = plate.getCode()
-        plateName = plate.getPropertyValue("FACS_ARIA_PLATE_NAME")
+        plateName = plate.getPropertyValue(self._experimentPrefix + "_PLATE_NAME")
 
         # Create a folder for the plate
         self._currentPath = os.path.join(self._experimentPath, plateName)
@@ -635,7 +642,7 @@ class Mover():
         # Check that the specimen matches (if needed)
         if self._specimen != "":
             wells = [well for well in wells if \
-                       well.getPropertyValue("FACS_ARIA_SPECIMEN") == self._specimen]
+                       well.getPropertyValue(self._experimentPrefix + "_SPECIMEN") == self._specimen]
 
         # Now iterate over the samples and retrieve their datasets
         dataSets = []
@@ -709,7 +716,7 @@ class Mover():
 
     def _getDataSetForFCSFileSample(self):
         """
-        Get the FCS file for the sample with type FACS_ARIA_FCSFILE.
+        Get the FCS file for the sample with type {exp_prefix}_FCSFILE.
         """
 
         # Get the dataset for current FCS file sample
@@ -759,7 +766,7 @@ class Mover():
 
         # Set search criteria to retrieve all plates in the experiment
         searchCriteria = SearchCriteria()
-        searchCriteria.addMatchClause(MatchClause.createAttributeMatch(MatchClauseAttribute.TYPE, "FACS_ARIA_PLATE"))
+        searchCriteria.addMatchClause(MatchClause.createAttributeMatch(MatchClauseAttribute.TYPE, self._experimentPrefix + "_PLATE"))
         expCriteria = SearchCriteria()
         expCriteria.addMatchClause(MatchClause.createAttributeMatch(MatchClauseAttribute.PERM_ID, self._experiment.permId))
         searchCriteria.addSubCriteria(SearchSubCriteria.createExperimentCriteria(expCriteria))
@@ -785,7 +792,7 @@ class Mover():
         # experiment is exactly the same as the set of tubes in the virtual
         # tubeset
         searchCriteria = SearchCriteria()
-        searchCriteria.addMatchClause(MatchClause.createAttributeMatch(MatchClauseAttribute.TYPE, "FACS_ARIA_TUBE"))
+        searchCriteria.addMatchClause(MatchClause.createAttributeMatch(MatchClauseAttribute.TYPE, self._experimentPrefix + "_TUBE"))
         expCriteria = SearchCriteria()
         expCriteria.addMatchClause(MatchClause.createAttributeMatch(MatchClauseAttribute.PERM_ID, self._experiment.permId))
         searchCriteria.addSubCriteria(SearchSubCriteria.createExperimentCriteria(expCriteria))
@@ -798,7 +805,7 @@ class Mover():
         # Check that the specimen matches (if needed)
         if self._specimen != "":
             tubes = [tube for tube in tubes if \
-                     tube.getPropertyValue("FACS_ARIA_SPECIMEN") == self._specimen]
+                     tube.getPropertyValue(self._experimentPrefix + "_SPECIMEN") == self._specimen]
 
         # Return the (filtered) tubes
         return tubes
@@ -807,7 +814,7 @@ class Mover():
 def parsePropertiesFile():
     """Parse properties file for custom plug-in settings."""
 
-    filename = "../core-plugins/flow/1/dss/reporting-plugins/copy_facsaria_datasets_to_userdir/plugin.properties"
+    filename = "../core-plugins/flow/1/dss/reporting-plugins/export_bdfacsdiva_datasets/plugin.properties"
     var_names = ['base_dir', 'export_dir']
 
     properties = {}
@@ -850,6 +857,9 @@ def aggregate(parameters, tableBuilder):
     # Get the experiment identifier
     experimentId = parameters.get("experimentId")
 
+    # Get the experiment type
+    experimentType = parameters.get("experimentType")
+
     # Get the entity type
     entityType = parameters.get("entityType")
 
@@ -864,8 +874,8 @@ def aggregate(parameters, tableBuilder):
 
     # Instantiate the Mover object - userId is a global variable
     # made available to the aggregation plug-in
-    mover = Mover(experimentId, entityType, entityId, specimen, mode, userId,
-                  properties)
+    mover = Mover(experimentId, experimentType, entityType, entityId, specimen,
+                  mode, userId, properties)
 
     # Process
     success = mover.process()
@@ -900,7 +910,7 @@ def aggregate(parameters, tableBuilder):
     # Email result to the user
     if success == True:
         
-        subject = "FACSAria III: successfully processed requested data"
+        subject = "BD FACS DIVA export: successfully processed requested data"
         
         if nCopiedFiles == 1:
             snip = "One file was "
@@ -913,7 +923,7 @@ def aggregate(parameters, tableBuilder):
             body = snip + "successfully packaged for download."
             
     else:
-        subject = "FACSAria III: error processing request!"
+        subject = "BD FACS DIVA export: error processing request!"
         body = "Sorry, there was an error processing your request. " + \
         "Please send your administrator the following report:\n\n" + \
         "\"" + errorMessage + "\"\n"
@@ -922,4 +932,4 @@ def aggregate(parameters, tableBuilder):
     try:
         mailService.createEmailSender().withSubject(subject).withBody(body).send()
     except:
-        sys.stderr.write("copy_facsaria_datasets_to_userdir: Failure sending email to user!")
+        sys.stderr.write("export_bdfacsdiva_datasets: Failure sending email to user!")

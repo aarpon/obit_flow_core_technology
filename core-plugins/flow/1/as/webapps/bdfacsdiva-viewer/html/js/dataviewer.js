@@ -428,9 +428,9 @@ DataViewer.prototype.displayExportAction = function(node) {
             .attr("href", "#")
             .html("&nbsp;Export to your folder")
             .click(function() {
-                DATAMODEL.copyDatasetsToUserDir(
-                    experimentId, type, identifier,
-                    specimenName, "normal");
+                DATAMODEL.exportDatasets(
+                    experimentId, DATAMODEL.experimentType,
+                    type, identifier, specimenName, "normal");
                 return false;
             });
 
@@ -448,9 +448,9 @@ DataViewer.prototype.displayExportAction = function(node) {
         .attr("href", "#")
         .html("&nbsp;Download archive")
         .click(function() {
-            DATAMODEL.copyDatasetsToUserDir(
-                experimentId, type, identifier,
-                specimenName, "zip");
+            DATAMODEL.exportDatasets(
+                experimentId, DATAMODEL.experimentType,
+                type, identifier, specimenName, "zip");
             return false;
         });
 

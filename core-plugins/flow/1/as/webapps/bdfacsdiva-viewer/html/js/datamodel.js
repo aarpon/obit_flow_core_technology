@@ -33,16 +33,6 @@ function DataModel() {
     this.EXPERIMENT_PREFIX = this.experimentType.substring(0,
         this.experimentType.indexOf("_EXPERIMENT"));
 
-    // Server side copy plugin
-    // TODO: Make this the same for all supported experiment types
-    if (this.EXPERIMENT_PREFIX == "LSR_FORTESSA") {
-        this.SERVER_SIDE_COPY_PLUGIN = "copy_lsrfortessa_datasets_to_userdir";
-    } else if (this.EXPERIMENT_PREFIX == "FACS_ARIA") {
-        this.SERVER_SIDE_COPY_PLUGIN = "copy_facsaria_datasets_to_userdir";
-    } else {
-        throw "Unexpected Experiment type!";
-    }
-
     // Experiment object and name
     this.exp = null;
     this.expName = "";
@@ -666,18 +656,21 @@ DataModel.prototype.getTubes = function(expCode, node) {
 };
 
 /**
- * Call an aggregation plug-in to copy the datasets associated to selected
+  *Call an aggregation plug-in to copy the datasets associated to selected
  * node to the user folder.
- * @param string Experiment openBIS ID
- * @param type op
- * @param {type} ?
- * @returns {tubes} ?
+ * @param experimentId string Experiment identifier
+ * @param experimentType string Type of the experiment (LSR_FORTESSA_EXPERIMENT or FACS_ARIA_EXPERIMENT)
+ * @param type string Type of the element to process
+ * @param identifier string Identified of the element to process
+ * @param specimen string Specimen name or ""
+ * @param mode string One of "normal" or "zip"
  */
-DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identifier, specimen, mode) {
+DataModel.prototype.exportDatasets = function(experimentId, experimentType, type, identifier, specimen, mode) {
 
     // Parameters for the aggregation service
     var parameters = {
         experimentId: experimentId,
+        experimentType: experimentType,
         entityType: type,
         entityId: identifier,
         specimen: specimen,
@@ -690,7 +683,7 @@ DataModel.prototype.copyDatasetsToUserDir = function(experimentId, type, identif
 	// Must use global object
 	DATAMODEL.openbisServer.createReportFromAggregationService(
         CONFIG.datastoreServerCode,
-        DATAMODEL.SERVER_SIDE_COPY_PLUGIN,
+        "export_bdfacsdiva_datasets",
         parameters,
         function(response) {
 
