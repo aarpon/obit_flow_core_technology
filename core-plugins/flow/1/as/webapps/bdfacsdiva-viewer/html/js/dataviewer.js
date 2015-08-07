@@ -583,8 +583,8 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
     var detailViewSampleID = $("#detailViewSample");
 
     detailViewSampleID.append($("<p>").html("This file contains " +
-        node.data.parameterInfo.numParameters + " parameters and " +
-        node.data.parameterInfo.numEvents + " events.")
+            node.data.parameterInfo.numParameters + " parameters and " +
+            node.data.parameterInfo.numEvents + " events.")
     );
 
     // Create the form
@@ -621,6 +621,32 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
     selectXAxisId.val(node.data.parameterInfo["names"][0]);
     selectYAxisId.val(node.data.parameterInfo["names"][1]);
 
+    // Add a selector with the number of events to plot
+    formId.append($("<label>").attr("for", "parameter_form_select_num_events").html("Events"));
+    var selectNumEvents = $("<select>").addClass("form_control").attr("id", "parameter_form_select_num_events");
+    formId.append(selectNumEvents);
+    var selectNumEvents = $("#parameter_form_select_num_events");
+
+    // Add the options
+    var possibleOptions = [500, 1000, 2500, 5000, 10000, 20000, 50000, 100000];
+    for (var i = 0; i < possibleOptions.length; i++) {
+        if (possibleOptions[i] < node.data.parameterInfo.numEvents) {
+            selectNumEvents.append($("<option>")
+                .attr("value", possibleOptions[i])
+                .text(parseInt(possibleOptions[i])));
+        }
+    }
+    selectNumEvents.append($("<option>")
+        .attr("value", node.data.parameterInfo.numEvents)
+        .text(parseInt(node.data.parameterInfo.numEvents)));
+
+    // Pre-select something reasonable
+    if (node.data.parameterInfo.numEvents > possibleOptions[4]) {
+        selectNumEvents.val(parseInt(possibleOptions[4]));
+    } else {
+        selectNumEvents.val(parseInt(node.data.parameterInfo.numEvents));
+    }
+
     // Add "Plot" button
     var plotButton = $("<input>")
         .attr("type", "button")
@@ -636,8 +662,8 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
             var paramY = selectedY.val();
             var displayY = selectedY.attr("data");
 
-            // TODO Make this a parameter the user can pick
-            var numEvents = 10000;
+            // How many events to plot?
+            var numEvents = selectNumEvents.val();
 
             DATAMODEL.generateFCSPlot(
                 node,
