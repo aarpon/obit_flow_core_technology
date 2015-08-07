@@ -114,6 +114,9 @@ def process(transaction, parameters, tableBuilder):
     
     """
 
+    # Latest experiment version
+    EXPERIMENT_VERSION = 1
+
     # Set up logging
     _logger = setUpLogging()
 
@@ -126,11 +129,9 @@ def process(transaction, parameters, tableBuilder):
 
     # Retrieve parameters from client
     expPermId = parameters.get("expPermId")
-    dataSetType = parameters.get("dataSetType")
 
     # Log parameter info
-    _logger.info("Requested update of experiment " + expPermId + 
-                " and FCS files of type " + dataSetType + ".")
+    _logger.info("Requested update of experiment " + expPermId + ".")
 
     # Get the experiment
     expCriteria = SearchCriteria()
@@ -163,6 +164,10 @@ def process(transaction, parameters, tableBuilder):
     # Log
     _logger.info("Successfully retrieved Experiment with permId " + 
                  expPermId + " and type " + experimentType + ".")
+
+    # Build the corresponding dataset type
+    experimentPrefix = experimentType[0:experimentType.find("_EXPERIMENT")]
+    dataSetType = experimentPrefix + "_FCSFILE"
 
     # Retrieve all FCS files contained in the experiment
     searchCriteria = SearchCriteria()
@@ -250,6 +255,9 @@ def process(transaction, parameters, tableBuilder):
     # Get the experiment name from the registered Experiment
     currentExpName = experiment.getPropertyValue(experimentType + "_NAME")
 
+    # We need the Experiment to be mutable
+    mutableExperiment = transaction.makeExperimentMutable(experiment)
+
     # Are the experiment names matching?
     if expNameFromFile == currentExpName:
 
@@ -258,9 +266,6 @@ def process(transaction, parameters, tableBuilder):
                      "name from the FCS file.")
 
     else:
-
-        # We need the Experiment to be mutable
-        mutableExperiment = transaction.makeExperimentMutable(experiment)
 
         # Update the registered Experiment name
         mutableExperiment.setPropertyValue(experimentType + "_NAME", expNameFromFile)
@@ -382,9 +387,16 @@ def process(transaction, parameters, tableBuilder):
                              " were successfully stored (in XML).") 
 
 
+    # Update the version of the experiment
+    mutableExperiment.setPropertyValue(experimentType + "_VERSION",
+                                       str(EXPERIMENT_VERSION))
+
     success = True
     message = "Congratulations! The experiment was successfully upgraded " + \
-        "to the latest version."   
+        "to the latest version."
+
+    # Log
+    _logger.info(message)
 
     # Add the results to current row
     row.setCell("success", success)

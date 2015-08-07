@@ -20,8 +20,31 @@ function DataViewer() {
  */
 DataViewer.prototype.displayExperimentInfo = function(exp) {
 
-    // Display the experiment name
-    $("#experimentNameView").html("<h2>" + exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_NAME"] + "</h2>");
+    // Prepare title
+    var titleId = $("<h2>").html(exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_NAME"]);
+
+    // check that the experiment is at the latest version
+    if (! exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_VERSION"] ||
+        exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_VERSION"] < DATAMODEL.EXPERIMENT_LATEST_VERSION) {
+
+        // Prepend "Upgrade" button
+        var updateButton = $("<input>")
+            .attr("type", "button")
+            .attr("value", "Upgrade")
+            .addClass("upgradeButton")
+            .click(function() {
+
+                // Disable the Upgrade button
+                $(this).prop("disabled", true);
+
+                // Call the server-side plug-in
+                DATAMODEL.upgradeExperiment(DATAMODEL.exp.permId);
+            });
+        titleId.prepend(updateButton);
+
+    }
+
+    $("#experimentNameView").append(titleId);
 
     // Display the experiment info
     var detailView = $("#detailView");
@@ -184,22 +207,7 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
                     // Old experiments might not have anything stored in {exp_prefix}_FCSFILE_PARAMETERS.
                     if (!node.data.element.properties[DATAMODEL.EXPERIMENT_PREFIX + "_FCSFILE_PARAMETERS"]) {
                         detailViewSampleID.append($("<p>").html(
-                            "Sorry, there is no parameter information stored for this file. "));
-
-                        // Add "Upgrade" button
-                        var updateButton = $("<input>")
-                            .attr("type", "button")
-                            .attr("value", "Upgrade")
-                            .click(function() {
-
-                                // Disable the Upgrade button
-                                $(this).prop("disabled", true);
-
-                                // Call the server-side plug-in
-                                DATAMODEL.upgradeExperiment(DATAMODEL.exp.permId,
-                                    node.data.element.dataSetTypeCode);
-                            });
-                        detailViewSampleID.append(updateButton);
+                            "Sorry, there is no parameter information stored for this file. Please upgrade the experiment."));
 
                         return;
                     }

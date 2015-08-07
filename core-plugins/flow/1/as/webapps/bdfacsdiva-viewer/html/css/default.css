@@ -46,6 +46,10 @@ input {
     text-align: center;
 }
 
+.upgradeButton {
+    font-size: 0.5em;
+}
+
 .fcsAcqDate {
     font-size: 0.7em;
     font-wight: normal;

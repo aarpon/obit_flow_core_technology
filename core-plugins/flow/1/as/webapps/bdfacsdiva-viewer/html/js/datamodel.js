@@ -14,6 +14,9 @@ function DataModel() {
 
     "use strict";
 
+    // Current experiment version
+    this.EXPERIMENT_LATEST_VERSION = 1;
+
     // Create a context object to access the context information
     this.context = new openbisWebAppContext();
 
@@ -893,14 +896,13 @@ DataModel.prototype.generateFCSPlot = function(node, code, paramX, paramY, displ
  * Update an outdated experiment.
  * @param expPermId string Experiment perm identifier.
  */
-DataModel.prototype.upgradeExperiment = function(expPermId, dataSetType) {
+DataModel.prototype.upgradeExperiment = function(expPermId) {
 
     // Check that this is an experiment node
 
     // Parameters for the aggregation service
     var parameters = {
-        expPermId: expPermId,
-        dataSetType: dataSetType
+        expPermId: expPermId
     };
 
     // Message
@@ -961,7 +963,9 @@ DataModel.prototype.upgradeExperiment = function(expPermId, dataSetType) {
             DATAVIEWER.displayStatus(status, level);
 
             // Reload the page after a short delay
-            setTimeout(function() {window.location.reload();}, 1000);
+            if (r_Success == true) {
+                setTimeout(function() {window.location.reload();}, 1000);
+            }
 
         });
 }
