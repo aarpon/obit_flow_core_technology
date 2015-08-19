@@ -50,6 +50,10 @@ input {
     font-size: 0.5em;
 }
 
+.action {
+    margin: 1px;
+}
+
 .fcsAcqDate {
     font-size: 0.7em;
     font-wight: normal;

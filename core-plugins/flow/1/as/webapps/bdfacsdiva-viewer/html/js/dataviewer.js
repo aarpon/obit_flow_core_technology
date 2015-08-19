@@ -344,7 +344,8 @@ DataViewer.prototype.displayExportAction = function(node) {
             // If there are no (loaded) children (yet), just return
             if (!node.childList || node.childList.length == 0) {
                 if (node._isLoading) {
-                    this.displayStatus("The actions for this node will be displayed next time you select it.</br />", "info");
+                    this.displayStatus("The actions for this node will be displayed next time you select it.</br />",
+                        "info");
                 }
                 return;
             }
@@ -384,7 +385,8 @@ DataViewer.prototype.displayExportAction = function(node) {
             // If there are no (loaded) children (yet), just return
             if (!node.childList || node.childList.length == 0) {
                 if (node._isLoading) {
-                    this.displayStatus("The actions for this node will be displayed next time you select it.</br />", "info");
+                    this.displayStatus("The actions for this node will be displayed next time you select it.</br />",
+                        "info");
                 }
                 return;
             }
@@ -432,7 +434,7 @@ DataViewer.prototype.displayExportAction = function(node) {
             .attr("src", "img/export.png");
 
         var link = $("<a>")
-            .addClass("btn btn-xs btn-primary")
+            .addClass("btn btn-xs btn-primary action")
             .attr("href", "#")
             .html("&nbsp;Export to your folder")
             .click(function() {
@@ -452,7 +454,7 @@ DataViewer.prototype.displayExportAction = function(node) {
         .attr("src", "img/zip.png");
 
     var link = $("<a>")
-        .addClass("btn btn-xs btn-primary")
+        .addClass("btn btn-xs btn-primary action")
         .attr("href", "#")
         .html("&nbsp;Download archive")
         .click(function() {
@@ -482,7 +484,7 @@ DataViewer.prototype.displayDownloadAction = function(node) {
             .attr("src", "img/download.png");
 
         var link = $("<a>")
-            .addClass("btn btn-xs btn-primary")
+            .addClass("btn btn-xs btn-primary action")
             .attr("href", node.data.element.url)
             .html("&nbsp;Download " + node.data.element.filename)
 
