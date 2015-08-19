@@ -176,6 +176,11 @@ class Processor:
         @return IExperimentUpdatable experiment
         """
 
+        # Get the experiment version
+        expVersion = experimentNode.attrib.get("version")
+        if expVersion is None:
+            expVersion = "0"
+
         # Get the openBIS identifier
         openBISIdentifier = experimentNode.attrib.get("openBISIdentifier")
 
@@ -219,6 +224,10 @@ class Processor:
             # Set the metaprojects (tags)
             for openBISTag in openBISTags:
                 openBISTag.addEntity(openBISExperiment)
+
+        # Set the experiment version
+        openBISExperiment.setPropertyValue("FACS_ARIA_EXPERIMENT_VERSION",
+                                           expVersion)
 
         # Set the date
         openBISExperiment.setPropertyValue("FACS_ARIA_EXPERIMENT_DATE",

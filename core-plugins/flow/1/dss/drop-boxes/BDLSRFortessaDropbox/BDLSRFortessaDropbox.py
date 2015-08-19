@@ -177,6 +177,11 @@ class Processor:
         @return IExperimentUpdatable experiment
         """
 
+        # Get the experiment version
+        expVersion = experimentNode.attrib.get("version")
+        if expVersion is None:
+            expVersion = "0"
+
         # Get the openBIS identifier
         openBISIdentifier = experimentNode.attrib.get("openBISIdentifier")
 
@@ -221,6 +226,10 @@ class Processor:
             for openBISTag in openBISTags:
                 openBISTag.addEntity(openBISExperiment)
 
+        # Set the experiment version
+        openBISExperiment.setPropertyValue("LSR_FORTESSA_EXPERIMENT_VERSION",
+                                           expVersion)
+
         # Set the date
         openBISExperiment.setPropertyValue("LSR_FORTESSA_EXPERIMENT_DATE",
                                            expDate)
@@ -228,7 +237,7 @@ class Processor:
         openBISExperiment.setPropertyValue("LSR_FORTESSA_EXPERIMENT_DESCRIPTION",
                                            description)
 
-        # Set the acquisition hardware
+                # Set the acquisition hardware
         openBISExperiment.setPropertyValue("LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE",
                                            acqHardware)
 
