@@ -90,11 +90,11 @@ DataViewer.prototype.displayExperimentInfo = function(exp) {
     // Display the acquisition details
     var acqDate = exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_DATE"];
 
-    var acqDetails = "<p>" +
+    var acqDetails =
         exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_SOFTWARE"] + " on " +
         exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_HARDWARE"] + " (acquisition by " +
         exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_OWNER"] + " on " +
-        acqDate.substring(0, 10) + ").</p>";
+        acqDate.substring(0, 10) + ").";
 
     experimentAcquisitionDetailsView.append(this.prepareTitle("Acquisition details"));
     experimentAcquisitionDetailsView.append($("<p>").html(acqDetails));
@@ -505,11 +505,11 @@ DataViewer.prototype.displayStatus = function(status, level) {
     // Get the the status div
     var status_div = $("#status");
 
-    // Make sure the status div is visible
-    status_div.show();
-
     // Clear the status
     status_div.empty();
+
+    // Make sure the status div is visible
+    status_div.show();
 
     // Make sure the level is valid
     if (["default", "success", "info", "warning", "danger"].indexOf(level) == -1) {
@@ -535,7 +535,7 @@ DataViewer.prototype.hideStatus = function() {
  * Display attachment info and link to the Attachments tab.
  * @param attachments: list of attachments
  */
-DataViewer.prototype.displayAttachments = function(dataMoverObj, attachments) {
+DataViewer.prototype.displayAttachments = function(dataModelObj, attachments) {
 
     // Get the div
     var experimentAttachmentsViewId = $("#experimentAttachmentsView");
@@ -545,17 +545,17 @@ DataViewer.prototype.displayAttachments = function(dataMoverObj, attachments) {
 
     // Text
     var text = "";
-    if (dataMoverObj.attachments.length == 0) {
+    if (dataModelObj.attachments.length == 0) {
         text = "There are no attachments.";
-    } else if (dataMoverObj.attachments.length == 1) {
+    } else if (dataModelObj.attachments.length == 1) {
         text = "There is one attachment."
     } else {
-        text = "There are " + dataMoverObj.attachments.length + " attachments";
+        text = "There are " + dataModelObj.attachments.length + " attachments";
     }
     // Link to the attachment tab
     var link = $("<a>").text(text).attr("href", "#").attr("title", text).click(
         function() {
-            var url = "#entity=EXPERIMENT&permId=" + dataMoverObj.exp.permId +
+            var url = "#entity=EXPERIMENT&permId=" + dataModelObj.exp.permId +
                 "&ui-subtab=attachment-section&ui-timestamp=" + (new Date().getTime());
             window.top.location.hash = url;
             return false;
