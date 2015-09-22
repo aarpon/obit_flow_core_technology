@@ -65,7 +65,7 @@ def getFileForCode(code):
     return dataSetFiles
 
 
-def getSessionCSVFileForFCSFile(fcsFile):
+def getSessionCSVFileForFCSFile(code, fcsFile):
     """Return the path of the CSV file in the session workspace for the given FCS file."""
 
     # Get the session workspace
@@ -74,9 +74,9 @@ def getSessionCSVFileForFCSFile(fcsFile):
     # The user folder now will point to the Session Workspace
     sessionWorskpacePath = sessionWorkspace.absolutePath
 
-    # Prepare the output csv file
+    # Prepare the output csv file name. We add the code to make it unique.
     baseName = os.path.basename(fcsFile)
-    fName = os.path.splitext(baseName)[0] + ".csv"
+    fName = code + '_' + os.path.splitext(baseName)[0] + ".csv"
     csvFile = os.path.join(sessionWorskpacePath, fName)
 
     return csvFile
@@ -132,7 +132,7 @@ def aggregate(parameters, tableBuilder):
         _logger.info("Dataset code " + code + " corresponds to FCS file " + fcsFile)
 
         # Get the associated CSV file path
-        csvFile = getSessionCSVFileForFCSFile(fcsFile)
+        csvFile = getSessionCSVFileForFCSFile(code, fcsFile)
 
         # Does the csv file already exist in the session?
         success = True
@@ -196,23 +196,46 @@ def aggregate(parameters, tableBuilder):
             # Prepare the data array
             data = []
 
-            # Calculate the sampling step
-            if maxNumEvents >= numEvents:
-                step = 1
-            else:
-                step = int(float(numEvents) / float(maxNumEvents))
-                if step == 0:
-                    step = 1
+            # Currently we hard-code the sampling method.
+            #
+            # Method 1: to get the requested number of events, we just return
+            #           the first N rows at the beginning of the file. This is
+            #           faster, and as far as the experts say, should still be 
+            #           reasonably representative of the underlying population.
+            #
+            # Method 2: the get the requested number of events, we will sub-
+            #           sample the file by skipping a certain number of rows
+            #           ("step") in between the returned once.
 
-            # Now collect all data
-            i = 0
-            for row in content:
+            method = 1
 
-                if i % step == 0:
+            if method == 1:
 
+                # Now collect the first maxNumEvents rows
+                for i in range (min(maxNumEvents, numEvents) - 1):
+
+                    row = content.next()
                     data.append([float(row[indxX]), float(row[indxY])])
 
-                i = i + 1
+            else:
+
+                # Calculate the sampling step
+                if maxNumEvents >= numEvents:
+                    step = 1
+                else:
+                    step = int(float(numEvents) / float(maxNumEvents))
+                    if step == 0:
+                        step = 1
+
+                # Now collect all data
+                i = 0
+                for row in content:
+
+                    if i % step == 0:
+
+                        data.append([float(row[indxX]), float(row[indxY])])
+
+                    i = i + 1
 
             # JSON encode the data array
             dataJSON = json.dumps(data) 

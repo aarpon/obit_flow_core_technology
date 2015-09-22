@@ -999,7 +999,6 @@ DataModel.prototype.retrieveAndDisplayAttachments = function() {
         }
     });
 
-
 };
 
 /**
