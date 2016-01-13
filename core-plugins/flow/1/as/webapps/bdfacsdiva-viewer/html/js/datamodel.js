@@ -683,12 +683,17 @@ DataModel.prototype.exportDatasets = function(experimentId, experimentType, type
     // Inform the user that we are about to process the request
     DATAVIEWER.displayStatus("Please wait while processing your request. This might take a while...", "info");
 
-	// Must use global object
-	DATAMODEL.openbisServer.createReportFromAggregationService(
-        CONFIG.datastoreServerCode,
-        "export_bdfacsdiva_datasets",
-        parameters,
-        function(response) {
+    // Must use global object
+    DATAMODEL.openbisServer.createReportFromAggregationService(
+        CONFIG['dataStoreServer'], "export_bdfacsdiva_datasets",
+        parameters, DATAMODEL.processResultsFromExportDatasetsServerSidePlugin);
+};
+
+/**
+ * Process the results returned from the exportDatasets() server-side plug-in
+ * @param response JSON object
+ */
+DataModel.prototype.processResultsFromExportDatasetsServerSidePlugin = function(response) {
 
 	    var status;
 	    var unexpected = "Sorry, unexpected feedback from server " +
@@ -697,6 +702,8 @@ DataModel.prototype.exportDatasets = function(experimentId, experimentType, type
         var row;
 
         // Returned parameters
+        var r_UID;
+        var r_Completed;
         var r_Success;
         var r_ErrorMessage;
         var r_NCopiedFiles;
@@ -704,57 +711,99 @@ DataModel.prototype.exportDatasets = function(experimentId, experimentType, type
         var r_ZipArchiveFileName;
         var r_Mode;
 
+        // First check if we have an error
 	    if (response.error) {
+
 	        status = "Sorry, could not process request.";
 	        level = "danger";
             r_Success = false;
+
 	    } else {
+
+            // No obvious errors. Retrieve the results.
             status = "";
             if (response.result.rows.length != 1) {
+
+                // Unexpected number of rows returned
                 status = unexpected;
                 level = "danger";
+
             } else {
+
+                // We have a potentially valid result
                 row = response.result.rows[0];
-                if (row.length != 6) {
-                    status = unexpected;
-                    level = "danger";
+
+                // Retrieve the uid
+                r_UID = row[0].value;
+
+                // Retrieve the 'completed' status
+                r_Completed = row[1].value
+
+                // If the processing is not completed, we wait a few seconds and trigger the
+                // server-side plug-in again. The interval is defined by the admin.
+                if (r_Completed == false) {
+
+                    // We only need the UID of the job
+                    parameters = {};
+                    parameters["uid"] = r_UID;
+
+                    // Call the plug-in
+                    setTimeout(function() {
+                            DATAMODEL.openbisServer.createReportFromAggregationService(
+                                CONFIG['dataStoreServer'], "export_bdfacsdiva_datasets",
+                                parameters, DATAMODEL.processResultsFromExportDatasetsServerSidePlugin)
+                        },
+                        parseInt(CONFIG['queryPluginStatusInterval']));
+
+                    // Return here
+                    return;
+
                 } else {
 
-                    // Extract returned values for clarity
-                    r_Success = row[0].value;
-                    r_ErrorMessage = row[1].value;
-                    r_NCopiedFiles = row[2].value;
-                    r_RelativeExpFolder = row[3].value;
-                    r_ZipArchiveFileName = row[4].value;
-                    r_Mode = row[5].value;
+                    if (row.length != 8) {
 
-                    if (r_Success == true) {
-                        var snip = "<b>Congratulations!</b>&nbsp;";
-                        if (r_NCopiedFiles == 1) {
-                            snip = snip +
-                                "<span class=\"badge\">1</span> file was ";
-                        } else {
-                            snip = snip +
-                                "<span class=\"badge\">" + 
-                                r_NCopiedFiles + "</span> files were ";
-                        }
-                        if (r_Mode == "normal") {
-                        status = snip + "successfully exported to " +
-                                "{...}/" + r_RelativeExpFolder + ".";
-                        } else {
-                            // Add a placeholder to store the download URL.
-                            status = snip + "successfully packaged. <span id=\"download_url_span\"></span>";
-                        }
-                        level = "success";
+                        // Again, something is wrong with the returned results
+                        status = unexpected;
+                        level = "error";
+
                     } else {
-                        if (r_Mode == "normal") {
-                        status = "Sorry, there was an error exporting " + 
-                        "to your user folder:<br /><br />\"" +
-                                r_ErrorMessage + "\".";
+
+                        // Extract returned values for clarity
+                        r_Success = row[2].value;
+                        r_ErrorMessage = row[3].value;
+                        r_NCopiedFiles = row[4].value;
+                        r_RelativeExpFolder = row[5].value;
+                        r_ZipArchiveFileName = row[6].value;
+                        r_Mode = row[7].value;
+
+                        if (r_Success == true) {
+                            var snip = "<b>Congratulations!</b>&nbsp;";
+                            if (r_NCopiedFiles == 1) {
+                                snip = snip +
+                                    "<span class=\"badge\">1</span> file was ";
+                            } else {
+                                snip = snip +
+                                    "<span class=\"badge\">" +
+                                    r_NCopiedFiles + "</span> files were ";
+                            }
+                            if (r_Mode == "normal") {
+                                status = snip + "successfully exported to " +
+                                    "{...}/" + r_RelativeExpFolder + ".";
+                            } else {
+                                // Add a placeholder to store the download URL.
+                                status = snip + "successfully packaged. <span id=\"download_url_span\"></span>";
+                            }
+                            level = "success";
                         } else {
-                            status = "Sorry, there was an error packaging your files for download!";
+                            if (r_Mode == "normal") {
+                                status = "Sorry, there was an error exporting " +
+                                    "to your user folder:<br /><br />\"" +
+                                    r_ErrorMessage + "\".";
+                            } else {
+                                status = "Sorry, there was an error packaging your files for download!";
+                            }
+                            level = "error";
                         }
-                        level = "danger";
                     }
                 }
             }
@@ -762,14 +811,14 @@ DataModel.prototype.exportDatasets = function(experimentId, experimentType, type
         DATAVIEWER.displayStatus(status, level);
 
         // Retrieve the URL (asynchronously)
-        if (r_Success == true && r_Mode == "zip")
+        if (r_Success == true && r_Mode == "zip") {
             DATAMODEL.openbisServer.createSessionWorkspaceDownloadUrl(r_ZipArchiveFileName,
                 function(url) {
                     var downloadString =
                         '<img src="img/download.png" />&nbsp;<a href="' + url + '">Download</a>!';
                     $("#download_url_span").html(downloadString);
                 });
-    });
+    }
 };
 
 /**
@@ -825,7 +874,7 @@ DataModel.prototype.generateFCSPlot = function(node, code, paramX, paramY, displ
 
     // Must use global object
     DATAMODEL.openbisServer.createReportFromAggregationService(
-        CONFIG.datastoreServerCode,
+        CONFIG.dataStoreServer,
         "retrieve_fcs_events",
         parameters,
         function (response) {
@@ -918,7 +967,7 @@ DataModel.prototype.upgradeExperiment = function(expPermId) {
 
     // Must use global object
     DATAMODEL.openbisServer.createReportFromAggregationService(
-        CONFIG.datastoreServerCode,
+        CONFIG.dataStoreServer,
         "upgrade_experiment",
         parameters,
         function (response) {

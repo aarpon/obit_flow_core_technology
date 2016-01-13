@@ -16,6 +16,9 @@ import sys
 import re
 import zipfile
 import java.io.File
+from ch.ethz.scu.obit.common.server.longrunning import LRCache
+import uuid
+from threading import Thread
 
 
 def touch(full_file):
@@ -847,7 +850,103 @@ def parsePropertiesFile():
     return properties
 
 # Plug-in entry point
+#
+# This method returns a table to the client with a different set of columns
+# depending on whether the plug-in is called for the first time and the process
+# is just started, or if it is queried for completeness at a later time.
+#
+# At the end of the first call, a table with following columns is returned:
+#
+# uid      : unique identifier of the running plug-in
+# completed: indicated if the plug-in has finished. This is set to False in the 
+#            first call.
+#
+# Later calls return a table with the following columns:
+#
+# uid      : unique identifier of the running plug-in. This was returned to
+#            the client in the first call and was passed on again as a parameter.
+#            Here it is returned again to make sure that client and server
+#            always know which task they are talking about. 
+# completed: True if the process has completed in the meanwhile, False if it 
+#            is still running.
+# success  : True if the process completed successfully, False otherwise.
+# message  : error message in case success was False.
+# nCopiedFiles: total number of copied files.
+# relativeExpFolder: folder to the copied folder relative to the root of the
+#            export folder.
+# zipArchiveFileName: file name of the zip in case compression was requested.
+# mode     : requested mode of operation.
 def aggregate(parameters, tableBuilder):
+
+    # Get the ID of the call if it already exists
+    uid = parameters.get("uid");
+
+    if uid is None or uid == "":
+
+        # Create a unique id
+        uid = str(uuid.uuid4())
+
+        # Add the table headers
+        tableBuilder.addHeader("uid")
+        tableBuilder.addHeader("completed")
+
+        # Fill in relevant information
+        row = tableBuilder.addRow()
+        row.setCell("uid", uid)
+        row.setCell("completed", False)
+
+        # Launch the actual process in a separate thread
+        thread = Thread(target = aggregateProcess,
+                        args = (parameters, tableBuilder, uid))
+        thread.start()
+
+        # Return immediately
+        return
+
+    # The process is already running in a separate thread. We get current
+    # results and return them 
+    resultToSend = LRCache.get(uid);
+    if resultToSend is None:
+        # This should not happen
+        raise Exception("Could not retrieve results from result cache!")
+
+    # Add the table headers
+    tableBuilder.addHeader("uid")
+    tableBuilder.addHeader("completed")
+    tableBuilder.addHeader("success")
+    tableBuilder.addHeader("message")
+    tableBuilder.addHeader("nCopiedFiles")
+    tableBuilder.addHeader("relativeExpFolder")
+    tableBuilder.addHeader("zipArchiveFileName")
+    tableBuilder.addHeader("mode")
+
+    # Store current results in the table
+    row = tableBuilder.addRow()
+    row.setCell("uid", resultToSend["uid"])
+    row.setCell("completed", resultToSend["completed"])
+    row.setCell("success", resultToSend["success"])
+    row.setCell("message", resultToSend["message"])
+    row.setCell("nCopiedFiles", resultToSend["nCopiedFiles"]) 
+    row.setCell("relativeExpFolder", resultToSend["relativeExpFolder"])
+    row.setCell("zipArchiveFileName", resultToSend["zipArchiveFileName"])
+    row.setCell("mode", resultToSend["mode"])
+
+# Actual work process
+def aggregateProcess(parameters, tableBuilder, uid):
+
+    # Make sure to initialize and store the results. We need to have them since
+    # most likely the client will try to retrieve them again before the process
+    # is finished.
+    resultToStore = {}
+    resultToStore["uid"] = uid
+    resultToStore["success"] = True
+    resultToStore["completed"] = False
+    resultToStore["message"] = ""
+    resultToStore["nCopiedFiles"] = ""
+    resultToStore["relativeExpFolder"] = ""
+    resultToStore["zipArchiveFileName"] = ""
+    resultToStore["mode"] = ""
+    LRCache.set(uid, resultToStore)
 
     # Get parameters from plugin.properties
     properties = parsePropertiesFile()
@@ -887,25 +986,19 @@ def aggregate(parameters, tableBuilder):
     # Get some results info
     nCopiedFiles = mover.getNumberOfCopiedFiles()
     errorMessage = mover.getErrorMessage();
-    relativeRootExpFolder = mover.getRelativeRootExperimentPath()
+    relativeExpFolder = mover.getRelativeRootExperimentPath()
     zipFileName = mover.getZipArchiveFileName()
 
-    # Add the table headers
-    tableBuilder.addHeader("Success")
-    tableBuilder.addHeader("Message")
-    tableBuilder.addHeader("nCopiedFiles")
-    tableBuilder.addHeader("relativeExpFolder")
-    tableBuilder.addHeader("zipArchiveFileName")
-    tableBuilder.addHeader("Mode")
-
-    # Store the results in the table
-    row = tableBuilder.addRow()
-    row.setCell("Success", success)
-    row.setCell("Message", errorMessage)
-    row.setCell("nCopiedFiles", nCopiedFiles)
-    row.setCell("relativeExpFolder", relativeRootExpFolder)
-    row.setCell("zipArchiveFileName", zipFileName)
-    row.setCell("Mode", mode)
+    # Update results and store them
+    resultToStore["uid"] = uid
+    resultToStore["completed"] = True
+    resultToStore["success"] = success
+    resultToStore["message"] = errorMessage
+    resultToStore["nCopiedFiles"] = nCopiedFiles
+    resultToStore["relativeExpFolder"] = relativeExpFolder
+    resultToStore["zipArchiveFileName"] = zipFileName
+    resultToStore["mode"] = mode
+    LRCache.set(uid, resultToStore)
 
     # Email result to the user
     if success == True:
@@ -918,10 +1011,10 @@ def aggregate(parameters, tableBuilder):
             snip = str(nCopiedFiles) + " files were "
 
         if mode == "normal":
-            body = snip + "successfully exported to {...}/" + relativeRootExpFolder + "."
+            body = snip + "successfully exported to {...}/" + relativeExpFolder + "."
         else:
-            body = snip + "successfully packaged for download."
-            
+            body = snip + "successfully packaged for download: " + zipFileName
+
     else:
         subject = "BD FACS DIVA export: error processing request!"
         body = "Sorry, there was an error processing your request. " + \

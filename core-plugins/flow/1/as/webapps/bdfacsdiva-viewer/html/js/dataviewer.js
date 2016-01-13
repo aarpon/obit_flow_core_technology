@@ -20,6 +20,10 @@ function DataViewer() {
  */
 DataViewer.prototype.displayExperimentInfo = function(exp) {
 
+    // Get the experiment name view
+    var experimentNameView_div = $("#experimentNameView");
+    experimentNameView_div.empty();
+
     // Prepare title
     var titleId = $("<h2>").html(exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_NAME"]);
 
