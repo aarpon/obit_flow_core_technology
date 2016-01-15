@@ -2,7 +2,6 @@
 
 # Ingestion service: upgrade an experiment structure to current version
 
-# Note: this plug-in uses LRCache.jar from export_bdfacsdiva_datasets/lib.
 
 import os.path
 import logging
@@ -13,9 +12,6 @@ from ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.SearchCriteria import Ma
 import ch.ethz.scu.obit.bdfacsdivafcs.readers.FCSReader as FCSReader
 import java.io.File
 import xml.etree.ElementTree as xml
-from ch.ethz.scu.obit.common.server.longrunning import LRCache
-import uuid
-from threading import Thread
 
 
 def dictToXML(d):
@@ -111,104 +107,25 @@ def getFileForCode(code):
     # Return the files
     return dataSetFiles
 
-# Plug-in entry point
-#
-# This plug-in always returns immediately. The first time it is called, it
-# starts the upgrade process in a separate thread and returns a unique ID to 
-# the client that will later use to retrieve the state of the progress.
-#
-# This method takes a list of parameters that also returns in a table (tableBuilder)
-# to the client. The names of the input parameters match the corresponding 
-# column names.
-#
-# uid      : unique identifier of the running plug-in. The first time it is
-#            either omitted or passed as "" from the client, since it is the
-#            server that creates the unique ID for the job. After this is 
-#            returned to the client in the first call, it must be passed on
-#            again as a parameter to the server.
-#
-# expPermId: experiment identifier.
-#
-# This plug-in returns a table to the client with the following columns:.
-# 
-# uid      : unique identifier of the running plug-in. The first time it is
-#            either omitted or passed as "" from the client, since it is the
-#            server that creates the unique ID for the job. After this is 
-#            returned to the client in the first call, it must be passed on
-#            again as a parameter to the server.
-# completed: True if the process has completed in the meanwhile, False if it 
-#            is still running.
-# success  : True if the process completed successfully, False otherwise.
-# message  : message to be displayed in the client. Please notice that this is 
-#            not necessarily an error message (i.e. is success is True it will
-#            be a success message). 
+
 def process(transaction, parameters, tableBuilder):
     """Update old flow experiments that have some missing or incorrect
     information.
+    
     """
-
-    # Add the table headers
-    tableBuilder.addHeader("uid")
-    tableBuilder.addHeader("completed")
-    tableBuilder.addHeader("success")
-    tableBuilder.addHeader("message")
-
-    # Get the ID of the call if it already exists
-    uid = parameters.get("uid");
-
-    if uid is None or uid == "":
-
-        # Create a unique id
-        uid = str(uuid.uuid4())
-
-        # Fill in relevant information
-        row = tableBuilder.addRow()
-        row.setCell("uid", uid)
-        row.setCell("completed", False)
-        row.setCell("success", True)
-        row.setCell("message", "")
-
-        # Launch the actual process in a separate thread
-        thread = Thread(target = upgradeProcess,
-                        args = (transaction, parameters, tableBuilder, uid))
-        thread.start()
-
-        # Return immediately
-        return
-
-    # The process is already running in a separate thread. We get current
-    # results and return them 
-    resultToSend = LRCache.get(uid);
-    if resultToSend is None:
-        # This should not happen
-        raise Exception("Could not retrieve results from result cache!")
-
-    # Fill in relevant information
-    row = tableBuilder.addRow()
-    row.setCell("uid", resultToSend["uid"])
-    row.setCell("completed", resultToSend["completed"])
-    row.setCell("success", resultToSend["success"])
-    row.setCell("message", resultToSend["message"])
-
-
-# Perform the experiment upgrade in a separate thread
-def upgradeProcess(transaction, parameters, tableBuilder, uid):
-
-    # Make sure to initialize and store the results. We need to have them since
-    # most likely the client will try to retrieve them again before the process
-    # is finished.
-    resultToStore = {}
-    resultToStore["uid"] = uid
-    resultToStore["completed"] = False
-    resultToStore["success"] = True
-    resultToStore["message"] = ""
-    LRCache.set(uid, resultToStore)
 
     # Latest experiment version
     EXPERIMENT_VERSION = 1
 
     # Set up logging
     _logger = setUpLogging()
+
+    # Prepare the return table
+    tableBuilder.addHeader("success")
+    tableBuilder.addHeader("message")
+
+    # Add a row for the results
+    row = tableBuilder.addRow()
 
     # Retrieve parameters from client
     expPermId = parameters.get("expPermId")
@@ -224,16 +141,16 @@ def upgradeProcess(transaction, parameters, tableBuilder, uid):
     # If we did not get the experiment, return here with an error
     if len(experiments) != 1:
 
-        # Build the error message
+        # Prepare the return arguments
+        success = False
         message = "The experiment with permID " + expPermId + " could not be found."
 
         # Log the error
         _logger.error(message)
 
-        # Store the results and set the completed flag
-        resultToStore["completed"] = True
-        resultToStore["success"] = False
-        resultToStore["message"] = message
+        # Add the results to current row
+        row.setCell("success", success)
+        row.setCell("message", message)
 
         # Return here
         return
@@ -267,17 +184,17 @@ def upgradeProcess(transaction, parameters, tableBuilder, uid):
     # If we did not get the datasets, return here with an error
     if dataSets is None:
 
-        # Build the error message
+        # Prepare the return arguments
+        success = False
         message = "No FCS files could be found for experiment with permID " + \
             expPermId + "."
 
         # Log the error
         _logger.error(message)
 
-        # Store the results and set the completed flag
-        resultToStore["completed"] = True
-        resultToStore["success"] = False
-        resultToStore["message"] = message
+        # Add the results to current row
+        row.setCell("success", success)
+        row.setCell("message", message)
 
         # Return here
         return
@@ -286,16 +203,16 @@ def upgradeProcess(transaction, parameters, tableBuilder, uid):
     files = getFileForCode(dataSets[0].getDataSetCode())
     if len(files) != 1:
 
-        # Build the error message
+        # Prepare the return arguments
+        success = False
         message = "Could not retrieve the FCS file to process!"
 
         # Log the error
         _logger.error(message)
 
-        # Store the results and set the completed flag
-        resultToStore["completed"] = True
-        resultToStore["success"] = False
-        resultToStore["message"] = message
+        # Add the results to current row
+        row.setCell("success", success)
+        row.setCell("message", message)
 
         # Return here
         return
@@ -312,16 +229,16 @@ def upgradeProcess(transaction, parameters, tableBuilder, uid):
     # Parse the file with data
     if not reader.parse():
 
-        # Build the error message
+        # Prepare the return arguments
+        success = False
         message = "Could not process file " + os.path.basename(fcsFile)
 
         # Log the error
         _logger.error(message)
 
-        # Store the results and set the completed flag
-        resultToStore["completed"] = True
-        resultToStore["success"] = False
-        resultToStore["message"] = message
+        # Add the results to current row
+        row.setCell("success", success)
+        row.setCell("message", message)
 
         # Return here
         return
@@ -387,16 +304,16 @@ def upgradeProcess(transaction, parameters, tableBuilder, uid):
             files = getFileForCode(dataSet.getDataSetCode())
             if len(files) != 1:
 
-                # Build the error message
+                # Prepare the return arguments
+                success = False
                 message = "Could not retrieve the FCS file to process!"
 
                 # Log the error
                 _logger.error(message)
 
-                # Store the results and set the completed flag
-                resultToStore["completed"] = True
-                resultToStore["success"] = False
-                resultToStore["message"] = message
+                # Add the results to current row
+                row.setCell("success", success)
+                row.setCell("message", message)
 
                 # Return here
                 return     
@@ -410,16 +327,16 @@ def upgradeProcess(transaction, parameters, tableBuilder, uid):
             # Parse the file with data
             if not reader.parse():
 
-                # Build the error message
+                # Prepare the return arguments
+                success = False
                 message = "Could not process file " + os.path.basename(fcsFile)
 
                 # Log the error
                 _logger.error(message)
 
-                # Store the results and set the completed flag
-                resultToStore["completed"] = True
-                resultToStore["success"] = False
-                resultToStore["message"] = message
+                # Add the results to current row
+                row.setCell("success", success)
+                row.setCell("message", message)
 
                 # Return here
                 return
@@ -444,18 +361,17 @@ def upgradeProcess(transaction, parameters, tableBuilder, uid):
 
                 if parametersAttr is None:
 
-                    # Build the error message
+                    # Prepare the return arguments
+                    success = False
                     message = "Could not read parameters from file " + \
-                        os.path.basename(fcsFile)
-
+                    os.path.basename(fcsFile)
 
                     # Log the error
                     _logger.error(message)
 
-                    # Store the results and set the completed flag
-                    resultToStore["completed"] = True
-                    resultToStore["success"] = False
-                    resultToStore["message"] = message
+                    # Add the results to current row
+                    row.setCell("success", success)
+                    row.setCell("message", message)
 
                     # Return here
                     return
@@ -475,14 +391,13 @@ def upgradeProcess(transaction, parameters, tableBuilder, uid):
     mutableExperiment.setPropertyValue(experimentType + "_VERSION",
                                        str(EXPERIMENT_VERSION))
 
-    # Store success
+    success = True
     message = "Congratulations! The experiment was successfully upgraded " + \
         "to the latest version."
 
     # Log
     _logger.info(message)
 
-    # Store the results and set the completed flag
-    resultToStore["completed"] = True
-    resultToStore["success"] = True
-    resultToStore["message"] = message
+    # Add the results to current row
+    row.setCell("success", success)
+    row.setCell("message", message)
