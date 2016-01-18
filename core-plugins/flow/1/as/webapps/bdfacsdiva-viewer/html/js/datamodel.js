@@ -1001,76 +1001,115 @@ DataModel.prototype.processResultsFromRetrieveFCSEventsServerSidePlugin = functi
  */
 DataModel.prototype.upgradeExperiment = function(expPermId) {
 
-    // Check that this is an experiment node
-
     // Parameters for the aggregation service
     var parameters = {
         expPermId: expPermId
     };
-
-    // Message
-    var unexpected = "Sorry, unexpected feedback from server " +
-        "obtained. Please contact your administrator.";
-
-    // Returned parameters
-    var r_Success;
-    var r_ErrorMessage;
 
     // Inform the user that we are about to process the request
     DATAVIEWER.displayStatus("Please wait while processing your request. This might take a while...", "info");
 
     // Must use global object
     DATAMODEL.openbisServer.createReportFromAggregationService(
-        CONFIG.dataStoreServer,
-        "upgrade_experiment",
-        parameters,
-        function (response) {
+        CONFIG['dataStoreServer'], "upgrade_experiment",
+        parameters, DATAMODEL.processResultsFromUpgradeExperimentServerSidePlugin);
+}
 
-            var status;
-            var level;
-            var row;
+/**
+ * Process the results returned from the upgradeExperiment() server-side plug-in
+ * @param response JSON object
+ */
+DataModel.prototype.processResultsFromUpgradeExperimentServerSidePlugin = function(response) {
 
-            if (response.error) {
-                status = "Sorry, could not process request.";
-                level = "danger";
-                r_Success = false;
+    var status;
+    var level;
+    var row;
+
+    // Returned parameters
+    var r_UID;
+    var r_Completed;
+    var r_Success;
+    var r_ErrorMessage;
+
+    // Message
+    var unexpected = "Sorry, unexpected feedback from server " +
+        "obtained. Please contact your administrator.";
+
+    // First check if we have an error
+    if (response.error) {
+
+        status = "Sorry, could not process request.";
+        level = "danger";
+        r_Success = false;
+
+    } else {
+
+        // No obvious errors. Retrieve the results.
+        status = "";
+        if (response.result.rows.length != 1) {
+
+            // Unexpected number of rows returned
+            status = unexpected;
+            level = "danger";
+
+        } else {
+
+            // We have a potentially valid result
+            row = response.result.rows[0];
+
+            // Retrieve the uid
+            r_UID = row[0].value;
+
+            // Retrieve the 'completed' status
+            r_Completed = row[1].value
+
+            // If the processing is not completed, we wait a few seconds and trigger the
+            // server-side plug-in again. The interval is defined by the admin.
+            if (r_Completed == false) {
+
+                // We only need the UID of the job
+                parameters = {};
+                parameters["uid"] = r_UID;
+
+                // Call the plug-in
+                setTimeout(function() {
+                        DATAMODEL.openbisServer.createReportFromAggregationService(
+                            CONFIG['dataStoreServer'], "upgrade_experiment",
+                            parameters, DATAMODEL.processResultsFromUpgradeExperimentServerSidePlugin)
+                    },
+                    parseInt(CONFIG['queryPluginStatusInterval']));
+
+                // Return here
+                return;
+
             } else {
-                status = "";
-                if (response.result.rows.length != 1) {
-                    status = unexpected;
-                    level = "danger";
+
+                // Extract returned values for clarity
+                r_Success = row[0].value;
+                r_ErrorMessage = row[1].value;
+
+                if (r_Success == true) {
+                    status = r_ErrorMessage;
+                    level = "success";
+
                 } else {
-                    row = response.result.rows[0];
-                    if (row.length != 2) {
-                        status = unexpected;
-                        level = "danger";
-                    } else {
-
-                        // Extract returned values for clarity
-                        r_Success = row[0].value;
-                        r_ErrorMessage = row[1].value;
-
-                        if (r_Success == true) {
-                            status = r_ErrorMessage;
-                            level = "success";
-
-                        } else {
-                            status = "Sorry, there was an error: \"" +
-                                r_ErrorMessage + "\".";
-                            level = "danger";
-                        }
-                    }
+                    status = "Sorry, there was an error: \"" +
+                        r_ErrorMessage + "\".";
+                    level = "danger";
                 }
-            }
-            // We only display errors
-            DATAVIEWER.displayStatus(status, level);
 
-            // Reload the page after a short delay
-            if (r_Success == true) {
-                setTimeout(function() {window.location.reload();}, 1000);
             }
 
-        });
+        }
+    }
+
+    // We only display errors
+    DATAVIEWER.displayStatus(status, level);
+
+    // Reload the page after a short delay
+    if (r_Completed == True && r_Success == true) {
+        setTimeout(function() {window.location.reload();}, 1000);
+    }
 }
 
 /**
