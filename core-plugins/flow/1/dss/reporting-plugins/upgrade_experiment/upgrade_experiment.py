@@ -234,6 +234,7 @@ def upgradeProcess(transaction, parameters, tableBuilder, uid):
         resultToStore["completed"] = True
         resultToStore["success"] = False
         resultToStore["message"] = message
+        LRCache.set(uid, resultToStore)
 
         # Return here
         return
@@ -278,6 +279,7 @@ def upgradeProcess(transaction, parameters, tableBuilder, uid):
         resultToStore["completed"] = True
         resultToStore["success"] = False
         resultToStore["message"] = message
+        LRCache.set(uid, resultToStore)
 
         # Return here
         return
@@ -296,6 +298,7 @@ def upgradeProcess(transaction, parameters, tableBuilder, uid):
         resultToStore["completed"] = True
         resultToStore["success"] = False
         resultToStore["message"] = message
+        LRCache.set(uid, resultToStore)
 
         # Return here
         return
@@ -322,6 +325,7 @@ def upgradeProcess(transaction, parameters, tableBuilder, uid):
         resultToStore["completed"] = True
         resultToStore["success"] = False
         resultToStore["message"] = message
+        LRCache.set(uid, resultToStore)
 
         # Return here
         return
@@ -352,8 +356,6 @@ def upgradeProcess(transaction, parameters, tableBuilder, uid):
         mutableExperiment = transaction.makeExperimentMutable(experiment)
     except Exception:
         # Log
-        _logger.error("Make experiment mutable failed: " + str(type(Exception)))
-        _logger.error("Make experiment mutable failed: " + str(Exception.args))
         _logger.error("Make experiment mutable failed: " + str(Exception))
 
     # Log
@@ -415,6 +417,7 @@ def upgradeProcess(transaction, parameters, tableBuilder, uid):
                 resultToStore["completed"] = True
                 resultToStore["success"] = False
                 resultToStore["message"] = message
+                LRCache.set(uid, resultToStore)
 
                 # Return here
                 return     
@@ -438,6 +441,7 @@ def upgradeProcess(transaction, parameters, tableBuilder, uid):
                 resultToStore["completed"] = True
                 resultToStore["success"] = False
                 resultToStore["message"] = message
+                LRCache.set(uid, resultToStore)
 
                 # Return here
                 return
@@ -474,6 +478,7 @@ def upgradeProcess(transaction, parameters, tableBuilder, uid):
                     resultToStore["completed"] = True
                     resultToStore["success"] = False
                     resultToStore["message"] = message
+                    LRCache.set(uid, resultToStore)
 
                     # Return here
                     return
@@ -504,3 +509,4 @@ def upgradeProcess(transaction, parameters, tableBuilder, uid):
     resultToStore["completed"] = True
     resultToStore["success"] = True
     resultToStore["message"] = message
+    LRCache.set(uid, resultToStore)
