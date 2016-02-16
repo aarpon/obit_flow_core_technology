@@ -20,6 +20,10 @@ function DataViewer() {
  */
 DataViewer.prototype.displayExperimentInfo = function(exp) {
 
+    // Get the experiment name view
+    var experimentNameView_div = $("#experimentNameView");
+    experimentNameView_div.empty();
+
     // Prepare title
     var titleId = $("<h2>").html(exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_NAME"]);
 
@@ -788,7 +792,29 @@ DataViewer.prototype.plotFCSData = function(data, xLabel, yLabel, xDisplay, yDis
     });
 };
 
+/**
+ * Caches the retrieved FCS data to the node with given key under its own data key.
+ *
+ * @param nodeKey key of the node to update.
+ * @param dataKey key under which to store the data.
+ * @param fcsData data to be plotted.
+ */
+DataViewer.prototype.cacheFCSData = function(nodeKey, dataKey, fcsData) {
 
+    // Retrieve the tree object
+    var tree = $("#treeView").dynatree("getTree");
+    if (tree) {
+        // Load the node with specified key path
+        var node = tree.getNodeByKey(nodeKey);
+        if (node) {
 
+            // Cache the data
+            if (!node.data.cached) {
+                node.data.cached = {};
+            }
+            node.data.cached[dataKey] = fcsData;
+        }
+    }
+}
 
 
