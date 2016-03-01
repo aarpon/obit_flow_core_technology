@@ -831,11 +831,12 @@ DataModel.prototype.processResultsFromExportDatasetsServerSidePlugin = function(
  * @param displayY string Display type of the parameter for the Y axis ("LIN" or "LOG)
  * @param maxNumEvents int Maximum number of events to be retrieved from the server.
  */
-DataModel.prototype.generateFCSPlot = function(node, code, paramX, paramY, displayX, displayY, maxNumEvents) {
+DataModel.prototype.generateFCSPlot = function(node, code, paramX, paramY, displayX, displayY, maxNumEvents, samplingMethod) {
 
     // Check whether the data for the plot is already cached
     if (node.data.cached) {
-        var key = code + "_" + paramX + "_" + paramY + "_" + maxNumEvents.toString();
+        var key = code + "_" + paramX + "_" + paramY + "_" + maxNumEvents.toString() +
+            "_" + displayX + "_" + displayY + "_" + samplingMethod.toString();
         if (node.data.cached.hasOwnProperty(key)) {
 
             // Plot the cached data
@@ -856,10 +857,11 @@ DataModel.prototype.generateFCSPlot = function(node, code, paramX, paramY, displ
         code: code,
         paramX: paramX,
         paramY: paramY,
-        displayX: displayX, // Currently unused
-        displayY: displayY, // Currently unused
+        displayX: displayX,
+        displayY: displayY,
         numEvents: node.data.parameterInfo['numEvents'],
         maxNumEvents: maxNumEvents,
+        samplingMethod: samplingMethod,
         nodeKey: node.data.key
     };
 
@@ -898,6 +900,7 @@ DataModel.prototype.processResultsFromRetrieveFCSEventsServerSidePlugin = functi
     var r_DisplayY;
     var r_NumEvents;
     var r_MaxNumEvents;
+    var r_SamplingMethod;
     var r_NodeKey;
 
     // First check if we have an error
@@ -958,9 +961,10 @@ DataModel.prototype.processResultsFromRetrieveFCSEventsServerSidePlugin = functi
                 r_ParamY = row[7].value;
                 r_DisplayX = row[8].value;
                 r_DisplayY = row[9].value;
-                // r_NumEvents = row[10].value;   // Currently not used
+                r_NumEvents = row[10].value;   // Currently not used
                 r_MaxNumEvents = row[11].value;
-                r_NodeKey = row[12].value;
+                r_SamplingMethod = row[12].value;
+                r_NodeKey = row[13].value;
 
                 if (r_Success == true) {
                     status = r_ErrorMessage;
@@ -969,8 +973,9 @@ DataModel.prototype.processResultsFromRetrieveFCSEventsServerSidePlugin = functi
                     // Plot the data
                     DATAVIEWER.plotFCSData(r_Data, r_ParamX, r_ParamY, r_DisplayX, r_DisplayY);
 
-                    // cache the plotted data
-                    var dataKey = r_Code + "_" + r_ParamX + "_" + r_ParamY + "_" + r_MaxNumEvents.toString();
+                    // Cache the plotted data
+                    var dataKey = r_Code + "_" + r_ParamX + "_" + r_ParamY + "_" + r_MaxNumEvents.toString() +
+                        "_" + r_DisplayX + "_" + r_DisplayY + "_" + r_SamplingMethod.toString();
                     DATAVIEWER.cacheFCSData(r_NodeKey, dataKey, r_Data);
 
                 } else {

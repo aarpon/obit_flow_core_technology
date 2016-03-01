@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import code
+
 
 # Note: this plug-in uses LRCache.jar from export_bdfacsdiva_datasets/lib.
 
@@ -13,11 +13,12 @@ Later plots will use the CSV file directly.
 @author: Aaron Ponti
 '''
 
-import csv
 import os.path
 import logging
 import java.io.File
+import java.util.ArrayList
 import ch.ethz.scu.obit.bdfacsdivafcs.readers.FCSReader as FCSReader
+import ch.ethz.scu.obit.bdfacsdivafcs.readers.Hyperlog as Hyperlog
 import com.xhaus.jyson.JysonCodec as json
 from ch.ethz.scu.obit.common.server.longrunning import LRCache
 import uuid
@@ -71,22 +72,6 @@ def getFileForCode(code):
     return dataSetFiles
 
 
-def getSessionCSVFileForFCSFile(code, fcsFile):
-    """Return the path of the CSV file in the session workspace for the given FCS file."""
-
-    # Get the session workspace
-    sessionWorkspace = sessionWorkspaceProvider.getSessionWorkspace()
-
-    # The user folder now will point to the Session Workspace
-    sessionWorskpacePath = sessionWorkspace.absolutePath
-
-    # Prepare the output csv file name. We add the code to make it unique.
-    baseName = os.path.basename(fcsFile)
-    fName = code + '_' + os.path.splitext(baseName)[0] + ".csv"
-    csvFile = os.path.join(sessionWorskpacePath, fName)
-
-    return csvFile
-
 # Plug-in entry point
 #
 # This plug-in always returns immediately. The first time it is called, it
@@ -139,6 +124,7 @@ def aggregate(parameters, tableBuilder):
     tableBuilder.addHeader("displayY")
     tableBuilder.addHeader("numEvents")
     tableBuilder.addHeader("maxNumEvents")
+    tableBuilder.addHeader("samplingMethod")
     tableBuilder.addHeader("nodeKey")
 
     # Get the ID of the call if it already exists
@@ -163,6 +149,7 @@ def aggregate(parameters, tableBuilder):
         row.setCell("displayY", "")
         row.setCell("numEvents", "")
         row.setCell("maxNumEvents", "")
+        row.setCell("samplingMethod", "")
         row.setCell("nodeKey", "")
 
         # Launch the actual process in a separate thread
@@ -194,6 +181,7 @@ def aggregate(parameters, tableBuilder):
     row.setCell("displayY", resultToSend["displayY"])
     row.setCell("numEvents", resultToSend["numEvents"])
     row.setCell("maxNumEvents", resultToSend["maxNumEvents"])
+    row.setCell("samplingMethod", resultToSend["samplingMethod"])
     row.setCell("nodeKey", resultToSend["nodeKey"])
 
 
@@ -240,6 +228,10 @@ def retrieveProcess(parameters, tableBuilder, uid):
     maxNumEvents = int(parameters.get("maxNumEvents"))
     resultToStore["maxNumEvents"] = maxNumEvents
 
+    # Sampling
+    samplingMethod = parameters.get("samplingMethod")
+    resultToStore["samplingMethod"] = samplingMethod
+
     # Node key
     nodeKey = parameters.get("nodeKey")
     resultToStore["nodeKey"] = nodeKey
@@ -253,6 +245,9 @@ def retrieveProcess(parameters, tableBuilder, uid):
     # Log parameter info
     _logger.info("Requested events for dataset " + code + 
                 " and parameters (" + paramX + ", " + paramY + ")")
+    _logger.info("Requested scaling for parameter " + paramX + ": " + displayX)
+    _logger.info("Requested scaling for parameter " + paramY + ": " + displayY)
+    _logger.info("Requested sampling method: " + samplingMethod)
     _logger.info("Number of events in file: " + str(numEvents) + 
                 "; maximum number of events to return: " + str(maxNumEvents))
 
@@ -287,135 +282,78 @@ def retrieveProcess(parameters, tableBuilder, uid):
         _logger.info("Dataset code " + code + " corresponds to FCS file " + \
                      fcsFile)
 
-        # Get the associated CSV file path
-        csvFile = getSessionCSVFileForFCSFile(code, fcsFile)
+        # Open the FCS file
+        reader = FCSReader(java.io.File(fcsFile), True);
 
-        # Does the csv file already exist in the session?
-        success = True
-        if not os.path.exists(csvFile):
+        # Parse the file with data
+        if not reader.parse():
 
-            # Log
-            _logger.info("CVS file does not exist yet: processing FCS file " + \
-                         fcsFile)
+            # Build the error message
+            message = "Could not process file " + os.path.basename(fcsFile)
 
-            # Open the FCS file
-            reader = FCSReader(java.io.File(fcsFile), True);
+            # Log the error
+            _logger.error(message)
 
-            # Parse the file with data
-            if not reader.parse():
+            # Store the results and set the completed flag
+            resultToStore["completed"] = True
+            resultToStore["success"] = False
+            resultToStore["message"] = message
 
-                # Build the error message
-                message = "Could not process file " + os.path.basename(fcsFile)
-
-                # Log the error
-                _logger.error(message)
-
-                # Store the results and set the completed flag
-                resultToStore["completed"] = True
-                resultToStore["success"] = False
-                resultToStore["message"] = message
-
-                # Return here
-                return
-
-            else:
-
-                # Writing the FCS file to the session workspace
-                if not reader.exportDataToCSV(java.io.File(csvFile)):
-
-                    # Build the error message
-                    message = "Could not write data to CSV file " + \
-                        os.path.basename(csvFile)
-
-                    # Log the error
-                    _logger.error(message)
-
-                    # Store the results and set the completed flag
-                    resultToStore["completed"] = True
-                    resultToStore["success"] = False
-                    resultToStore["message"] = message
-
-                    # Return here
-                    return
-
-                else:
-
-                    # The CSV file was successfully generated
-                    message = "The CVS file " + os.path.basename(csvFile) + \
-                        " was successfully created!"
-
-                    # Log
-                    _logger.info(message)
-
-        else:
-
-            message = "The CVS file " + os.path.basename(csvFile) + \
-                " already exists in the session. Re-using it."
-
-            # Log
-            _logger.info(message)
+            # Return here
+            return
 
         # Preparation steps were successful
-
-        # Read the file
-        content = csv.reader(open(csvFile))
-
-        # Read the column names from the first line
-        fields = content.next()
+        parameterNames = reader.getParameterNames()
 
         # Find the indices of the requested parameters
-        indxX = int(fields.index(paramX))
-        indxY = int(fields.index(paramY))
+        indxX = int(parameterNames.indexOf(paramX))
+        indxY = int(parameterNames.indexOf(paramY))
 
-        # Prepare the data array
+        # Prepare the data arrays
         data = []
 
-        # Currently we hard-code the sampling method.
+        # Actual number of events to be extracted
+        actualNumEvents = min(maxNumEvents, numEvents)
+
+        # Data sampling method.
         #
-        # Method 1: to get the requested number of events, we just return
+        # Method 1: the get the requested number of events, we will sub-
+        #           sample the file by skipping a certain number of rows
+        #           ("step") in between the returned once.
+        # Method 2: to get the requested number of events, we just return
         #           the first N rows at the beginning of the file. This is
         #           faster, and as far as the experts say, should still be 
         #           reasonably representative of the underlying population.
-        #
-        # Method 2: the get the requested number of events, we will sub-
-        #           sample the file by skipping a certain number of rows
-        #           ("step") in between the returned once.
-        method = 1
-
-        if method == 1:
-
-            # Now collect the first maxNumEvents rows
-            for i in range (min(maxNumEvents, numEvents) - 1):
-
-                row = content.next()
-                data.append([float(row[indxX]), float(row[indxY])])
-
+        if samplingMethod == 1:
+            sample = True
         else:
+            sample = False
 
-            # Calculate the sampling step
-            if maxNumEvents >= numEvents:
-                step = 1
-            else:
-                step = int(float(numEvents) / float(maxNumEvents))
-                if step == 0:
-                    step = 1
+        # Now collect the first maxNumEvents rows
+        dataX = reader.getDataPerColumnIndex(indxX, actualNumEvents, sample)
+        dataY = reader.getDataPerColumnIndex(indxY, actualNumEvents, sample)
 
-            # Now collect all data
-            i = 0
-            for row in content:
+        # Is the Hyperlog scaling requested?
+        if displayX == "Hyperlog":
+            mx = Hyperlog.max(dataX)
+            Hx = Hyperlog(mx, 1.0)
+            dataX = Hx.transform(dataX)
 
-                if i % step == 0:
+        if displayY == "Hyperlog":
+            my = Hyperlog.max(dataY)
+            Hy = Hyperlog(my, 1.0)
+            dataY = Hy.transform(dataY)
 
-                    data.append([float(row[indxX]), float(row[indxY])])
-
-                i = i + 1
+        # Build array to JSONify and return to the client
+        for i in range (actualNumEvents):
+            data.append([float(dataX[i]), float(dataY[i])])
 
         # JSON encode the data array
         dataJSON = json.dumps(data) 
 
         # Success message
-        message = "Successfully processed file " + csvFile
-        
+        message = "Successfully processed file " + fcsFile
+
         # Log
         _logger.info(message)
 
