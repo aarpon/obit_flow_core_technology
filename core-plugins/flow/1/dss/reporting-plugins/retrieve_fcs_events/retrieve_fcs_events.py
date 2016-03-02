@@ -324,7 +324,7 @@ def retrieveProcess(parameters, tableBuilder, uid):
         #           the first N rows at the beginning of the file. This is
         #           faster, and as far as the experts say, should still be 
         #           reasonably representative of the underlying population.
-        if samplingMethod == 1:
+        if samplingMethod == "1":
             sample = True
         else:
             sample = False
