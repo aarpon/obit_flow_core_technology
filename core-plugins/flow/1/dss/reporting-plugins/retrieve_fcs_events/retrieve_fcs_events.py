@@ -336,12 +336,12 @@ def retrieveProcess(parameters, tableBuilder, uid):
         # Is the Hyperlog scaling requested?
         if displayX == "Hyperlog":
             mx = Hyperlog.max(dataX)
-            Hx = Hyperlog(mx, 1.0)
+            Hx = Hyperlog(mx, 1.0, 4.0, 1.0)
             dataX = Hx.transform(dataX)
 
         if displayY == "Hyperlog":
             my = Hyperlog.max(dataY)
-            Hy = Hyperlog(my, 1.0)
+            Hy = Hyperlog(my, 1.0, 4.0, 1.0)
             dataY = Hy.transform(dataY)
 
         # Build array to JSONify and return to the client

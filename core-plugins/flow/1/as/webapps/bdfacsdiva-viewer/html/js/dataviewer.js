@@ -593,19 +593,51 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
             node.data.parameterInfo.numEvents + " events.")
     );
 
-    // Create the form
-    var form = $("<form>").addClass("form-group").attr("id", "parameter_form");
+    // Create a form for the plot parameters
+    var form = $("<form>")
+        .addClass("form-group")
+        .attr("id", "parameter_form");
     detailViewSampleID.append(form);
     var formId = $("#parameter_form");
 
-    formId.append($("<label>").attr("for", "parameter_form_select_X_axis").html("X axis"));
-    var selectXAxis = $("<select>").addClass("form_control").attr("id", "parameter_form_select_X_axis");
-    formId.append(selectXAxis);
+    // Create divs to spatially organize the groups of parameters
+    var xAxisDiv = $("<div>")
+        .attr("id", "xAxisDiv")
+        .addClass("plotBasicParamsDiv");
+    var yAxisDiv = $("<div>")
+        .attr("id", "yAxisDiv")
+        .addClass("plotBasicParamsDiv");
+    var eventsDiv = $("<div>")
+        .attr("id", "eventsDiv")
+        .addClass("plotBasicParamsDiv");
+    var plotDiv = $("<div>")
+        .attr("id", "plotDiv")
+        .addClass("plotBasicParamsDiv");
+
+    // Add them to the form
+    formId.append(xAxisDiv);
+    formId.append(yAxisDiv);
+    formId.append(eventsDiv);
+    formId.append(plotDiv);
+
+    // X axis parameters
+    xAxisDiv.append($("<label>")
+        .attr("for", "parameter_form_select_X_axis")
+        .html("X axis"));
+    var selectXAxis = $("<select>")
+        .addClass("form_control")
+        .attr("id", "parameter_form_select_X_axis");
+    xAxisDiv.append(selectXAxis);
     var selectXAxisId = $("#parameter_form_select_X_axis");
 
-    formId.append($("<label>").attr("for", "parameter_form_select_Y_axis").html("Y axis"));
-    var selectYAxis = $("<select>").addClass("form_control").attr("id", "parameter_form_select_Y_axis");
-    formId.append(selectYAxis);
+    // Y axis parameters
+    yAxisDiv.append($("<label>")
+        .attr("for", "parameter_form_select_Y_axis")
+        .html("Y axis"));
+    var selectYAxis = $("<select>")
+        .addClass("form_control")
+        .attr("id", "parameter_form_select_Y_axis");
+    yAxisDiv.append(selectYAxis);
     var selectYAxisId = $("#parameter_form_select_Y_axis");
 
     // Add all options
@@ -625,9 +657,13 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
     selectYAxisId.val(node.data.parameterInfo["names"][1]);
 
     // Add a selector with the number of events to plot
-    formId.append($("<label>").attr("for", "parameter_form_select_num_events").html("Events"));
-    var selectNumEvents = $("<select>").addClass("form_control").attr("id", "parameter_form_select_num_events");
-    formId.append(selectNumEvents);
+    eventsDiv.append($("<label>")
+        .attr("for", "parameter_form_select_num_events")
+        .html("Events to plot"));
+    var selectNumEvents = $("<select>")
+        .addClass("form_control")
+        .attr("id", "parameter_form_select_num_events");
+    eventsDiv.append(selectNumEvents);
     var selectNumEventsId = $("#parameter_form_select_num_events");
 
     // Add the options
@@ -649,17 +685,6 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
     } else {
         selectNumEventsId.val(parseInt(node.data.parameterInfo.numEvents));
     }
-
-    // Add advanced options toggle link
-    var advancedOptionsLink = $("<a>")
-        .addClass("toggleLink")
-        .html("Advanced")
-        .attr("href", "#")
-        .click(function() {
-            $("#advancedOptionsView").toggle();
-            return false;
-        });
-    formId.append(advancedOptionsLink);
 
     // Add "Plot" button
     var plotButton = $("<input>")
@@ -689,17 +714,19 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
                 numEvents,
                 samplingMethod);
         });
-    formId.append(plotButton);
-
-    // Add advanced options in a separate div (initially invisible)
-    var advancedOptionsDiv = $("<div>")
-        .attr("id", "advancedOptionsView")
-        .hide();
+    plotDiv.append(plotButton);
 
     // Add a selector with the scaling for axis X
-    advancedOptionsDiv.append($("<label>").attr("for", "parameter_form_select_scaleX").html("Scale for X axis"));
-    var selectScaleX = $("<select>").addClass("form_control").attr("id", "parameter_form_select_scaleX");
-    advancedOptionsDiv.append(selectScaleX);
+    var xAxisScalingDiv = xAxisDiv.append($("<div>")
+        .attr("id", "xAxisScalingDiv"));
+    var xAxisScalingdId = $("#xAxisScalingDiv");
+    xAxisScalingdId.append($("<label>")
+        .attr("for", "parameter_form_select_scaleX")
+        .html("Scale for X axis"));
+    var selectScaleX = $("<select>")
+        .addClass("form_control")
+        .attr("id", "parameter_form_select_scaleX");
+    xAxisScalingdId.append(selectScaleX);
 
     // Add the options
     possibleOptions = ["Linear", "Hyperlog"];
@@ -713,9 +740,16 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
     selectScaleX.val(0);
 
     // Add a selector with the scaling for axis Y
-    advancedOptionsDiv.append($("<label>").attr("for", "parameter_form_select_scaleY").html("Scale for Y axis"));
-    var selectScaleY = $("<select>").addClass("form_control").attr("id", "parameter_form_select_scaleY");
-    advancedOptionsDiv.append(selectScaleY);
+    var yAxisScalingDiv = yAxisDiv.append($("<div>")
+        .attr("id", "yAxisScalingDiv"));
+    var yAxisScalingId = $("#yAxisScalingDiv");
+    yAxisScalingId.append($("<label>")
+        .attr("for", "parameter_form_select_scaleY")
+        .html("Scale for Y axis"));
+    var selectScaleY = $("<select>")
+        .addClass("form_control")
+        .attr("id", "parameter_form_select_scaleY");
+    yAxisScalingId.append(selectScaleY);
 
     // Add the options
     possibleOptions = ["Linear", "Hyperlog"];
@@ -729,12 +763,19 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
     selectScaleY.val(0);
 
     // Add a selector with the sampling method
-    advancedOptionsDiv.append($("<label>").attr("for", "parameter_form_select_sampling_method").html("Sampling"));
-    var selectSamplingMethod = $("<select>").addClass("form_control").attr("id", "parameter_form_select_sampling_method");
-    advancedOptionsDiv.append(selectSamplingMethod);
+    var eventSamplingDiv = eventsDiv.append($("<div>")
+        .attr("id", "eventSamplingDiv"));
+    var eventSamplingId = $("#eventSamplingDiv");
+    eventSamplingId.append($("<label>")
+        .attr("for", "parameter_form_select_sampling_method")
+        .html("Sampling"));
+    var selectSamplingMethod = $("<select>")
+        .addClass("form_control")
+        .attr("id", "parameter_form_select_sampling_method");
+    eventSamplingId.append(selectSamplingMethod);
 
     // Add the options
-    possibleOptions = ["Regular sampling", "First rows"];
+    possibleOptions = ["Regular", "First rows"];
     for (var i = 0; i < possibleOptions.length; i++) {
         selectSamplingMethod.append($("<option>")
             .attr("value", (i + 1))
@@ -743,9 +784,6 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
 
     // Pre-select "Linear"
     selectSamplingMethod.val(0);
-
-    formId.append($("<br>"));
-    formId.append(advancedOptionsDiv);
 };
 
 /**
