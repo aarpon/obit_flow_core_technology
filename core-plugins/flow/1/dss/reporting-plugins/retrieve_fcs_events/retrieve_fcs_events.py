@@ -335,14 +335,16 @@ def retrieveProcess(parameters, tableBuilder, uid):
 
         # Is the Hyperlog scaling requested?
         if displayX == "Hyperlog":
-            mx = Hyperlog.max(dataX)
-            Hx = Hyperlog(mx, 1.0, 4.0, 1.0)
+            params = Hyperlog.estimateParamHeuristic(dataX)
+            Hx = Hyperlog(params[0], params[1], params[2], params[3])
             dataX = Hx.transform(dataX)
+            dataX = Hyperlog.arrayMult(dataX, params[0])
 
         if displayY == "Hyperlog":
-            my = Hyperlog.max(dataY)
-            Hy = Hyperlog(my, 1.0, 4.0, 1.0)
+            params = Hyperlog.estimateParamHeuristic(dataY)
+            Hy = Hyperlog(params[0], params[1], params[2], params[3])
             dataY = Hy.transform(dataY)
+            dataY = Hyperlog.arrayMult(dataY, params[0])
 
         # Build array to JSONify and return to the client
         for i in range (actualNumEvents):
