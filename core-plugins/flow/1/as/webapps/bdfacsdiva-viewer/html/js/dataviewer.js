@@ -817,9 +817,14 @@ DataViewer.prototype.plotFCSData = function(data, xLabel, yLabel, xDisplay, yDis
     data = JSON.parse(data);
 
     // Axis type
-    // The scaling is done server size. The plotting here is always linear.
     var xType = "linear";
     var yType = "linear";
+    if (xDisplay == "Hyperlog") {
+        xType = "logarithmic";
+    }
+    if (yDisplay == "Hyperlog") {
+        yType = "logarithmic";
+    }
 
     $('#detailViewPlot').highcharts({
         chart: {
