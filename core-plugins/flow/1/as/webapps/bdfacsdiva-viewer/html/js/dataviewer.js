@@ -816,15 +816,9 @@ DataViewer.prototype.plotFCSData = function(data, xLabel, yLabel, xDisplay, yDis
     // Make sure to have a proper array
     data = JSON.parse(data);
 
-    // Axis type
+    // Axis type is always linear, since the transformations are all done server side.
     var xType = "linear";
     var yType = "linear";
-    if (xDisplay == "Hyperlog") {
-        xType = "logarithmic";
-    }
-    if (yDisplay == "Hyperlog") {
-        yType = "logarithmic";
-    }
 
     $('#detailViewPlot').highcharts({
         chart: {
@@ -849,9 +843,13 @@ DataViewer.prototype.plotFCSData = function(data, xLabel, yLabel, xDisplay, yDis
         },
         yAxis: {
             title: {
+                enabled: true,
                 text: yLabel
             },
-            type: yType
+            type: yType,
+            startOnTick: true,
+            endOnTick: true,
+            showLastLabel: true
         },
         plotOptions: {
             area: {
