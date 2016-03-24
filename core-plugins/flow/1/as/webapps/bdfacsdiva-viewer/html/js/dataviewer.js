@@ -593,33 +593,62 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
             node.data.parameterInfo.numEvents + " events.")
     );
 
-    // Create the form
-    var form = $("<form>").addClass("form-group").attr("id", "parameter_form");
+    // Create a form for the plot parameters
+    var form = $("<form>")
+        .addClass("form-group")
+        .attr("id", "parameter_form");
     detailViewSampleID.append(form);
     var formId = $("#parameter_form");
 
-    formId.append($("<label>").attr("for", "parameter_form_select_X_axis").html("X axis"));
-    var selectXAxis = $("<select>").addClass("form_control").attr("id", "parameter_form_select_X_axis");
-    formId.append(selectXAxis);
+    // Create divs to spatially organize the groups of parameters
+    var xAxisDiv = $("<div>")
+        .attr("id", "xAxisDiv")
+        .addClass("plotBasicParamsDiv");
+    var yAxisDiv = $("<div>")
+        .attr("id", "yAxisDiv")
+        .addClass("plotBasicParamsDiv");
+    var eventsDiv = $("<div>")
+        .attr("id", "eventsDiv")
+        .addClass("plotBasicParamsDiv");
+    var plotDiv = $("<div>")
+        .attr("id", "plotDiv")
+        .addClass("plotBasicParamsDiv");
+
+    // Add them to the form
+    formId.append(xAxisDiv);
+    formId.append(yAxisDiv);
+    formId.append(eventsDiv);
+    formId.append(plotDiv);
+
+    // X axis parameters
+    xAxisDiv.append($("<label>")
+        .attr("for", "parameter_form_select_X_axis")
+        .html("X axis"));
+    var selectXAxis = $("<select>")
+        .addClass("form_control")
+        .attr("id", "parameter_form_select_X_axis");
+    xAxisDiv.append(selectXAxis);
     var selectXAxisId = $("#parameter_form_select_X_axis");
 
-    formId.append($("<label>").attr("for", "parameter_form_select_Y_axis").html("Y axis"));
-    var selectYAxis = $("<select>").addClass("form_control").attr("id", "parameter_form_select_Y_axis");
-    formId.append(selectYAxis);
+    // Y axis parameters
+    yAxisDiv.append($("<label>")
+        .attr("for", "parameter_form_select_Y_axis")
+        .html("Y axis"));
+    var selectYAxis = $("<select>")
+        .addClass("form_control")
+        .attr("id", "parameter_form_select_Y_axis");
+    yAxisDiv.append(selectYAxis);
     var selectYAxisId = $("#parameter_form_select_Y_axis");
 
     // Add all options
     for (var i = 0; i < node.data.parameterInfo.numParameters; i++) {
         var name = node.data.parameterInfo["names"][i];
         var compositeName = node.data.parameterInfo["compositeNames"][i];
-        var display = node.data.parameterInfo["display"][i];
         selectXAxisId.append($("<option>")
             .attr("value", name)
-            .attr("data", display)
             .text(compositeName));
         selectYAxisId.append($("<option>")
             .attr("value", name)
-            .attr("data", display)
             .text(compositeName));
     }
 
@@ -628,29 +657,33 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
     selectYAxisId.val(node.data.parameterInfo["names"][1]);
 
     // Add a selector with the number of events to plot
-    formId.append($("<label>").attr("for", "parameter_form_select_num_events").html("Events"));
-    var selectNumEvents = $("<select>").addClass("form_control").attr("id", "parameter_form_select_num_events");
-    formId.append(selectNumEvents);
-    var selectNumEvents = $("#parameter_form_select_num_events");
+    eventsDiv.append($("<label>")
+        .attr("for", "parameter_form_select_num_events")
+        .html("Events to plot"));
+    var selectNumEvents = $("<select>")
+        .addClass("form_control")
+        .attr("id", "parameter_form_select_num_events");
+    eventsDiv.append(selectNumEvents);
+    var selectNumEventsId = $("#parameter_form_select_num_events");
 
     // Add the options
     var possibleOptions = [500, 1000, 2500, 5000, 10000, 20000, 50000, 100000];
     for (var i = 0; i < possibleOptions.length; i++) {
         if (possibleOptions[i] < node.data.parameterInfo.numEvents) {
-            selectNumEvents.append($("<option>")
+            selectNumEventsId.append($("<option>")
                 .attr("value", possibleOptions[i])
                 .text(parseInt(possibleOptions[i])));
         }
     }
-    selectNumEvents.append($("<option>")
+    selectNumEventsId.append($("<option>")
         .attr("value", node.data.parameterInfo.numEvents)
         .text(parseInt(node.data.parameterInfo.numEvents)));
 
     // Pre-select something reasonable
     if (node.data.parameterInfo.numEvents > possibleOptions[4]) {
-        selectNumEvents.val(parseInt(possibleOptions[4]));
+        selectNumEventsId.val(parseInt(possibleOptions[4]));
     } else {
-        selectNumEvents.val(parseInt(node.data.parameterInfo.numEvents));
+        selectNumEventsId.val(parseInt(node.data.parameterInfo.numEvents));
     }
 
     // Add "Plot" button
@@ -659,17 +692,17 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
         .attr("value", "Plot")
         .click(function() {
 
-            // Get the selected parameters and their display
-            var selectedX = selectXAxisId.find(":selected");
-            var selectedY = selectYAxisId.find(":selected");
-
-            var paramX = selectedX.val();
-            var displayX = selectedX.attr("data");
-            var paramY = selectedY.val();
-            var displayY = selectedY.attr("data");
+            // Get the selected parameters and their display scaling
+            var paramX = selectXAxisId.find(":selected").val();
+            var paramY = selectYAxisId.find(":selected").val();
+            var displayX = selectScaleX.find(":selected").val();
+            var displayY = selectScaleY.find(":selected").val();
 
             // How many events to plot?
             var numEvents = selectNumEvents.val();
+
+            // Sampling method
+            var samplingMethod = selectSamplingMethod.find(":selected").val();
 
             DATAMODEL.generateFCSPlot(
                 node,
@@ -678,9 +711,79 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
                 paramY,
                 displayX,
                 displayY,
-                numEvents);
+                numEvents,
+                samplingMethod);
         });
-    formId.append(plotButton);
+    plotDiv.append(plotButton);
+
+    // Add a selector with the scaling for axis X
+    var xAxisScalingDiv = xAxisDiv.append($("<div>")
+        .attr("id", "xAxisScalingDiv"));
+    var xAxisScalingdId = $("#xAxisScalingDiv");
+    xAxisScalingdId.append($("<label>")
+        .attr("for", "parameter_form_select_scaleX")
+        .html("Scale for X axis"));
+    var selectScaleX = $("<select>")
+        .addClass("form_control")
+        .attr("id", "parameter_form_select_scaleX");
+    xAxisScalingdId.append(selectScaleX);
+
+    // Add the options
+    possibleOptions = ["Linear", "Hyperlog"];
+    for (var i = 0; i < possibleOptions.length; i++) {
+        selectScaleX.append($("<option>")
+            .attr("value", possibleOptions[i])
+            .text(possibleOptions[i]));
+    }
+
+    // Pre-select "Linear"
+    selectScaleX.val(0);
+
+    // Add a selector with the scaling for axis Y
+    var yAxisScalingDiv = yAxisDiv.append($("<div>")
+        .attr("id", "yAxisScalingDiv"));
+    var yAxisScalingId = $("#yAxisScalingDiv");
+    yAxisScalingId.append($("<label>")
+        .attr("for", "parameter_form_select_scaleY")
+        .html("Scale for Y axis"));
+    var selectScaleY = $("<select>")
+        .addClass("form_control")
+        .attr("id", "parameter_form_select_scaleY");
+    yAxisScalingId.append(selectScaleY);
+
+    // Add the options
+    possibleOptions = ["Linear", "Hyperlog"];
+    for (var i = 0; i < possibleOptions.length; i++) {
+        selectScaleY.append($("<option>")
+            .attr("value", possibleOptions[i])
+            .text(possibleOptions[i]));
+    }
+
+    // Pre-select "Linear"
+    selectScaleY.val(0);
+
+    // Add a selector with the sampling method
+    var eventSamplingDiv = eventsDiv.append($("<div>")
+        .attr("id", "eventSamplingDiv"));
+    var eventSamplingId = $("#eventSamplingDiv");
+    eventSamplingId.append($("<label>")
+        .attr("for", "parameter_form_select_sampling_method")
+        .html("Sampling"));
+    var selectSamplingMethod = $("<select>")
+        .addClass("form_control")
+        .attr("id", "parameter_form_select_sampling_method");
+    eventSamplingId.append(selectSamplingMethod);
+
+    // Add the options
+    possibleOptions = ["Regular", "First rows"];
+    for (var i = 0; i < possibleOptions.length; i++) {
+        selectSamplingMethod.append($("<option>")
+            .attr("value", (i + 1))
+            .text(possibleOptions[i]));
+    }
+
+    // Pre-select "Linear"
+    selectSamplingMethod.val(0);
 };
 
 /**
@@ -705,30 +808,17 @@ DataViewer.prototype.prepareTitle = function(title, level) {
  * @param data list of (X, Y) points
  * @param xLabel X label
  * @param yLabel Y label
- * @param displayX string Display type of the parameter for the X axis ("LIN" or "LOG)
- * @param displayY string Display type of the parameter for the Y axis ("LIN" or "LOG)
+ * @param displayX string Display type of the parameter for the X axis ("Linear" or "Hyperlog")
+ * @param displayY string Display type of the parameter for the Y axis ("Linear" or "Hyperlog")
  */
 DataViewer.prototype.plotFCSData = function(data, xLabel, yLabel, xDisplay, yDisplay) {
 
     // Make sure to have a proper array
     data = JSON.parse(data);
 
-    // Axis type
-    // Currently, we force the axes scaling to be linear in all cases, since some parameters are reported
-    // to have LOG scaling in the FCS file but have negative or zero values.
-
+    // Axis type is always linear, since the transformations are all done server side.
     var xType = "linear";
-    /*
-    if (xDisplay == "LOG") {
-        xType = 'logarithmic';
-    }
-    */
     var yType = "linear";
-    /*
-    if (yDisplay == "LOG") {
-        yType = 'logarithmic';
-    }
-    */
 
     $('#detailViewPlot').highcharts({
         chart: {
@@ -753,9 +843,13 @@ DataViewer.prototype.plotFCSData = function(data, xLabel, yLabel, xDisplay, yDis
         },
         yAxis: {
             title: {
+                enabled: true,
                 text: yLabel
             },
-            type: yType
+            type: yType,
+            startOnTick: true,
+            endOnTick: true,
+            showLastLabel: true
         },
         plotOptions: {
             area: {

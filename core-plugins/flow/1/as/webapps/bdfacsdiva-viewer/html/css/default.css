@@ -73,3 +73,48 @@ input {
 .circle {
     fill: #222;
 }
+
+.toggleLink {
+    font-size: 10px;
+    margin-left: 5px;
+    margin-right: 3px;
+}
+
+#xAxisDiv {
+    display: inline-block;
+    text-align: right;
+}
+
+#yAxisDiv {
+    display: inline-block;
+    text-align: right;
+}
+
+#eventsDiv {
+    display: inline-block;
+    text-align: right;
+}
+
+#plotDiv {
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 10px;
+}
+
+#xAxisScalingDiv {
+    font-size: 13px;
+    display: block;
+    margin-top: 3px;
+}
+
+#yAxisScalingDiv {
+    font-size: 13px;
+    display: block;
+    margin-top: 3px;
+}
+
+#eventSamplingDiv {
+    font-size: 13px;
+    display: block;
+    margin-top: 3px;
+}
