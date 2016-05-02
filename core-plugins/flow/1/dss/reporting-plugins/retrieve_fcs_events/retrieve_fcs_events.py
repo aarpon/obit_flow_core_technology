@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 
-# Note: this plug-in uses LRCache.jar from export_bdfacsdiva_datasets/lib.
+# Notes: 
+#
+# - this plug-in uses LRCache.jar from export_bdfacsdiva_datasets/lib.
+# - this plug-in requires Jython version 2.7 (for json module)
 
 '''
 Aggregation plug-in to generate FCS plots.
@@ -19,7 +22,7 @@ import java.io.File
 import java.util.ArrayList
 import ch.ethz.scu.obit.bdfacsdivafcs.readers.FCSReader as FCSReader
 import ch.ethz.scu.obit.bdfacsdivafcs.readers.Hyperlog as Hyperlog
-import com.xhaus.jyson.JysonCodec as json
+import json
 from ch.ethz.scu.obit.common.server.longrunning import LRCache
 import uuid
 from threading import Thread
