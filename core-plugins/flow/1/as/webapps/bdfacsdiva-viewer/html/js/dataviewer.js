@@ -93,13 +93,17 @@ DataViewer.prototype.displayExperimentInfo = function(exp) {
 
     // Display the acquisition details
     var acqDate = exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_DATE"];
-
+    var hardwareName = "";
+    if (exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME"]) {
+        hardwareName = exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME"];
+    } else {
+        hardwareName = " (generic) " + exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_HARDWARE"];
+    }
     var acqDetails =
         exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_SOFTWARE"] + " on " +
-        exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_HARDWARE"] + " (acquisition by " +
+        "<b>" + hardwareName + "</b> (acquisition by " +
         exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_OWNER"] + " on " +
         acqDate.substring(0, 10) + ").";
-
     experimentAcquisitionDetailsView.append(this.prepareTitle("Acquisition details"));
     experimentAcquisitionDetailsView.append($("<p>").html(acqDetails));
 
@@ -574,9 +578,7 @@ DataViewer.prototype.displayAttachments = function(dataModelObj, attachments) {
 
 /**
  * Display the form with the parameter selections for the plotting.
- * @param target_div: div to which the form will be appended.
- * @param parameters: list of parameter names
- * @patam dataset_permid: permid of the dataset
+ * @param node: Tree node
  */
 DataViewer.prototype.renderParameterSelectionForm = function(node) {
 
