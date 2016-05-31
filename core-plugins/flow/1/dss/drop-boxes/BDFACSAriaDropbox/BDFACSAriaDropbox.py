@@ -232,6 +232,7 @@ class Processor:
         # Set the date
         openBISExperiment.setPropertyValue("FACS_ARIA_EXPERIMENT_DATE",
                                            expDate)
+
         # Set the description
         openBISExperiment.setPropertyValue("FACS_ARIA_EXPERIMENT_DESCRIPTION",
                                            description)
@@ -239,6 +240,10 @@ class Processor:
         # Set the acquisition hardware
         openBISExperiment.setPropertyValue("FACS_ARIA_EXPERIMENT_ACQ_HARDWARE",
                                            acqHardware)
+
+        # Set the acquisition hardware friendly name
+        openBISExperiment.setPropertyValue("FACS_ARIA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME",
+                                           self._machinename)
 
         # Set the acquisition software
         openBISExperiment.setPropertyValue("FACS_ARIA_EXPERIMENT_ACQ_SOFTWARE",
@@ -512,6 +517,12 @@ class Processor:
 
         # Store the username
         self._username = root.attrib.get("userName")
+
+        # Store the machine name
+        machinename = root.attrib.get("machineName")
+        if machinename is None:
+            machinename = ""
+        self._machinename = machinename
 
         # Create a virtual TubeSet
         openBISTubeSet = None
