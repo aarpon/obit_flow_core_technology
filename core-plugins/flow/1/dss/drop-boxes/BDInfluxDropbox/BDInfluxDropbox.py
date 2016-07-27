@@ -93,10 +93,11 @@ class Processor:
         return exp
 
 
-    def createSampleWithGenCode(self, spaceCode):
+    def createSampleWithGenCode(self, spaceCode, sampleType):
         """Create a sample with automatically generated code.
 
         @param spaceCode, the code of the space
+        @param sampleType, the sample type that must already exist
         @return sample An ISample
         """
 
@@ -105,7 +106,7 @@ class Processor:
 
         # Create the sample
         sample = self._transaction.createNewSampleWithGeneratedCode(spaceCode,
-                                                                    "INFLUX_TUBE")
+                                                                    sampleType)
         if not sample:
             msg = "Could not create sample with generated code"
             self._logger.error(msg)
@@ -463,8 +464,7 @@ class Processor:
                 raise Exception(msg)
 
             # Process an Experiment XML node and get/create an IExperimentUpdatable
-            openBISExperiment = self.processExperiment(experimentNode,
-                                                       "INFLUX_EXPERIMENT")
+            openBISExperiment = self.processExperiment(experimentNode)
 
             # Process children of the Experiment
             for childNode in experimentNode:
