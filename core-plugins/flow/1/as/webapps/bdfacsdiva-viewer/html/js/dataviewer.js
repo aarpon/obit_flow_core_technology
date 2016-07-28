@@ -99,11 +99,13 @@ DataViewer.prototype.displayExperimentInfo = function(exp) {
     } else {
         hardwareName = " (generic) " + exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_HARDWARE"];
     }
+    var owner = "an unknown user";
+    if (exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_OWNER"] !== undefined) {
+        owner = exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_OWNER"];
+    }
     var acqDetails =
         exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_SOFTWARE"] + " on " +
-        "<b>" + hardwareName + "</b> (acquisition by " +
-        exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_OWNER"] + " on " +
-        acqDate.substring(0, 10) + ").";
+        "<b>" + hardwareName + "</b> (acquisition by " + owner + " on " + acqDate.substring(0, 10) + ").";
     experimentAcquisitionDetailsView.append(this.prepareTitle("Acquisition details"));
     experimentAcquisitionDetailsView.append($("<p>").html(acqDetails));
 
