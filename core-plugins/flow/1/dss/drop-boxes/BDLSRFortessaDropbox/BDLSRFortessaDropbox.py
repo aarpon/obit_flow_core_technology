@@ -62,15 +62,12 @@ class Processor:
         return xmlString
 
 
-    def createExperiment(self, expId, expName,
-                         expType="LSR_FORTESSA_EXPERIMENT"):
+    def createExperiment(self, expId, expName):
         """Create an experiment with given Experiment ID extended with the addition
         of a string composed from current date and time.
 
         @param expID, the experiment ID
         @param expName, the experiment name
-        @param expType, the experiment type that must already exist; optional,
-        default is "LSR_FORTESSA_EXPERIMENT"
         """
 
         # Make sure to keep the code length within the limits imposed by
@@ -83,7 +80,7 @@ class Processor:
 
         # Create the experiment
         self._logger.info("Register experiment %s" % expId)
-        exp = self._transaction.createNewExperiment(expId, expType)
+        exp = self._transaction.createNewExperiment(expId, "LSR_FORTESSA_EXPERIMENT")
         if not exp:
             msg = "Could not create experiment " + expId + "!"
             self._logger.error(msg)
@@ -110,7 +107,8 @@ class Processor:
         spaceCode = spaceCode.replace("/", "")
 
         # Create the sample
-        sample = self._transaction.createNewSampleWithGeneratedCode(spaceCode, sampleType)
+        sample = self._transaction.createNewSampleWithGeneratedCode(spaceCode,
+                                                                    sampleType)
         if not sample:
             msg = "Could not create sample with generated code"
             self._logger.error(msg)
@@ -168,12 +166,10 @@ class Processor:
                 if os.path.isdir(os.path.join(incomingStr, name))]
 
 
-    def processExperiment(self, experimentNode,
-                          openBISExpType="LSR_FORTESSA_EXPERIMENT"):
+    def processExperiment(self, experimentNode):
         """Register an IExperimentUpdatable based on the Experiment XML node.
 
         @param experimentNode An XML node corresponding to an Experiment
-        @param openBISExpType The experiment type
         @return IExperimentUpdatable experiment
         """
 
@@ -208,8 +204,7 @@ class Processor:
         attachments = experimentNode.attrib.get("attachments")
 
         # Create the experiment (with corrected ID if needed: see above)
-        openBISExperiment = self.createExperiment(openBISIdentifier,
-                                                  expName, openBISExpType)
+        openBISExperiment = self.createExperiment(openBISIdentifier, expName)
         if not openBISExperiment:
             msg = "Could not create experiment " + openBISIdentifier
             self._logger.error(msg)
@@ -527,8 +522,7 @@ class Processor:
                 raise Exception(msg)
 
             # Process an Experiment XML node and get/create an IExperimentUpdatable
-            openBISExperiment = self.processExperiment(experimentNode,
-                                                       "LSR_FORTESSA_EXPERIMENT")
+            openBISExperiment = self.processExperiment(experimentNode)
 
             # Process children of the Experiment
             for childNode in experimentNode:
@@ -680,7 +674,7 @@ class Processor:
     def run(self):
         """Run the registration."""
 
-        # Make sure that _incoming is a folder
+        # Make sure that incoming is a folder
         if not self._incoming.isDirectory():
             msg = "Incoming MUST be a folder!"
             self._logger.error(msg)

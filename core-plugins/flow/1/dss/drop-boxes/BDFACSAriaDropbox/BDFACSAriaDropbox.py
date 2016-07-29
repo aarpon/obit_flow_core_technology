@@ -61,15 +61,12 @@ class Processor:
         return xmlString
 
 
-    def createExperiment(self, expId, expName,
-                         expType="FACS_ARIA_EXPERIMENT"):
+    def createExperiment(self, expId, expName):
         """Create an experiment with given Experiment ID extended with the addition
         of a string composed from current date and time.
 
         @param expID, the experiment ID
         @param expName, the experiment name
-        @param expType, the experiment type that must already exist; optional,
-        default is "FACS_ARIA_EXPERIMENT"
         """
 
         # Make sure to keep the code length within the limits imposed by
@@ -82,7 +79,7 @@ class Processor:
 
         # Create the experiment
         self._logger.info("Register experiment %s" % expId)
-        exp = self._transaction.createNewExperiment(expId, expType)
+        exp = self._transaction.createNewExperiment(expId, "FACS_ARIA_EXPERIMENT")
         if not exp:
             msg = "Could not create experiment " + expId + "!"
             self._logger.error(msg)
@@ -96,8 +93,7 @@ class Processor:
         return exp
 
 
-    def createSampleWithGenCode(self, spaceCode,
-                                sampleType="FACS_ARIA_PLATE"):
+    def createSampleWithGenCode(self, spaceCode, sampleType):
         """Create a sample with automatically generated code.
 
         @param spaceCode, the code of the space
@@ -109,7 +105,8 @@ class Processor:
         spaceCode = spaceCode.replace("/", "")
 
         # Create the sample
-        sample = self._transaction.createNewSampleWithGeneratedCode(spaceCode, sampleType)
+        sample = self._transaction.createNewSampleWithGeneratedCode(spaceCode,
+                                                                    sampleType)
         if not sample:
             msg = "Could not create sample with generated code"
             self._logger.error(msg)
@@ -167,12 +164,10 @@ class Processor:
                 if os.path.isdir(os.path.join(incomingStr, name))]
 
 
-    def processExperiment(self, experimentNode,
-                          openBISExpType="FACS_ARIA_EXPERIMENT"):
+    def processExperiment(self, experimentNode):
         """Register an IExperimentUpdatable based on the Experiment XML node.
 
         @param experimentNode An XML node corresponding to an Experiment
-        @param openBISExpType The experiment type
         @return IExperimentUpdatable experiment
         """
 
@@ -207,8 +202,7 @@ class Processor:
         attachments = experimentNode.attrib.get("attachments")
 
         # Create the experiment (with corrected ID if needed: see above)
-        openBISExperiment = self.createExperiment(openBISIdentifier,
-                                                  expName, openBISExpType)
+        openBISExperiment = self.createExperiment(openBISIdentifier, expName)
         if not openBISExperiment:
             msg = "Could not create experiment " + openBISIdentifier
             self._logger.error(msg)
@@ -293,7 +287,7 @@ class Processor:
         """Register the FCS File using the parsed properties file.
 
         @param fcsFileNode An XML node corresponding to an FCS file (dataset)
-        @param openBISTube  An ISample object representing a Tube or Well
+        @param openBISTube  An ISample object representing a Tube
         @param openBISExperiment An ISample object representing an Experiment
         """
 
@@ -346,65 +340,18 @@ class Processor:
         self._transaction.moveFile(fileName, dataset)
 
 
-    def processTray(self, trayNode, openBISExperiment):
-        """Register a Tray (Plate) based on the Tray XML node
-        and an IExperimentUpdatable object.
-
-        @param trayNode An XML node corresponding to a Tray (Plate)
-        @param openBISExperiment An IExperimentUpdatable object
-        @param openBISSampleType sample type (default "FACS_ARIA_PLATE")
-        @return ISample sample, or null
-        """
-
-        # openBIS sample type
-        openBISSampleType = "FACS_ARIA_PLATE"
-
-        # Get the identifier of the space all relevant attributes
-        openBISSpaceIdentifier = \
-            trayNode.attrib.get("openBISSpaceIdentifier")
-
-        # Get the tray name
-        name = trayNode.attrib.get("name")
-
-        # Get the tray geometry
-        trayGeometry = trayNode.attrib.get("trayGeometry")
-
-        # Create the sample. The Plate is configured in openBIS to
-        # auto-generate its own identifier.
-        openBISTray = self.createSampleWithGenCode(openBISSpaceIdentifier,
-                                                   openBISSampleType)
-        if not openBISTray:
-            msg = "Could not create plate sample."
-            self._logger.error(msg)
-            raise Exception(msg)
-
-        # Set the experiment for the sample
-        openBISTray.setExperiment(openBISExperiment)
-
-        # Set the plate name
-        openBISTray.setPropertyValue("FACS_ARIA_PLATE_NAME", name)
-
-        # Set the tray geometry
-        openBISTray.setPropertyValue("FACS_ARIA_PLATE_GEOMETRY", trayGeometry)
-
-        # Return the openBIS ISample object
-        return openBISTray
-
-
-    def processTubeOrWell(self, tubeNode, openBISContainerSample,
+    def processTube(self, tubeNode, openBISContainerSample,
                           specimenName, openBISExperiment):
-        """Register a Tube or Well (as a child of a Specimen) based on the Tube or
-        Well XML node and an ISample object.
+        """Register a Tube (as a child of a Specimen) based on the Tube XML
+        node and an ISample object.
 
         The associated fcs file is attached as a IDataset
 
-        @param tubeNode An XML node corresponding to a Tube or Well
+        @param tubeNode An XML node corresponding to a Tube
         @param openBISContainerSample  An ISample object that will contain
-        the Tube or Well
+        the Tube
         @param specimenName Name of the specimen associated to the Tube or Well
         @param openBISExperiment The IExperiment to which the Tube belongs
-        @param openBISSpecimenType (default "FACS_ARIA_TUBE"), the
-        sample type. One of FACS_ARIA_TUBE and FACS_ARIA_WELL.
         @return ISample sample, or null
         """
 
@@ -414,8 +361,6 @@ class Processor:
         # openBIS type
         if tubeNode.tag == "Tube":
             openBISSpecimenType = "FACS_ARIA_TUBE"
-        elif tubeNode.tag == "Well":
-            openBISSpecimenType = "FACS_ARIA_WELL"
         else:
             msg = "Unknown tube type" + tubeNode.tag
             self._logger.error(msg)
@@ -425,7 +370,7 @@ class Processor:
         openBISSpaceIdentifier = \
             tubeNode.attrib.get("openBISSpaceIdentifier")
 
-        # Create the sample. The Tube/Well is configured in openBIS to
+        # Create the sample. The Tube is configured in openBIS to
         # auto-generate its own identifier.
         openBISTube = self.createSampleWithGenCode(openBISSpaceIdentifier,
                                                    openBISSpecimenType)
@@ -441,26 +386,12 @@ class Processor:
         openBISTube.setPropertyValue("FACS_ARIA_SPECIMEN", specimenName)
 
         # Set the name
-        if openBISSpecimenType == "FACS_ARIA_TUBE":
-            openBISTube.setPropertyValue("FACS_ARIA_TUBE_NAME", name)
-        elif openBISSpecimenType == "FACS_ARIA_WELL":
-            openBISTube.setPropertyValue("FACS_ARIA_WELL_NAME", name)
-        else:
-            msg = "Unknown value for openBISSpecimenType."
-            self._logger.error(msg)
-            raise Exception(msg)
+        openBISTube.setPropertyValue("FACS_ARIA_TUBE_NAME", name)
 
         # Get the index sort property
         indexSort = tubeNode.attrib.get("indexSort")
         if indexSort is not None:
-            if tubeNode.tag == "Tube":
-                openBISTube.setPropertyValue("FACS_ARIA_TUBE_ISINDEXSORT", indexSort)
-            elif tubeNode.tag == "Well":
-                openBISTube.setPropertyValue("FACS_ARIA_WELL_ISINDEXSORT", indexSort)
-            else:
-                msg = "Unknown tube type" + tubeNode.tag
-                self._logger.error(msg)
-                raise Exception(msg)
+            openBISTube.setPropertyValue("FACS_ARIA_TUBE_ISINDEXSORT", indexSort)
 
         # Set the TubeSet container
         openBISTube.setContainer(openBISContainerSample)
@@ -538,8 +469,7 @@ class Processor:
                 raise Exception(msg)
 
             # Process an Experiment XML node and get/create an IExperimentUpdatable
-            openBISExperiment = self.processExperiment(experimentNode,
-                                                       "FACS_ARIA_EXPERIMENT")
+            openBISExperiment = self.processExperiment(experimentNode)
 
             # Process children of the Experiment
             for childNode in experimentNode:
@@ -549,10 +479,10 @@ class Processor:
 
                 if nodeType == "Specimen":
 
-                    # A specimen is a direct child of an experiment if there
-                    # is no plate, and the FCS files are therefore associated
-                    # to tubes. In this case, we create a virtual TubeSet
-                    # sample container (one for all Tubes in the experiment).
+                    # A specimen is a direct child of an experiment, and 
+                    # the FCS files are therefore associated to tubes.
+                    # In this case, we create a virtual TubeSet sample
+                    # container (one for all Tubes in the experiment).
                     if openBISTubeSet is None:
                         openBISTubeSet = self.processTubeSet(experimentNode,
                                                              openBISExperiment)
@@ -571,7 +501,7 @@ class Processor:
                             raise Exception(msg)
 
                         # Process the tube node and get the openBIS object
-                        openBISTube = self.processTubeOrWell(tubeNode,
+                        openBISTube = self.processTube(tubeNode,
                                                        openBISTubeSet,
                                                        specimenNameProperty,
                                                        openBISExperiment)
@@ -591,53 +521,14 @@ class Processor:
 
                 elif nodeType == "Tray":
 
-                    # Process the tray node and get the openBIS object
-                    openBISTray = self.processTray(childNode,
-                                                   openBISExperiment)
-
-                    # Now iterate over the children of the Tray
-                    for specimenNode in childNode:
-
-                        # The child of a Tray is a Specimen
-                        if specimenNode.tag != "Specimen":
-                            msg = "Expected Specimen node!"
-                            self._logger.error(msg)
-                            raise Exception(msg)
-
-                        # The only information we need from the Specimen is its
-                        # name to associate to the Wells as property
-                        specimenNameProperty = specimenNode.attrib.get("name")
-
-                        for wellNode in specimenNode:
-
-                            # The child of a Specimen is a Tube
-                            if wellNode.tag != "Well":
-                                msg = "Expected Well node!"
-                                self._logger.error(msg)
-                                raise Exception(msg)
-
-                            # Process the tube node and get the openBIS object
-                            openBISWell = self.processTubeOrWell(wellNode,
-                                                           openBISTray,
-                                                           specimenNameProperty,
-                                                           openBISExperiment)
-
-                            # Now process the FCS file
-                            for fcsNode in wellNode:
-
-                                # The child of a Tube is an FCSFile
-                                if fcsNode.tag != "FCSFile":
-                                    msg = "Expected FSC File node!"
-                                    self._logger.error(msg)
-                                    raise Exception(msg)
-
-                                # Process the FCS file node
-                                self.processFCSFile(fcsNode, openBISWell,
-                                                    openBISExperiment)
+                    # The BD FACS Aria sorter does not support plates
+                    msg = "The BD FACS Aria sorter does not support plates!"
+                    self._logger.error(msg)
+                    raise Exception(msg)
 
                 else:
 
-                    msg = "The Node must be either a Specimen or a Tray"
+                    msg = "The Node must be a Specimen."
                     self._logger.error(msg)
                     raise Exception(msg)
 
