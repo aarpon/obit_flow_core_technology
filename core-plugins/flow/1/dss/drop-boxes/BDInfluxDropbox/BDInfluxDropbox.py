@@ -388,6 +388,11 @@ class Processor:
         # Set the name
         openBISTube.setPropertyValue("INFLUX_TUBE_NAME", name)
 
+        # Get the index sort property
+        indexSort = tubeNode.attrib.get("indexSort")
+        if indexSort is not None:
+            openBISTube.setPropertyValue("INFLUX_TUBE_ISINDEXSORT", indexSort)
+
         # Set the TubeSet container
         openBISTube.setContainer(openBISContainerSample)
 
