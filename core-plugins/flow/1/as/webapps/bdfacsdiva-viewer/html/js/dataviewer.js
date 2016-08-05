@@ -186,9 +186,10 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
 
                 }
 
-                // This code is specific for the BD FACS ARIA sorter
+                // This code is specific for the BD FACS ARIA sorter and BD Influx Cell Sorter
                 if (node.data.element.sampleTypeCode == "FACS_ARIA_WELL" ||
-                    node.data.element.sampleTypeCode == "FACS_ARIA_TUBE") {
+                    node.data.element.sampleTypeCode == "FACS_ARIA_TUBE" ||
+                    node.data.element.sampleTypeCode == "INFLUX_TUBE") {
 
                     var sortType = "This is a standard sort.";
                     if (node.data.element.properties[node.data.element.sampleTypeCode + "_ISINDEXSORT"] == "true") {
