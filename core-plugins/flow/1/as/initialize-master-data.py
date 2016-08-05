@@ -608,6 +608,13 @@ prop_type_INFLUX_TUBE_NAME.setLabel('Tube name')
 prop_type_INFLUX_TUBE_NAME.setManagedInternally(False)
 prop_type_INFLUX_TUBE_NAME.setInternalNamespace(False)
 
+# INFLUX_TUBE_ISINDEXSORT
+prop_type_INFLUX_TUBE_ISINDEXSORT = tr.getOrCreateNewPropertyType('INFLUX_TUBE_ISINDEXSORT', DataType.BOOLEAN)
+prop_type_INFLUX_TUBE_ISINDEXSORT.setLabel('Index sort')
+prop_type_INFLUX_TUBE_ISINDEXSORT.setManagedInternally(False)
+prop_type_INFLUX_TUBE_ISINDEXSORT.setInternalNamespace(False)
+
+
 # ASSIGNMENTS
 assignment_EXPERIMENT_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_DESCRIPTION = tr.assignPropertyType(exp_type_INFLUX_EXPERIMENT, prop_type_INFLUX_EXPERIMENT_DESCRIPTION)
 assignment_EXPERIMENT_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_DESCRIPTION.setMandatory(False)
@@ -680,5 +687,11 @@ assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_NAME.setMandatory(False)
 assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_NAME.setSection(None)
 assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_NAME.setPositionInForms(2)
 assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_NAME.setShownEdit(False)
+
+assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_ISINDEXSORT = tr.assignPropertyType(samp_type_INFLUX_TUBE, prop_type_INFLUX_TUBE_ISINDEXSORT)
+assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_ISINDEXSORT.setMandatory(False)
+assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_ISINDEXSORT.setSection(None)
+assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_ISINDEXSORT.setPositionInForms(3)
+assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_ISINDEXSORT.setShownEdit(False)
 
 print ("Import of Flow Core Technology Master Data finished.")
