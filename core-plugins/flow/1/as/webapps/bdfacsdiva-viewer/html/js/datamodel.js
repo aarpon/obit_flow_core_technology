@@ -1151,11 +1151,10 @@ DataModel.prototype.getAndAddParameterInfoForDatasets = function(node, action) {
         for (var i = 1; i <= numParameters; i++) {
 
             // If the parameter contains the PnCHANNELTYPE attribute (BD Influx Cell Sorter),
-            // we only add it if the channel type is 3.
+            // we only add it if the channel type is 6.
             var channelType = parameters.getAttribute("P" + i + "CHANNELTYPE");
-            if (channelType != null && channelType != 3) {
+            if (channelType != null && channelType != 6) {
                 continue;
-
             }
 
             // Store the parameter name
