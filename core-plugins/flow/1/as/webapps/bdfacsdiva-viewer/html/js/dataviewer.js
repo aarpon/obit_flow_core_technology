@@ -99,11 +99,13 @@ DataViewer.prototype.displayExperimentInfo = function(exp) {
     } else {
         hardwareName = " (generic) " + exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_HARDWARE"];
     }
+    var owner = "an unknown user";
+    if (exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_OWNER"] !== undefined) {
+        owner = exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_OWNER"];
+    }
     var acqDetails =
         exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_SOFTWARE"] + " on " +
-        "<b>" + hardwareName + "</b> (acquisition by " +
-        exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_OWNER"] + " on " +
-        acqDate.substring(0, 10) + ").";
+        "<b>" + hardwareName + "</b> (acquisition by " + owner + " on " + acqDate.substring(0, 10) + ").";
     experimentAcquisitionDetailsView.append(this.prepareTitle("Acquisition details"));
     experimentAcquisitionDetailsView.append($("<p>").html(acqDetails));
 
@@ -184,9 +186,10 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
 
                 }
 
-                // This code is specific for the BD FACS ARIA sorter
+                // This code is specific for the BD FACS ARIA sorter and BD Influx Cell Sorter
                 if (node.data.element.sampleTypeCode == "FACS_ARIA_WELL" ||
-                    node.data.element.sampleTypeCode == "FACS_ARIA_TUBE") {
+                    node.data.element.sampleTypeCode == "FACS_ARIA_TUBE" ||
+                    node.data.element.sampleTypeCode == "INFLUX_TUBE") {
 
                     var sortType = "This is a standard sort.";
                     if (node.data.element.properties[node.data.element.sampleTypeCode + "_ISINDEXSORT"] == "true") {
@@ -558,7 +561,7 @@ DataViewer.prototype.displayAttachments = function(dataModelObj, attachments) {
     } else if (dataModelObj.attachments.length == 1) {
         text = "There is one attachment."
     } else {
-        text = "There are " + dataModelObj.attachments.length + " attachments";
+        text = "There are " + dataModelObj.attachments.length + " attachments.";
     }
     // Link to the attachment tab
     var link = $("<a>").text(text).attr("href", "#").attr("title", text).click(

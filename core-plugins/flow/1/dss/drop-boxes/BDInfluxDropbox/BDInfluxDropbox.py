@@ -41,7 +41,7 @@ class Processor:
         # Set up logging
         logging.basicConfig(filename=logFile, level=logging.DEBUG, 
                         format='%(asctime)-15s %(levelname)s: %(message)s')
-        self._logger = logging.getLogger("BDFACSAria")
+        self._logger = logging.getLogger("BDInflux")
 
 
     def dictToXML(self, d):
@@ -79,7 +79,7 @@ class Processor:
 
         # Create the experiment
         self._logger.info("Register experiment %s" % expId)
-        exp = self._transaction.createNewExperiment(expId, "FACS_ARIA_EXPERIMENT")
+        exp = self._transaction.createNewExperiment(expId, "INFLUX_EXPERIMENT")
         if not exp:
             msg = "Could not create experiment " + expId + "!"
             self._logger.error(msg)
@@ -88,7 +88,7 @@ class Processor:
             self._logger.info("Created experiment with ID " + expId + ".")
 
         # Store the name
-        exp.setPropertyValue("FACS_ARIA_EXPERIMENT_NAME", expName)
+        exp.setPropertyValue("INFLUX_EXPERIMENT_NAME", expName)
 
         return exp
 
@@ -220,31 +220,31 @@ class Processor:
                 openBISTag.addEntity(openBISExperiment)
 
         # Set the experiment version
-        openBISExperiment.setPropertyValue("FACS_ARIA_EXPERIMENT_VERSION",
+        openBISExperiment.setPropertyValue("INFLUX_EXPERIMENT_VERSION",
                                            expVersion)
 
         # Set the date
-        openBISExperiment.setPropertyValue("FACS_ARIA_EXPERIMENT_DATE",
+        openBISExperiment.setPropertyValue("INFLUX_EXPERIMENT_DATE",
                                            expDate)
 
         # Set the description
-        openBISExperiment.setPropertyValue("FACS_ARIA_EXPERIMENT_DESCRIPTION",
+        openBISExperiment.setPropertyValue("INFLUX_EXPERIMENT_DESCRIPTION",
                                            description)
 
         # Set the acquisition hardware
-        openBISExperiment.setPropertyValue("FACS_ARIA_EXPERIMENT_ACQ_HARDWARE",
+        openBISExperiment.setPropertyValue("INFLUX_EXPERIMENT_ACQ_HARDWARE",
                                            acqHardware)
 
         # Set the acquisition hardware friendly name
-        openBISExperiment.setPropertyValue("FACS_ARIA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME",
+        openBISExperiment.setPropertyValue("INFLUX_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME",
                                            self._machinename)
 
         # Set the acquisition software
-        openBISExperiment.setPropertyValue("FACS_ARIA_EXPERIMENT_ACQ_SOFTWARE",
+        openBISExperiment.setPropertyValue("INFLUX_EXPERIMENT_ACQ_SOFTWARE",
                                            acqSoftware)
 
         # Set the experiment owner
-        openBISExperiment.setPropertyValue("FACS_ARIA_EXPERIMENT_OWNER",
+        openBISExperiment.setPropertyValue("INFLUX_EXPERIMENT_OWNER",
                                            owner)
 
         # Add the attachments
@@ -292,7 +292,7 @@ class Processor:
         """
 
         # Dataset type
-        datasetType = "FACS_ARIA_FCSFILE"
+        datasetType = "INFLUX_FCSFILE"
 
         # Create a new dataset
         dataset = self._transaction.createNewDataSet()
@@ -323,8 +323,8 @@ class Processor:
 
             parametersXML = self.dictToXML(parameterNode.attrib)
 
-            # Store the parameters in the FACS_ARIA_FCSFILE_PARAMETERS property
-            dataset.setPropertyValue("FACS_ARIA_FCSFILE_PARAMETERS", parametersXML)
+            # Store the parameters in the INFLUX_FCSFILE_PARAMETERS property
+            dataset.setPropertyValue("INFLUX_FCSFILE_PARAMETERS", parametersXML)
             
             # Log the parameters
             self._logger.info("FCS file parameters (XML): " + str(parametersXML))
@@ -350,7 +350,7 @@ class Processor:
         @param tubeNode An XML node corresponding to a Tube
         @param openBISContainerSample  An ISample object that will contain
         the Tube
-        @param specimenName Name of the specimen associated to the Tube or Well
+        @param specimenName Name of the specimen associated to the Tube
         @param openBISExperiment The IExperiment to which the Tube belongs
         @return ISample sample, or null
         """
@@ -360,7 +360,7 @@ class Processor:
 
         # openBIS type
         if tubeNode.tag == "Tube":
-            openBISSpecimenType = "FACS_ARIA_TUBE"
+            openBISSpecimenType = "INFLUX_TUBE"
         else:
             msg = "Unknown tube type" + tubeNode.tag
             self._logger.error(msg)
@@ -383,15 +383,15 @@ class Processor:
         openBISTube.setExperiment(openBISExperiment)
 
         # Set the Specimen name as a property
-        openBISTube.setPropertyValue("FACS_ARIA_SPECIMEN", specimenName)
+        openBISTube.setPropertyValue("INFLUX_SPECIMEN", specimenName)
 
         # Set the name
-        openBISTube.setPropertyValue("FACS_ARIA_TUBE_NAME", name)
+        openBISTube.setPropertyValue("INFLUX_TUBE_NAME", name)
 
         # Get the index sort property
         indexSort = tubeNode.attrib.get("indexSort")
         if indexSort is not None:
-            openBISTube.setPropertyValue("FACS_ARIA_TUBE_ISINDEXSORT", indexSort)
+            openBISTube.setPropertyValue("INFLUX_TUBE_ISINDEXSORT", indexSort)
 
         # Set the TubeSet container
         openBISTube.setContainer(openBISContainerSample)
@@ -410,7 +410,7 @@ class Processor:
         """
 
         # Sample type
-        openBISSampleType = "FACS_ARIA_TUBESET"
+        openBISSampleType = "INFLUX_TUBESET"
 
         # Get the identifier of the space all relevant attributes
         openBISSpaceIdentifier = \
@@ -521,14 +521,14 @@ class Processor:
 
                 elif nodeType == "Tray":
 
-                    # The BD FACS Aria sorter does not support plates
-                    msg = "The BD FACS Aria sorter does not support plates!"
+                    # The BD Influx cell sorter does not support plates
+                    msg = "The BD Influx cell sorter does not support plates!"
                     self._logger.error(msg)
                     raise Exception(msg)
 
                 else:
 
-                    msg = "The Node must be a Specimen."
+                    msg = "The Node must be a Specimen"
                     self._logger.error(msg)
                     raise Exception(msg)
 
@@ -643,7 +643,7 @@ def process(transaction):
 
     # Get path to containing folder
     # __file__ does not work (reliably) in Jython
-    dbPath = "../core-plugins/flow/1/dss/drop-boxes/BDFACSAriaDropbox"
+    dbPath = "../core-plugins/flow/1/dss/drop-boxes/BDInfluxDropbox"
 
     # Path to the logs subfolder
     logPath = os.path.join(dbPath, "logs")

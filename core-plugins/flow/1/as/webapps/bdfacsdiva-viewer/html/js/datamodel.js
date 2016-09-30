@@ -1147,7 +1147,15 @@ DataModel.prototype.getAndAddParameterInfoForDatasets = function(node, action) {
         var display = []
 
         // Parameter numbering starts at 1
+        var parametersToDisplay = 0;
         for (var i = 1; i <= numParameters; i++) {
+
+            // If the parameter contains the PnCHANNELTYPE attribute (BD Influx Cell Sorter),
+            // we only add it if the channel type is 6.
+            var channelType = parameters.getAttribute("P" + i + "CHANNELTYPE");
+            if (channelType != null && channelType != 6) {
+                continue;
+            }
 
             // Store the parameter name
             var name = parameters.getAttribute("P" + i + "N");
@@ -1165,11 +1173,13 @@ DataModel.prototype.getAndAddParameterInfoForDatasets = function(node, action) {
             var displ = parameters.getAttribute("P" + i + "DISPLAY");
             display.push(displ)
 
+            // Update the count of parameters to display
+            parametersToDisplay++;
         }
 
         // Store the parameter info
         node.data.parameterInfo = {
-            "numParameters" : numParameters,
+            "numParameters" : parametersToDisplay,
             "numEvents" : numEvents,
             "names" : names,
             "compositeNames" : compositeNames,
