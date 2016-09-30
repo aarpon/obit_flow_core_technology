@@ -561,7 +561,7 @@ DataViewer.prototype.displayAttachments = function(dataModelObj, attachments) {
     } else if (dataModelObj.attachments.length == 1) {
         text = "There is one attachment."
     } else {
-        text = "There are " + dataModelObj.attachments.length + " attachments";
+        text = "There are " + dataModelObj.attachments.length + " attachments.";
     }
     // Link to the attachment tab
     var link = $("<a>").text(text).attr("href", "#").attr("title", text).click(
