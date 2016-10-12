@@ -4,7 +4,7 @@
 
 CONFIG = {
 
-    'enableExportToUserFolder': true,
+    'enableExportToUserFolder': false,
     'dataStoreServer': "DSS1",
     'queryPluginStatusInterval': 2000
 }
