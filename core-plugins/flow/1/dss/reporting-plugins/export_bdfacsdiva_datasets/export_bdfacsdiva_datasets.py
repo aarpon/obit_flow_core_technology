@@ -10,6 +10,7 @@ from ch.systemsx.cisd.openbis.generic.shared.api.v1.dto import SearchCriteria
 from ch.systemsx.cisd.openbis.generic.shared.api.v1.dto import SearchSubCriteria
 from ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.SearchCriteria import MatchClause
 from ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.SearchCriteria import MatchClauseAttribute
+from ch.systemsx.cisd.base.utilities import OSUtilities
 import os
 import subprocess
 import sys
@@ -560,7 +561,8 @@ class Mover():
         then we overwrite it.
         """
         dstFile = os.path.join(dstDir, os.path.basename(source))
-        subprocess.call(["/bin/touch", dstFile])
+        touch = "/usr/bin/touch" if OSUtilities.isMacOS() else "/bin/touch"
+        subprocess.call([touch, dstFile])
         subprocess.call(["/bin/cp", source, dstDir])
         self._numCopiedFiles += 1
 
