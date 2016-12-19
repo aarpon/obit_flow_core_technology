@@ -132,13 +132,17 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
 
     // Store some references
     var statusID = $("#status");
+    var detailViewSampleName = $("#detailViewSampleName");
     var detailViewActionID = $("#detailViewAction");
+    var detailViewActionExplID = $("#detailViewActionExpl");
     var detailViewSampleID = $("#detailViewSample");
     var detailViewPlotID = $('#detailViewPlot')
 
     // Clear previous views
     statusID.empty();
+    detailViewSampleName.empty();
     detailViewActionID.empty();
+    detailViewActionExplID.empty();
     detailViewSampleID.empty();
     detailViewPlotID.empty();
 
@@ -150,7 +154,7 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
     }
 
     // Display the node name
-    detailViewSampleID.append($("<h4>").html(node.data.title));
+    detailViewSampleName.append($("<h4>").html(node.data.title));
 
     if (node.data.type) {
         if (node.data.type == "plate_container") {
@@ -184,18 +188,25 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
                     detailViewSampleID.append($("<p>").html("This plate has geometry " +
                         node.data.element.properties[DATAMODEL.EXPERIMENT_PREFIX + "_PLATE_GEOMETRY"] + "."));
 
-                }
-
-                // This code is specific for the BD FACS ARIA sorter and BD Influx Cell Sorter
-                if (node.data.element.sampleTypeCode == "FACS_ARIA_WELL" ||
+                } else if (node.data.element.sampleTypeCode == "FACS_ARIA_WELL" ||
                     node.data.element.sampleTypeCode == "FACS_ARIA_TUBE" ||
                     node.data.element.sampleTypeCode == "INFLUX_TUBE") {
+
+                    // This code is specific for the BD FACS ARIA sorter and BD Influx Cell Sorter
 
                     var sortType = "This is a standard sort.";
                     if (node.data.element.properties[node.data.element.sampleTypeCode + "_ISINDEXSORT"] == "true") {
                         sortType = "This is an index sort.";
                     }
                     detailViewSampleID.append($("<p>").html(sortType));
+
+                } else if (node.data.element.sampleTypeCode.endsWith("_WELL")) {
+
+                    // Another type of well
+                    detailViewSampleID.append($("<p>").html("This is a well."));
+
+                } else {
+                    // Nothing to do.
                 }
 
                 break;
@@ -445,9 +456,16 @@ DataViewer.prototype.displayExportAction = function(node) {
             .attr("src", "img/export.png");
 
         var link = $("<a>")
-            .addClass("btn btn-xs btn-primary action")
+            .addClass("action")
             .attr("href", "#")
-            .html("&nbsp;Export to your folder")
+            .html("")
+            .hover(function () {
+                    $("#detailViewActionExpl").html("Export to your folder.");
+                },
+                function () {
+                    $("#detailViewActionExpl").html("");
+                })
+            .attr("title", "")
             .click(function() {
                 DATAMODEL.exportDatasets(
                     experimentId, DATAMODEL.experimentType,
@@ -465,9 +483,16 @@ DataViewer.prototype.displayExportAction = function(node) {
         .attr("src", "img/zip.png");
 
     var link = $("<a>")
-        .addClass("btn btn-xs btn-primary action")
+        .addClass("action")
         .attr("href", "#")
-        .html("&nbsp;Download archive")
+        .html("")
+        .attr("title", "")
+        .hover(function () {
+                $("#detailViewActionExpl").html("Download archive.");
+            },
+            function () {
+                $("#detailViewActionExpl").html("");
+            })
         .click(function() {
             DATAMODEL.exportDatasets(
                 experimentId, DATAMODEL.experimentType,
@@ -495,9 +520,17 @@ DataViewer.prototype.displayDownloadAction = function(node) {
             .attr("src", "img/download.png");
 
         var link = $("<a>")
-            .addClass("btn btn-xs btn-primary action")
+            .addClass("action")
+            .hover(function () {
+                    $("#detailViewActionExpl").html("Download " + node.data.element.filename + ".");
+                },
+                function () {
+                    $("#detailViewActionExpl").html("");
+                })
             .attr("href", node.data.element.url)
-            .html("&nbsp;Download " + node.data.element.filename)
+            .attr("title", "")
+            .html("")
+
 
         link.prepend(img);
 
