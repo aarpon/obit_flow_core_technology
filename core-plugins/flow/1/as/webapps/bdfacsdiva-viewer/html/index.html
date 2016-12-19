@@ -38,7 +38,8 @@
     <script src="/openbis/resources/js/openbis.js"></script>
 
     <!-- Include configuration script -->
-    <script src="./config/config.js"></script>
+    <script src="./js/config/config.js"></script>
+    <script src="./etc/config.js"></script>
 
     <!-- Include local scripts -->
     <script src="./js/util.js"></script>
@@ -99,13 +100,12 @@
 
     $(document).ready(function () {
 
-        /* Set the configuration */
-        window.CONFIG = CONFIG;
+        /* Merge default and custom configuration */
+        window.CONFIG = $.extend({}, DEFAULT_CONFIG, CONFIG);
 
         /* Initialize global objects */
         window.DATAVIEWER = new DataViewer();
         window.DATAMODEL = new DataModel();
-
 
     });
 
