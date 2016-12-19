@@ -10,7 +10,7 @@ var CONFIG = {};
 // `dss/reporting-plugins/export_microscopy_datasets/plugin.properties`.
 //
 // Possible values: true | false.
-CONFIG.enableExportToUserFolder = true;
+CONFIG.enableExportToUserFolder = false;
 
 // Set the target datastore server if the default value ("DSS1") is not correct.
 //
