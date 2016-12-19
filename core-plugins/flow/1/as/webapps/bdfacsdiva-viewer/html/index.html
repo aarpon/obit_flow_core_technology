@@ -6,6 +6,9 @@
     <!-- Required by bootstrap -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet">
+
     <!-- Include jquery -->
     <script src="./third-party/jquery/js/jquery.min.js"></script>
     <script src="./third-party/jquery/js/jquery.cookie.js"></script>
@@ -48,45 +51,48 @@
 
 </head>
 <body>
-<div class="container-fluid">
-    <div class="row">
-        <div id="experimentNameView" class="col-md-12">Please wait...</div>
-    </div>
-    <div class="row">
-        <div id="experimentTagView" class="col-md-4">&nbsp;</div>
-        <div id="experimentDescriptionView" class="col-md-8">&nbsp;</div>
-    </div>
-    <div class="row">
-        <div id="experimentAttachmentsView" class="col-md-4">&nbsp;</div>
-        <div id="experimentAcquisitionDetailsView" class="col-md-8">&nbsp;</div>
-    </div>
-    <div class="row">
-        <div id="status" class="col-md-12">&nbsp;</div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Experiment</h3>
-                </div>
-                <div class="panel-body">
-                    <div id="treeView">
-                        Please wait while retrieving data...
+
+<div id="webapp">
+    <div class="container-fluid">
+        <div class="row">
+            <div id="experimentNameView" class="col-md-12">Please wait...</div>
+        </div>
+        <div class="row">
+            <div id="experimentTagView" class="col-md-4">&nbsp;</div>
+            <div id="experimentDescriptionView" class="col-md-8">&nbsp;</div>
+        </div>
+        <div class="row">
+            <div id="experimentAttachmentsView" class="col-md-4">&nbsp;</div>
+            <div id="experimentAcquisitionDetailsView" class="col-md-8">&nbsp;</div>
+        </div>
+        <div class="row">
+            <div id="status" class="col-md-12">&nbsp;</div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Experiment</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div id="treeView">
+                            Please wait while retrieving data...
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-8">
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Details</h3>
-                </div>
-                <div class="panel-body">
-                    <div id="detailViewSampleName"></div>
-                    <div id="detailViewAction"></div>
-                    <div id="detailViewActionExpl"></div>
-                    <div id="detailViewSample">&nbsp;</div>
-                    <div id="detailViewPlot">&nbsp;</div>
+            <div class="col-md-8">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Details</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div id="detailViewSampleName"></div>
+                        <div id="detailViewAction"></div>
+                        <div id="detailViewActionExpl"></div>
+                        <div id="detailViewSample">&nbsp;</div>
+                        <div id="detailViewPlot">&nbsp;</div>
+                    </div>
                 </div>
             </div>
         </div>
