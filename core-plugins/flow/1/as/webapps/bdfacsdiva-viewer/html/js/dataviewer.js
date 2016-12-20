@@ -248,11 +248,11 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
         }
     }
 
-    // Display the export action
-    this.displayExportAction(node);
-
     // Display the download action
     this.displayDownloadAction(node);
+
+    // Display the export action
+    this.displayExportAction(node);
 
 };
 
