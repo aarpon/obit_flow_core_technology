@@ -453,7 +453,9 @@ DataViewer.prototype.displayExportAction = function(node) {
     if (CONFIG['enableExportToUserFolder'] == true) {
 
         var img = $("<img>")
-            .attr("src", "img/export.png");
+            .attr("src", "img/export.png")
+            .attr("width", 32)
+            .attr("height", 32);
 
         var link = $("<a>")
             .addClass("action")
@@ -480,7 +482,9 @@ DataViewer.prototype.displayExportAction = function(node) {
     }
 
     var img = $("<img>")
-        .attr("src", "img/zip.png");
+        .attr("src", "img/zip.png")
+        .attr("width", 32)
+        .attr("height", 32);
 
     var link = $("<a>")
         .addClass("action")
@@ -517,7 +521,9 @@ DataViewer.prototype.displayDownloadAction = function(node) {
     if (node.data.element && node.data.element.hasOwnProperty("url")) {
 
         var img = $("<img>")
-            .attr("src", "img/download.png");
+            .attr("src", "img/download.png")
+            .attr("width", 32)
+            .attr("height", 32);
 
         var link = $("<a>")
             .addClass("action")
