@@ -20,8 +20,8 @@ import os.path
 import logging
 import java.io.File
 import java.util.ArrayList
-import ch.ethz.scu.obit.bdfacsdivafcs.readers.FCSReader as FCSReader
-import ch.ethz.scu.obit.bdfacsdivafcs.readers.Hyperlog as Hyperlog
+import ch.ethz.scu.obit.flow.readers.FCSReader as FCSReader
+import ch.ethz.scu.obit.flow.readers.Hyperlog as Hyperlog
 import json
 from ch.ethz.scu.obit.common.server.longrunning import LRCache
 import uuid
