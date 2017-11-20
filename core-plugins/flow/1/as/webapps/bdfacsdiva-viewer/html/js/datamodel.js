@@ -86,6 +86,44 @@ DataModel.prototype.buildInitialTree = function() {
     // Alias
     var dataModelObj = this;
 
+    // First-level children
+    first_level_children = [];
+    if (this.supportsPlateAcq(dataModelObj.experimentType)) {
+
+        first_level_children = [
+            {
+                title: "Plates",
+                element: null,
+                icon: "folder.png",
+                isFolder: true,
+                isLazy: true,
+                expCode: dataModelObj.exp.code,
+                type: 'plate_container'
+            },
+            {
+                title: "Tubesets",
+                element: null,
+                icon: "folder.png",
+                isFolder: true,
+                isLazy: true,
+                expCode: dataModelObj.exp.code,
+                type: 'tubesets'
+            } ];
+
+    } else {
+
+        first_level_children = [
+            {
+                title: "Tubesets",
+                element: null,
+                icon: "folder.png",
+                isFolder: true,
+                isLazy: true,
+                expCode: dataModelObj.exp.code,
+                type: 'tubesets'
+            } ];
+    }
+
     // Build the initial tree (root)
     this.treeModel = 
         {
@@ -117,25 +155,7 @@ DataModel.prototype.buildInitialTree = function() {
                     isFolder: true, 
                     isLazy: false,
                     expand: true,
-                    children: [
-                        {
-                            title: "Plates",
-                            element: null, 
-                            icon: "folder.png",
-                            isFolder: true,
-                            isLazy: true,
-                            expCode: dataModelObj.exp.code,
-                            type: 'plate_container'
-                        },
-                        {
-                            title: "Tubesets",
-                            element: null, 
-                            icon: "folder.png",
-                            isFolder: true,
-                            isLazy: true,
-                            expCode: dataModelObj.exp.code,
-                            type: 'tubesets'
-                        } ]
+                    children: first_level_children
                 } ]
         };
 };
@@ -231,6 +251,30 @@ DataModel.prototype.findIn = function(res, title) {
         }
     }
     return -1;
+};
+
+/**
+ * Check if the experiment (and thus the hardware( supports plate acquisition
+ *
+ * @param experiment_type String defining the experiment type.
+ * @return boolean true if the hardware supports plate acquisition; false otherwise.
+ */
+DataModel.prototype.supportsPlateAcq = function(experiment_type) {
+
+    switch (experiment_type) {
+
+        case "LSR_FORTESSA_EXPERIMENT":
+            return true;
+
+        case "FACS_ARIA_EXPERIMENT":
+        case "INFLUX_EXPERIMENT":
+        case "S3E_EXPERIMENT":
+            return false;
+
+        default:
+            return false;
+    }
+
 };
 
 /**
