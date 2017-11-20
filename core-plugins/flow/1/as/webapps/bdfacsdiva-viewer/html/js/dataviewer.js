@@ -190,7 +190,8 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
 
                 } else if (node.data.element.sampleTypeCode == "FACS_ARIA_WELL" ||
                     node.data.element.sampleTypeCode == "FACS_ARIA_TUBE" ||
-                    node.data.element.sampleTypeCode == "INFLUX_TUBE") {
+                    node.data.element.sampleTypeCode == "INFLUX_TUBE"  ||
+                    node.data.element.sampleTypeCode == "S3E_TUBE") {
 
                     // This code is specific for the BD FACS ARIA sorter and BD Influx Cell Sorter
 
