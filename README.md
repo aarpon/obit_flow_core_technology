@@ -1,4 +1,4 @@
-openBIS Importer Toolset :: Flow Cytometry Core Technology
+# openBIS Importer Toolset :: Flow Cytometry Core Technology
 
 The openBIS Importer toolset is a tightly integrated collection of tools that allows for the semi-automated, semi-unsupervised registration of annotated datasets into openBIS directly from the acquisition stations; but it also extends openBIS itself with custom data viewers and server-side core plug-ins packaged into two new core technologies for **flow cytometry** and **microscopy**.
 
