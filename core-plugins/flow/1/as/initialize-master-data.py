@@ -734,6 +734,8 @@ samp_type_S3E_TUBESET.setGeneratedCodePrefix('INR_S')
 # S3E_FCSFILE
 data_set_type_S3E_FCSFILE = tr.getOrCreateNewDataSetType('S3E_FCSFILE')
 data_set_type_S3E_FCSFILE.setDescription('An FCS file from the BIORAD S3e Cell Sorter.')
+if "setDataSetKind" in dir(data_set_type_S3E_FCSFILE):
+    data_set_type_S3E_FCSFILE.setDataSetKind('PHYSICAL')
 data_set_type_S3E_FCSFILE.setMainDataSetPattern('.*\.fcs')
 data_set_type_S3E_FCSFILE.setMainDataSetPath(None)
 data_set_type_S3E_FCSFILE.setDeletionDisallowed(False)
