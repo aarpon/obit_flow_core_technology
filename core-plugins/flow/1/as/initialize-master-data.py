@@ -102,6 +102,8 @@ samp_type_LSR_FORTESSA_WELL.setGeneratedCodePrefix('LSR_W')
 # LSR_FORTESSA_FCSFILE
 data_set_type_LSR_FORTESSA_FCSFILE = tr.getOrCreateNewDataSetType('LSR_FORTESSA_FCSFILE')
 data_set_type_LSR_FORTESSA_FCSFILE.setDescription('An FCS file from the BD LSR Fortessa Flow Cytometer.')
+if "setDataSetKind" in dir(data_set_type_LSR_FORTESSA_FCSFILE):
+    data_set_type_LSR_FORTESSA_FCSFILE.setDataSetKind('PHYSICAL')
 data_set_type_LSR_FORTESSA_FCSFILE.setMainDataSetPattern('.*\.fcs')
 data_set_type_LSR_FORTESSA_FCSFILE.setMainDataSetPath(None)
 data_set_type_LSR_FORTESSA_FCSFILE.setDeletionDisallowed(False)
@@ -331,6 +333,8 @@ samp_type_FACS_ARIA_TUBESET.setGeneratedCodePrefix('FAR_S')
 # FACS_ARIA_FCSFILE
 data_set_type_FACS_ARIA_FCSFILE = tr.getOrCreateNewDataSetType('FACS_ARIA_FCSFILE')
 data_set_type_FACS_ARIA_FCSFILE.setDescription('An FCS file from the BD FACS Aria III Cell Sorter.')
+if "setDataSetKind" in dir(data_set_type_FACS_ARIA_FCSFILE):
+    data_set_type_FACS_ARIA_FCSFILE.setDataSetKind('PHYSICAL')
 data_set_type_FACS_ARIA_FCSFILE.setMainDataSetPattern('.*\.fcs')
 data_set_type_FACS_ARIA_FCSFILE.setMainDataSetPath(None)
 data_set_type_FACS_ARIA_FCSFILE.setDeletionDisallowed(False)
@@ -529,6 +533,8 @@ samp_type_INFLUX_TUBESET.setGeneratedCodePrefix('INR_S')
 # INFLUX_FCSFILE
 data_set_type_INFLUX_FCSFILE = tr.getOrCreateNewDataSetType('INFLUX_FCSFILE')
 data_set_type_INFLUX_FCSFILE.setDescription('An FCS file from the BD Influx Cell Sorter.')
+if "setDataSetKind" in dir(data_set_type_INFLUX_FCSFILE):
+    data_set_type_INFLUX_FCSFILE.setDataSetKind('PHYSICAL')
 data_set_type_INFLUX_FCSFILE.setMainDataSetPattern('.*\.fcs')
 data_set_type_INFLUX_FCSFILE.setMainDataSetPath(None)
 data_set_type_INFLUX_FCSFILE.setDeletionDisallowed(False)
