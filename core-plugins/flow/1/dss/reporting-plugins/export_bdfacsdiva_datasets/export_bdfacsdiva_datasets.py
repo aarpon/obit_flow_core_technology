@@ -104,7 +104,20 @@ class Mover():
 
     def __init__(self, experimentId, experimentType, entityType, entityId,
                  specimen, mode, userId, properties):
-        '''Constructor'''
+        '''Constructor
+
+        experimentId  : id of the experiment (must be specified)
+        experimentType: type of the experiment.
+        sampleId:       id of the sample (optional, if specified, the sample id
+                        will be used in the search criteria; if set to "" only
+                        the experiment id will be used as filter).
+        mode:           "normal", or "zip". If mode is "normal", the files
+                        will be copied to the user folder; if mode is "zip", the
+                        files will be packaged into a zip files and served for 
+                        download via the browser.
+        userId:         user id.
+        properties:     plug-in properties.              
+        '''
 
         # Store properties
         self._properties = properties
