@@ -66,9 +66,9 @@ DataViewer.prototype.displayExperimentInfo = function(exp) {
     // Get metaprojects (tags)
     var metaprojects = "";
     if (exp.metaprojects) {
-        if (exp.metaprojects.length == 0) {
+        if (exp.metaprojects.length === 0) {
             metaprojects = "<i>None</i>";
-        } else if (exp.metaprojects.length == 1) {
+        } else if (exp.metaprojects.length === 1) {
             metaprojects = exp.metaprojects[0].name;
         } else {
             for (var i = 0; i < exp.metaprojects.length; i++) {
@@ -85,7 +85,7 @@ DataViewer.prototype.displayExperimentInfo = function(exp) {
 
     // Display the experiment description
     var description = exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_DESCRIPTION"];
-    if (undefined === description || description == "") {
+    if (undefined === description || description === "") {
         description = "<i>No description provided.</i>";
     }
     experimentDescriptionView.append(this.prepareTitle("Description"));

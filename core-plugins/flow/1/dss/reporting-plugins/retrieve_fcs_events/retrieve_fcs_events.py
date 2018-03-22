@@ -3,7 +3,7 @@
 
 # Notes: 
 #
-# - this plug-in uses LRCache.jar from export_bdfacsdiva_datasets/lib.
+# - this plug-in uses LRCache.jar from export_flow_datasets/lib.
 # - this plug-in requires Jython version 2.7 (for json module)
 
 '''

@@ -729,7 +729,7 @@ DataModel.prototype.exportDatasets = function(experimentId, experimentType, type
 
     // Must use global object
     DATAMODEL.openbisServer.createReportFromAggregationService(
-        CONFIG['dataStoreServer'], "export_bdfacsdiva_datasets",
+        CONFIG['dataStoreServer'], "export_flow_datasets",
         parameters, DATAMODEL.processResultsFromExportDatasetsServerSidePlugin);
 };
 
@@ -766,7 +766,7 @@ DataModel.prototype.processResultsFromExportDatasetsServerSidePlugin = function(
 
             // No obvious errors. Retrieve the results.
             status = "";
-            if (response.result.rows.length != 1) {
+            if (response.result.rows.length !== 1) {
 
                 // Unexpected number of rows returned
                 status = unexpected;
@@ -794,7 +794,7 @@ DataModel.prototype.processResultsFromExportDatasetsServerSidePlugin = function(
                     // Call the plug-in
                     setTimeout(function() {
                             DATAMODEL.openbisServer.createReportFromAggregationService(
-                                CONFIG['dataStoreServer'], "export_bdfacsdiva_datasets",
+                                CONFIG['dataStoreServer'], "export_flow_datasets",
                                 parameters, DATAMODEL.processResultsFromExportDatasetsServerSidePlugin)
                         },
                         parseInt(CONFIG['queryPluginStatusInterval']));
