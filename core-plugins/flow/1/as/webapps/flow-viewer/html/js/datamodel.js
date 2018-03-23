@@ -87,7 +87,7 @@ DataModel.prototype.buildInitialTree = function() {
     var dataModelObj = this;
 
     // First-level children
-    first_level_children = [];
+    var first_level_children = [];
     if (this.supportsPlateAcq(dataModelObj.experimentType)) {
 
         first_level_children = [
@@ -167,7 +167,7 @@ DataModel.prototype.buildInitialTree = function() {
  *
  * @param item1 First node
  * @param item2 Second node
- * @return 1 if item1 > item2, 0 if item 1 == item2, -1 if item1 < item2
+ * @return int 1 if item1 > item2, 0 if item 1 == item2, -1 if item1 < item2
  *
  * @see naturalSort
  *
@@ -269,6 +269,7 @@ DataModel.prototype.supportsPlateAcq = function(experiment_type) {
         case "FACS_ARIA_EXPERIMENT":
         case "INFLUX_EXPERIMENT":
         case "S3E_EXPERIMENT":
+        case "MOFLO_XDP_EXPERIMENT":
             return false;
 
         default:
@@ -331,7 +332,7 @@ DataModel.prototype.getAndAddDatasetForTubeOrWell = function(sample, node) {
                                 };
 
                                 // Store it in the dataset object
-                                eUrl = encodeURI(url);
+                                var eUrl = encodeURI(url);
                                 eUrl = eUrl.replace('+', '%2B');
                                 dataset.url = eUrl;
 
@@ -671,9 +672,9 @@ DataModel.prototype.getExperiment = function(action) {
 
 /**
  * Get the Tubes for current experiment
- * @param {type} expCode
- * @param {type} node
- * @returns {tubes} Array of Tubes.
+ * @param expCode Experiment code
+ * @param node Node from the tree
+ * @returns Array Array of Tubes.
  */
 DataModel.prototype.getTubes = function(expCode, node) {
 
@@ -788,7 +789,7 @@ DataModel.prototype.processResultsFromExportDatasetsServerSidePlugin = function(
                 if (r_Completed == false) {
 
                     // We only need the UID of the job
-                    parameters = {};
+                    var parameters = {};
                     parameters["uid"] = r_UID;
 
                     // Call the plug-in
@@ -874,6 +875,7 @@ DataModel.prototype.processResultsFromExportDatasetsServerSidePlugin = function(
  * @param displayX string Display type of the parameter for the X axis ("LIN" or "LOG)
  * @param displayY string Display type of the parameter for the Y axis ("LIN" or "LOG)
  * @param maxNumEvents int Maximum number of events to be retrieved from the server.
+ * @param samplingMethod
  */
 DataModel.prototype.generateFCSPlot = function(node, code, paramX, paramY, displayX, displayY, maxNumEvents, samplingMethod) {
 
@@ -1042,7 +1044,7 @@ DataModel.prototype.processResultsFromRetrieveFCSEventsServerSidePlugin = functi
 
     return response;
 
-}
+};
 
 /**
  * Update an outdated experiment.
@@ -1188,7 +1190,7 @@ DataModel.prototype.getAndAddParameterInfoForDatasets = function(node, action) {
 
         var names = [];
         var compositeNames = [];
-        var display = []
+        var display = [];
 
         // Parameter numbering starts at 1
         var parametersToDisplay = 0;
@@ -1211,11 +1213,11 @@ DataModel.prototype.getAndAddParameterInfoForDatasets = function(node, action) {
             if (pStr != "") {
                 composite = name + " (" + pStr + ")";
             }
-            compositeNames.push(composite)
+            compositeNames.push(composite);
 
             // Store the display scale
             var displ = parameters.getAttribute("P" + i + "DISPLAY");
-            display.push(displ)
+            display.push(displ);
 
             // Update the count of parameters to display
             parametersToDisplay++;
