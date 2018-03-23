@@ -132,7 +132,7 @@ class Processor:
 
         # Try mapping the month to digits (e.g. "06"). If the mapping does
         # not work, return "NOT_FOUND"
-        month = monthMapper.get(month, "NOT_FOUND")
+        month = monthMapper.get(month.upper(), "NOT_FOUND")
 
         # Build the date in the correct format. If the month was not found,
         # return 01-01-1970

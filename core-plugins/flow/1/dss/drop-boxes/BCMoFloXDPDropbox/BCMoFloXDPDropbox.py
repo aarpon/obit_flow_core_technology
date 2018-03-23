@@ -119,8 +119,8 @@ class Processor:
         """Format the experiment date to be compatible with postgreSQL's
         'timestamp' data type.
 
-        @param Date stored in the FCS file, in the form 01-JAN-2013
-        @return Date in the form 2013-01-01
+        @param Date stored in the FCS file, in the form 15 Jun 2017
+        @return Date in the form 2017-06-15
         """
 
         monthMapper = {'JAN': '01', 'FEB': '02', 'MAR': '03', 'APR': '04',
@@ -132,7 +132,7 @@ class Processor:
 
         # Try mapping the month to digits (e.g. "06"). If the mapping does
         # not work, return "NOT_FOUND"
-        month = monthMapper.get(month, "NOT_FOUND")
+        month = monthMapper.get(month.upper(), "NOT_FOUND")
 
         # Build the date in the correct format. If the month was not found,
         # return 01-01-1970
