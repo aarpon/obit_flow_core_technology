@@ -48,7 +48,7 @@ DataViewer.prototype.displayExperimentInfo = function(exp) {
 
     }
 
-    $("#experimentNameView").append(titleId);
+    experimentNameView_div.append(titleId);
 
     // Display the experiment info
     var detailView = $("#detailView");
@@ -66,9 +66,9 @@ DataViewer.prototype.displayExperimentInfo = function(exp) {
     // Get metaprojects (tags)
     var metaprojects = "";
     if (exp.metaprojects) {
-        if (exp.metaprojects.length == 0) {
+        if (exp.metaprojects.length === 0) {
             metaprojects = "<i>None</i>";
-        } else if (exp.metaprojects.length == 1) {
+        } else if (exp.metaprojects.length === 1) {
             metaprojects = exp.metaprojects[0].name;
         } else {
             for (var i = 0; i < exp.metaprojects.length; i++) {
@@ -85,7 +85,7 @@ DataViewer.prototype.displayExperimentInfo = function(exp) {
 
     // Display the experiment description
     var description = exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_DESCRIPTION"];
-    if (undefined === description || description == "") {
+    if (undefined === description || description === "") {
         description = "<i>No description provided.</i>";
     }
     experimentDescriptionView.append(this.prepareTitle("Description"));
@@ -191,7 +191,8 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
                 } else if (node.data.element.sampleTypeCode == "FACS_ARIA_WELL" ||
                     node.data.element.sampleTypeCode == "FACS_ARIA_TUBE" ||
                     node.data.element.sampleTypeCode == "INFLUX_TUBE"  ||
-                    node.data.element.sampleTypeCode == "S3E_TUBE") {
+                    node.data.element.sampleTypeCode == "S3E_TUBE"  ||
+                    node.data.element.sampleTypeCode == "MOFLO_XDP_TUBE") {
 
                     // This code is specific for the BD FACS ARIA sorter and BD Influx Cell Sorter
 
@@ -450,15 +451,18 @@ DataViewer.prototype.displayExportAction = function(node) {
         return;
     }
 
+    var img = null;
+    var link = null;
+
     // Display the "Export to your folder" button only if enabled in the configuration file
     if (CONFIG['enableExportToUserFolder'] == true) {
 
-        var img = $("<img>")
+        img = $("<img>")
             .attr("src", "img/export.png")
             .attr("width", 32)
             .attr("height", 32);
 
-        var link = $("<a>")
+        link = $("<a>")
             .addClass("action")
             .attr("href", "#")
             .html("")
@@ -482,12 +486,12 @@ DataViewer.prototype.displayExportAction = function(node) {
 
     }
 
-    var img = $("<img>")
+    img = $("<img>")
         .attr("src", "img/zip.png")
         .attr("width", 32)
         .attr("height", 32);
 
-    var link = $("<a>")
+    link = $("<a>")
         .addClass("action")
         .attr("href", "#")
         .html("")
@@ -954,6 +958,6 @@ DataViewer.prototype.cacheFCSData = function(nodeKey, dataKey, fcsData) {
             node.data.cached[dataKey] = fcsData;
         }
     }
-}
+};
 
 

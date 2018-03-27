@@ -41,7 +41,7 @@ class Processor:
         # Set up logging
         logging.basicConfig(filename=logFile, level=logging.DEBUG, 
                         format='%(asctime)-15s %(levelname)s: %(message)s')
-        self._logger = logging.getLogger("BIORADS3e")
+        self._logger = logging.getLogger("BDMOFLO_XDP")
 
 
     def dictToXML(self, d):
@@ -79,7 +79,7 @@ class Processor:
 
         # Create the experiment
         self._logger.info("Register experiment %s" % expId)
-        exp = self._transaction.createNewExperiment(expId, "S3E_EXPERIMENT")
+        exp = self._transaction.createNewExperiment(expId, "MOFLO_XDP_EXPERIMENT")
         if not exp:
             msg = "Could not create experiment " + expId + "!"
             self._logger.error(msg)
@@ -88,7 +88,7 @@ class Processor:
             self._logger.info("Created experiment with ID " + expId + ".")
 
         # Store the name
-        exp.setPropertyValue("S3E_EXPERIMENT_NAME", expName)
+        exp.setPropertyValue("MOFLO_XDP_EXPERIMENT_NAME", expName)
 
         return exp
 
@@ -119,8 +119,8 @@ class Processor:
         """Format the experiment date to be compatible with postgreSQL's
         'timestamp' data type.
 
-        @param Date stored in the FCS file, in the form 01-JAN-2013
-        @return Date in the form 2013-01-01
+        @param Date stored in the FCS file, in the form 15 Jun 2017
+        @return Date in the form 2017-06-15
         """
 
         monthMapper = {'JAN': '01', 'FEB': '02', 'MAR': '03', 'APR': '04',
@@ -128,7 +128,7 @@ class Processor:
                        'SEP': '09', 'OCT': '10', 'NOV': '11', 'DEC': '12'}
 
         # Separate the date into day, month, and year
-        (day, month, year) = expDate.split("-")
+        (day, month, year) = expDate.split(" ")
 
         # Try mapping the month to digits (e.g. "06"). If the mapping does
         # not work, return "NOT_FOUND"
@@ -220,31 +220,31 @@ class Processor:
                 openBISTag.addEntity(openBISExperiment)
 
         # Set the experiment version
-        openBISExperiment.setPropertyValue("S3E_EXPERIMENT_VERSION",
+        openBISExperiment.setPropertyValue("MOFLO_XDP_EXPERIMENT_VERSION",
                                            expVersion)
 
         # Set the date
-        openBISExperiment.setPropertyValue("S3E_EXPERIMENT_DATE",
+        openBISExperiment.setPropertyValue("MOFLO_XDP_EXPERIMENT_DATE",
                                            expDate)
 
         # Set the description
-        openBISExperiment.setPropertyValue("S3E_EXPERIMENT_DESCRIPTION",
+        openBISExperiment.setPropertyValue("MOFLO_XDP_EXPERIMENT_DESCRIPTION",
                                            description)
 
         # Set the acquisition hardware
-        openBISExperiment.setPropertyValue("S3E_EXPERIMENT_ACQ_HARDWARE",
+        openBISExperiment.setPropertyValue("MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE",
                                            acqHardware)
 
         # Set the acquisition hardware friendly name
-        openBISExperiment.setPropertyValue("S3E_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME",
+        openBISExperiment.setPropertyValue("MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME",
                                            self._machinename)
 
         # Set the acquisition software
-        openBISExperiment.setPropertyValue("S3E_EXPERIMENT_ACQ_SOFTWARE",
+        openBISExperiment.setPropertyValue("MOFLO_XDP_EXPERIMENT_ACQ_SOFTWARE",
                                            acqSoftware)
 
         # Set the experiment owner
-        openBISExperiment.setPropertyValue("S3E_EXPERIMENT_OWNER",
+        openBISExperiment.setPropertyValue("MOFLO_XDP_EXPERIMENT_OWNER",
                                            owner)
 
         # Add the attachments
@@ -292,7 +292,7 @@ class Processor:
         """
 
         # Dataset type
-        datasetType = "S3E_FCSFILE"
+        datasetType = "MOFLO_XDP_FCSFILE"
 
         # Create a new dataset
         dataset = self._transaction.createNewDataSet()
@@ -323,8 +323,8 @@ class Processor:
 
             parametersXML = self.dictToXML(parameterNode.attrib)
 
-            # Store the parameters in the S3E_FCSFILE_PARAMETERS property
-            dataset.setPropertyValue("S3E_FCSFILE_PARAMETERS", parametersXML)
+            # Store the parameters in the MOFLO_XDP_FCSFILE_PARAMETERS property
+            dataset.setPropertyValue("MOFLO_XDP_FCSFILE_PARAMETERS", parametersXML)
             
             # Log the parameters
             self._logger.info("FCS file parameters (XML): " + str(parametersXML))
@@ -360,7 +360,7 @@ class Processor:
 
         # openBIS type
         if tubeNode.tag == "Tube":
-            openBISSpecimenType = "S3E_TUBE"
+            openBISSpecimenType = "MOFLO_XDP_TUBE"
         else:
             msg = "Unknown tube type" + tubeNode.tag
             self._logger.error(msg)
@@ -383,15 +383,15 @@ class Processor:
         openBISTube.setExperiment(openBISExperiment)
 
         # Set the Specimen name as a property
-        openBISTube.setPropertyValue("S3E_SPECIMEN", specimenName)
+        openBISTube.setPropertyValue("MOFLO_XDP_SPECIMEN", specimenName)
 
         # Set the name
-        openBISTube.setPropertyValue("S3E_TUBE_NAME", name)
+        openBISTube.setPropertyValue("MOFLO_XDP_TUBE_NAME", name)
 
         # Get the index sort property
         indexSort = tubeNode.attrib.get("indexSort")
         if indexSort is not None:
-            openBISTube.setPropertyValue("S3E_TUBE_ISINDEXSORT", indexSort)
+            openBISTube.setPropertyValue("MOFLO_XDP_TUBE_ISINDEXSORT", indexSort)
 
         # Set the TubeSet container
         openBISTube.setContainer(openBISContainerSample)
@@ -410,7 +410,7 @@ class Processor:
         """
 
         # Sample type
-        openBISSampleType = "S3E_TUBESET"
+        openBISSampleType = "MOFLO_XDP_TUBESET"
 
         # Get the identifier of the space all relevant attributes
         openBISSpaceIdentifier = \
@@ -521,8 +521,8 @@ class Processor:
 
                 elif nodeType == "Tray":
 
-                    # The BIORAD S3e cell sorter does not support plates
-                    msg = "The BIORAD S3e cell sorter does not support plates!"
+                    # The BC MoFlo XDP cell sorter does not support plates
+                    msg = "The BC MoFlo XDP cell sorter does not support plates!"
                     self._logger.error(msg)
                     raise Exception(msg)
 
@@ -643,7 +643,7 @@ def process(transaction):
 
     # Get path to containing folder
     # __file__ does not work (reliably) in Jython
-    dbPath = "../core-plugins/flow/1/dss/drop-boxes/BIORADS3eDropbox"
+    dbPath = "../core-plugins/flow/1/dss/drop-boxes/BCMoFloXDPDropbox"
 
     # Path to the logs subfolder
     logPath = os.path.join(dbPath, "logs")
