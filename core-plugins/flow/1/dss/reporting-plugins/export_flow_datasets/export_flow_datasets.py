@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 '''
-Aggregation plug-in to copy all FCS files under a specified BD FACS DIVA element
+Aggregation plug-in to copy all FCS files under a specified FLOW element
 to the user folder.or to the session workspace for download.
 @author: Aaron Ponti
 '''
@@ -27,7 +27,7 @@ def touch(full_file):
     """
     f = open(full_file, 'w')
     f.close()
-    
+
 
 def zip_folder(folder_path, output_path):
     """Zip the contents of an entire folder recursively. Please notice that
@@ -42,10 +42,10 @@ def zip_folder(folder_path, output_path):
     root_len = folder_path.find(target)
 
     try:
-        
+
         # Open zip file (no compression)
         zip_file = zipfile.ZipFile(output_path, 'w', zipfile.ZIP_STORED, allowZip64=True)
-        
+
         # Now recurse into the folder
         for root, folders, files in os.walk(folder_path):
 
@@ -70,7 +70,7 @@ def zip_folder(folder_path, output_path):
 
             # Include all files
             for file_name in files:
-                
+
                 # Full file path to add
                 full_file_path = os.path.join(root, file_name)
                 relative_file_path = os.path.join(relative_dir_path, file_name)
@@ -94,8 +94,8 @@ def zip_folder(folder_path, output_path):
 
     finally:
         zip_file.close()
-        
-        
+
+
 class Mover():
     """
     Takes care of organizing the files to be copied to the user folder and
@@ -149,11 +149,11 @@ class Mover():
 
         # User folder: depending on the 'mode' settings, the user folder changes
         if mode =="normal":
-            
+
             # Standard user folder
             self._userFolder = os.path.join(self._properties['base_dir'], \
                                             userId, self._properties['export_dir'])
-            
+
         elif mode == "zip":
 
             # Get the path to the user's Session Workspace
@@ -285,10 +285,10 @@ class Mover():
     def getZipArchiveFullPath(self):
         """Return the full path of the zip archive (or "" if mode was "normal").
         """
-        
+
         if self._mode == "zip":
             return self._rootExportPath + ".zip"
-        
+
         return ""
 
 
@@ -301,7 +301,7 @@ class Mover():
 
         return ""
 
-        
+
     def getErrorMessage(self):
         """
         Return the error message (in case process() returned failure)
@@ -861,6 +861,10 @@ def parsePropertiesFile():
         if var_name not in found_vars:
             return None
 
+    # Make sure that there are no Windows line endings
+    for var_name in var_names:
+        properties[var_name] = properties[var_name].replace('\r', '')
+
     # Everything found
     return properties
 
@@ -992,7 +996,7 @@ def aggregateProcess(parameters, tableBuilder, uid):
 
     # Get the specimen name
     specimen = parameters.get("specimen")
-    
+
     # Get the mode
     mode = parameters.get("mode")
 
@@ -1003,11 +1007,11 @@ def aggregateProcess(parameters, tableBuilder, uid):
 
     # Process
     success = mover.process()
-    
+
     # Compress
     if mode == "zip":
         mover.compressIfNeeded()
-        
+
     # Get some results info
     nCopiedFiles = mover.getNumberOfCopiedFiles()
     errorMessage = mover.getErrorMessage()
@@ -1027,9 +1031,9 @@ def aggregateProcess(parameters, tableBuilder, uid):
 
     # Email result to the user
     if success == True:
-        
-        subject = "BD FACS DIVA export: successfully processed requested data"
-        
+
+        subject = "Flow export: successfully processed requested data"
+
         if nCopiedFiles == 1:
             snip = "One file was "
         else:
@@ -1041,7 +1045,7 @@ def aggregateProcess(parameters, tableBuilder, uid):
             body = snip + "successfully packaged for download: " + zipFileName
 
     else:
-        subject = "BD FACS DIVA export: error processing request!"
+        subject = "Flow export: error processing request!"
         body = "Sorry, there was an error processing your request. " + \
         "Please send your administrator the following report:\n\n" + \
         "\"" + errorMessage + "\"\n"
@@ -1050,4 +1054,4 @@ def aggregateProcess(parameters, tableBuilder, uid):
     try:
         mailService.createEmailSender().withSubject(subject).withBody(body).send()
     except:
-        sys.stderr.write("export_bdfacsdiva_datasets: Failure sending email to user!")
+        sys.stderr.write("export_flow_datasets: Failure sending email to user!")
