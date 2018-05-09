@@ -832,7 +832,7 @@ class Mover():
 def parsePropertiesFile():
     """Parse properties file for custom plug-in settings."""
 
-    filename = "../core-plugins/flow/1/dss/reporting-plugins/export_flow_datasets/plugin.properties"
+    filename = "../core-plugins/flow/2/dss/reporting-plugins/export_flow_datasets/plugin.properties"
     var_names = ['base_dir', 'export_dir']
 
     properties = {}

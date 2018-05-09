@@ -33,7 +33,7 @@ def setUpLogging():
 
     # Get path to containing folder
     # __file__ does not work (reliably) in Jython
-    rpPath = "../core-plugins/flow/1/dss/reporting-plugins/retrieve_fcs_events"
+    rpPath = "../core-plugins/flow/2/dss/reporting-plugins/retrieve_fcs_events"
 
     # Path to the logs subfolder
     logPath = os.path.join(rpPath, "logs")
