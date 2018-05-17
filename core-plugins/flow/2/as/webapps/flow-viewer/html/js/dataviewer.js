@@ -588,6 +588,7 @@ DataViewer.prototype.hideStatus = function() {
 
 /**
  * Display attachment info and link to the Attachments tab.
+ * @param dataModelObj: DataModel object
  * @param attachments: list of attachments
  */
 DataViewer.prototype.displayAttachments = function(dataModelObj, attachments) {

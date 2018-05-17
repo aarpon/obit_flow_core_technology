@@ -761,7 +761,7 @@ DataModel.prototype.processResultsFromExportDatasetsServerSidePlugin = function(
 
 	        status = "Sorry, could not process request.";
 	        level = "danger";
-            r_Success = false;
+            r_Success = "0";
 
 	    } else {
 
@@ -782,11 +782,11 @@ DataModel.prototype.processResultsFromExportDatasetsServerSidePlugin = function(
                 r_UID = row[0].value;
 
                 // Retrieve the 'completed' status
-                r_Completed = row[1].value
+                r_Completed = row[1].value;
 
                 // If the processing is not completed, we wait a few seconds and trigger the
                 // server-side plug-in again. The interval is defined by the admin.
-                if (r_Completed == false) {
+                if (r_Completed === "0") {
 
                     // We only need the UID of the job
                     var parameters = {};
@@ -805,7 +805,7 @@ DataModel.prototype.processResultsFromExportDatasetsServerSidePlugin = function(
 
                 } else {
 
-                    if (row.length != 8) {
+                    if (row.length !== 8) {
 
                         // Again, something is wrong with the returned results
                         status = unexpected;
@@ -821,9 +821,9 @@ DataModel.prototype.processResultsFromExportDatasetsServerSidePlugin = function(
                         r_ZipArchiveFileName = row[6].value;
                         r_Mode = row[7].value;
 
-                        if (r_Success == true) {
+                        if (r_Success === "1") {
                             var snip = "<b>Congratulations!</b>&nbsp;";
-                            if (r_NCopiedFiles == 1) {
+                            if (r_NCopiedFiles === 1) {
                                 snip = snip +
                                     "<span class=\"badge\">1</span> file was ";
                             } else {
@@ -831,7 +831,7 @@ DataModel.prototype.processResultsFromExportDatasetsServerSidePlugin = function(
                                     "<span class=\"badge\">" +
                                     r_NCopiedFiles + "</span> files were ";
                             }
-                            if (r_Mode == "normal") {
+                            if (r_Mode === "normal") {
                                 status = snip + "successfully exported to " +
                                     "{...}/" + r_RelativeExpFolder + ".";
                             } else {
@@ -840,7 +840,7 @@ DataModel.prototype.processResultsFromExportDatasetsServerSidePlugin = function(
                             }
                             level = "success";
                         } else {
-                            if (r_Mode == "normal") {
+                            if (r_Mode === "normal") {
                                 status = "Sorry, there was an error exporting " +
                                     "to your user folder:<br /><br />\"" +
                                     r_ErrorMessage + "\".";
@@ -856,7 +856,7 @@ DataModel.prototype.processResultsFromExportDatasetsServerSidePlugin = function(
         DATAVIEWER.displayStatus(status, level);
 
         // Retrieve the URL (asynchronously)
-        if (r_Success == true && r_Mode == "zip") {
+        if (r_Success === "1" && r_Mode === "zip") {
             DATAMODEL.openbisServer.createSessionWorkspaceDownloadUrl(r_ZipArchiveFileName,
                 function(url) {
                     var downloadString =
@@ -954,13 +954,13 @@ DataModel.prototype.processResultsFromRetrieveFCSEventsServerSidePlugin = functi
 
         status = "Sorry, could not process request.";
         level = "danger";
-        r_Success = false;
+        r_Success = "0";
 
     } else {
 
         // No obvious errors. Retrieve the results.
         status = "";
-        if (response.result.rows.length != 1) {
+        if (response.result.rows.length !== 1) {
 
             // Unexpected number of rows returned
             status = unexpected;
@@ -1012,7 +1012,7 @@ DataModel.prototype.processResultsFromRetrieveFCSEventsServerSidePlugin = functi
                 r_SamplingMethod = row[12].value;
                 r_NodeKey = row[13].value;
 
-                if (r_Success == true) {
+                if (r_Success === "1") {
                     status = r_ErrorMessage;
                     level = "success";
 
@@ -1036,7 +1036,7 @@ DataModel.prototype.processResultsFromRetrieveFCSEventsServerSidePlugin = functi
     }
 
     // We only display errors
-    if (r_Success == false) {
+    if (r_Success === "0") {
         DATAVIEWER.displayStatus(status, level);
     } else {
         DATAVIEWER.hideStatus();
@@ -1084,15 +1084,15 @@ DataModel.prototype.upgradeExperiment = function(expPermId) {
             if (response.error) {
                 status = "Sorry, could not process request.";
                 level = "danger";
-                r_Success = false;
+                r_Success = "0";
             } else {
                 status = "";
-                if (response.result.rows.length != 1) {
+                if (response.result.rows.length !== 1) {
                     status = unexpected;
                     level = "danger";
                 } else {
                     row = response.result.rows[0];
-                    if (row.length != 2) {
+                    if (row.length !== 2) {
                         status = unexpected;
                         level = "danger";
                     } else {
@@ -1101,7 +1101,7 @@ DataModel.prototype.upgradeExperiment = function(expPermId) {
                         r_Success = row[0].value;
                         r_ErrorMessage = row[1].value;
 
-                        if (r_Success == true) {
+                        if (r_Success === "1") {
                             status = r_ErrorMessage;
                             level = "success";
 
@@ -1117,7 +1117,7 @@ DataModel.prototype.upgradeExperiment = function(expPermId) {
             DATAVIEWER.displayStatus(status, level);
 
             // Reload the page after a short delay
-            if (r_Success == true) {
+            if (r_Success === "1") {
                 setTimeout(function() {window.location.reload();}, 1000);
             }
 
@@ -1133,7 +1133,7 @@ DataModel.prototype.retrieveAndDisplayAttachments = function() {
     var experimentId = {
         "@type" : "ExperimentIdentifierId",
         "identifier" : this.expId
-    }
+    };
 
     // Alias
     var dataModelObj = this;
@@ -1164,7 +1164,7 @@ DataModel.prototype.getAndAddParameterInfoForDatasets = function(node, action) {
 
     // Consistency check on the node
     try {
-        if (node.data.element.dataSetTypeCode != (this.EXPERIMENT_PREFIX + "_FCSFILE")) {
+        if (node.data.element.dataSetTypeCode !== (this.EXPERIMENT_PREFIX + "_FCSFILE")) {
             throw("The node is not of the expected type!");
         }
     } catch(err) {
@@ -1199,7 +1199,7 @@ DataModel.prototype.getAndAddParameterInfoForDatasets = function(node, action) {
             // If the parameter contains the PnCHANNELTYPE attribute (BD Influx Cell Sorter),
             // we only add it if the channel type is 6.
             var channelType = parameters.getAttribute("P" + i + "CHANNELTYPE");
-            if (channelType != null && channelType != 6) {
+            if (channelType != null && channelType !== 6) {
                 continue;
             }
 
@@ -1210,7 +1210,7 @@ DataModel.prototype.getAndAddParameterInfoForDatasets = function(node, action) {
             // Store the composite name
             var pStr = parameters.getAttribute("P" + i + "S");
             var composite = name;
-            if (pStr != "") {
+            if (pStr !== "") {
                 composite = name + " (" + pStr + ")";
             }
             compositeNames.push(composite);
