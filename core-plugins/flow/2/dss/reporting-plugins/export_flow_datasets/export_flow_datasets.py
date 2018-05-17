@@ -20,6 +20,7 @@ import java.io.File
 from ch.ethz.scu.obit.common.server.longrunning import LRCache
 import uuid
 from threading import Thread
+import logging
 
 
 def touch(full_file):
@@ -103,8 +104,8 @@ class Mover():
     """
 
     def __init__(self, experimentId, experimentType, entityType, entityId,
-                 specimen, mode, userId, properties):
-        '''Constructor
+                 specimen, mode, userId, properties, logger):
+        """Constructor
 
         experimentId  : id of the experiment (must be specified)
         experimentType: type of the experiment.
@@ -116,8 +117,12 @@ class Mover():
                         files will be packaged into a zip files and served for 
                         download via the browser.
         userId:         user id.
-        properties:     plug-in properties.              
-        '''
+        properties:     plug-in properties.
+        logger:         logger.
+        """
+
+        # Logger
+        self._logger = logger
 
         # Store properties
         self._properties = properties
@@ -192,7 +197,13 @@ class Mover():
         self._currentPath = ""
 
         # Message (in case of error)
-        self._message = "";
+        self._message = ""
+
+        # Info
+        self._logger.info("Export experiment with code " + \
+                          self._experimentCode + " to " + \
+                          str(self._userFolder))
+        self._logger.info("Export mode is " + self._mode)
 
         # Keep track of the number of copied files
         self._numCopiedFiles = 0
@@ -212,12 +223,14 @@ class Mover():
         # Check that the entity code is set properly (in the constructor)
         if self._entityCode == '':
             self._message = "Could not get entity code from identifier!"
+            self._logger.error(self._message)
             return False
 
         # Check that the experiment could be retrieved
-        if self._experiment == None:
+        if self._experiment is None:
             self._message = "Could not retrieve experiment with " \
             "identifier " + self._entityId + "!"
+            self._logger.error(self._message)
             return False
 
         # At this stage we can create the experiment folder in the user dir
@@ -225,6 +238,7 @@ class Mover():
         if not self._createRootAndExperimentFolder():
             self._message = "Could not create experiment folder " + \
             self._rootExportPath
+            self._logger.error(self._message)
             return False
 
         # Now process depending on the entity type
@@ -267,6 +281,7 @@ class Mover():
         else:
 
             self._message = "Unknown entity!"
+            self._logger.error(self._message)
             return False
 
         # Return
@@ -383,12 +398,14 @@ class Mover():
         dataSets = self._getDataSetsForPlate(plateCode)
         if len(dataSets) == 0:
             self._message = "Could not retrieve datasets for plate with code " + plateCode + "."
+            self._logger.error(self._message)
             return False
 
         # Get all fcs files for the datasets
         dataSetFiles = self._getFilesForDataSets(dataSets)
         if len(dataSetFiles) == 0:
             self._message = "Could not retrieve files for datasets from plate " + plateCode + "."
+            self._logger.error(self._message)
             return False
 
         # Copy the files to the user folder (in the plate folder)
@@ -419,6 +436,7 @@ class Mover():
         for plate in plates:
             if not self._copyDataSetsForPlate(plate):
                 self._message = "Could not retrieve datasets for plate."
+                self._logger.error(self._message)
                 return False
 
         # Return
@@ -457,12 +475,14 @@ class Mover():
         if len(dataSets) == 0:
             self._message = "Could not retrieve datasets for tubes in " \
             "experiment with code " + self._experimentCode + "."
+            self._logger.error(self._message)
             return False
 
         # Get all fcs files for the datasets
         dataSetFiles = self._getFilesForDataSets(dataSets)
         if len(dataSetFiles) == 0:
             self._message = "Could not retrieve files for datasets from tubes."
+            self._logger.error(self._message)
             return False
 
         # Copy the files
@@ -495,6 +515,7 @@ class Mover():
         dataSetFiles = self._getFilesForDataSets(dataSets)
         if len(dataSetFiles) == 0:
             self._message = "Could not retrieve files for datasets from well."
+            self._logger.error(self._message)
             return False
 
         # Store at the experiment level
@@ -524,6 +545,7 @@ class Mover():
         dataSetFiles = self._getFilesForDataSets(dataSets)
         if len(dataSetFiles) == 0:
             self._message = "Could not retrieve files for datasets from tube."
+            self._logger.error(self._message)
             return False
 
         # Store at the experiment level
@@ -554,6 +576,7 @@ class Mover():
         dataSetFiles = self._getFilesForDataSets(dataSets)
         if len(dataSetFiles) == 0:
             self._message = "Could not retrieve files for datasets from FCSFile sample."
+            self._logger.error(self._message)
             return False
 
         # Store at the experiment level
@@ -577,6 +600,7 @@ class Mover():
         touch = "/usr/bin/touch" if OSUtilities.isMacOS() else "/bin/touch"
         subprocess.call([touch, dstFile])
         subprocess.call(["/bin/cp", source, dstDir])
+        self._logger.info("Copying file " + source + " to " + dstDir)
         self._numCopiedFiles += 1
 
 
@@ -655,6 +679,7 @@ class Mover():
         if len(wells) == 0:
             self._message = "Could not retrieve wells for plate with " \
             "code " + plateCode + "."
+            self._logger.error(self._message)
             return wells
 
         # Check that the specimen matches (if needed)
@@ -673,6 +698,7 @@ class Mover():
             self._message = "Could not retrieve datasets for wells in " \
             "plate with code " + plateCode + " from experiment " \
             "with code " + self._experimentCode + "."
+            self._logger.error(self._message)
 
         # Return
         return dataSets
@@ -700,6 +726,7 @@ class Mover():
         if len(dataSets) == 0:
             self._message = "Could not retrieve datasets for well " \
             "with code " + wellCode + "."
+            self._logger.error(self._message)
 
         # Return
         return dataSets
@@ -727,6 +754,7 @@ class Mover():
         if len(dataSets) == 0:
             self._message = "Could not retrieve datasets for tube " \
             "with code " + tubeCode + "."
+            self._logger.error(self._message)
 
         # Return
         return dataSets
@@ -742,6 +770,7 @@ class Mover():
         if dataSets is None:
             self._message = "Could not retrieve datasets for " \
             "FCS file with identifier " + self._entityId + "!"
+            self._logger.error(self._message)
         else:
             dataSets = [dataSets]
 
@@ -772,6 +801,7 @@ class Mover():
 
         if len(dataSetFiles) == 0:
             self._message = "Could not retrieve dataset files!"
+            self._logger.error(self._message)
 
         # Return the files
         return dataSetFiles
@@ -791,7 +821,9 @@ class Mover():
         plates = searchService.searchForSamples(searchCriteria)
 
         if len(plates) == 0:
-            self._message = "Could not retrieve plates for experiment with code " + self._experimentCode + "."
+            self._message = "The experiment with code " + \
+                            self._experimentCode + " does not contain plates."
+            self._logger.info(self._message)
             return plates
 
         # Return the plates
@@ -817,7 +849,9 @@ class Mover():
         tubes = searchService.searchForSamples(searchCriteria)
 
         if len(tubes) == 0:
-            self._message = "Could not retrieve tubes for experiment with code " + self._experimentCode + "."
+            self._message = "The experiment with code " + \
+                            self._experimentCode + "does not contain tubes."
+            self._logger.error(self._message)
             return tubes
 
         # Check that the specimen matches (if needed)
@@ -977,6 +1011,25 @@ def aggregateProcess(parameters, tableBuilder, uid):
     resultToStore["mode"] = ""
     LRCache.set(uid, resultToStore)
 
+    # Get path to containing folder
+    # __file__ does not work (reliably) in Jython
+    dbPath = "../core-plugins/flow/2/dss/reporting-plugins/export_flow_datasets"
+
+    # Path to the logs subfolder
+    logPath = os.path.join(dbPath, "logs")
+
+    # Make sure the logs subforder exist
+    if not os.path.exists(logPath):
+        os.makedirs(logPath)
+
+    # Path for the log file
+    logFile = os.path.join(logPath, "log.txt")
+
+    # Set up logging
+    logging.basicConfig(filename=logFile, level=logging.DEBUG,
+                        format='%(asctime)-15s %(levelname)s: %(message)s')
+    logger = logging.getLogger()
+
     # Get parameters from plugin.properties
     properties = parsePropertiesFile()
     if properties is None:
@@ -1000,10 +1053,22 @@ def aggregateProcess(parameters, tableBuilder, uid):
     # Get the mode
     mode = parameters.get("mode")
 
+    # Info
+    logger.info("Aggregation plug-in called with following parameters:")
+    logger.info("experimentId   = " + experimentId)
+    logger.info("experimentType = " + experimentType)
+    logger.info("entityType     = " + entityType)
+    logger.info("entityId       = " + entityId)
+    logger.info("specimen       = " + specimen)
+    logger.info("mode           = " + mode)
+    logger.info("userId         = " + userId)
+    logger.info("Aggregation plugin properties:")
+    logger.info("properties   = " + str(properties))
+
     # Instantiate the Mover object - userId is a global variable
     # made available to the aggregation plug-in
     mover = Mover(experimentId, experimentType, entityType, entityId, specimen,
-                  mode, userId, properties)
+                  mode, userId, properties, logger)
 
     # Process
     success = mover.process()
