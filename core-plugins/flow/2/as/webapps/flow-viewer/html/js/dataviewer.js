@@ -136,7 +136,7 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
     var detailViewActionID = $("#detailViewAction");
     var detailViewActionExplID = $("#detailViewActionExpl");
     var detailViewSampleID = $("#detailViewSample");
-    var detailViewPlotID = $('#detailViewPlot')
+    var detailViewPlotID = $('#detailViewPlot');
 
     // Clear previous views
     statusID.empty();
@@ -157,11 +157,11 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
     detailViewSampleName.append($("<h4>").html(node.data.title));
 
     if (node.data.type) {
-        if (node.data.type == "plate_container") {
+        if (node.data.type === "plate_container") {
             detailViewSampleID.append($("<p>").html("This is the set of all plates contained in this experiment."));
-        } else if (node.data.type == "tubesets") {
+        } else if (node.data.type === "tubesets") {
             detailViewSampleID.append($("<p>").html("This is the virtual set of all tubes contained in this experiment."));
-        } else if (node.data.type == "specimen") {
+        } else if (node.data.type === "specimen") {
             detailViewSampleID.append($("<p>").html("This is a specimen."));
         } else {
             // Ignore
@@ -182,22 +182,22 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
 
             case "Sample":
 
-                if (node.data.element.sampleTypeCode == (DATAMODEL.EXPERIMENT_PREFIX + "_PLATE")) {
+                if (node.data.element.sampleTypeCode === (DATAMODEL.EXPERIMENT_PREFIX + "_PLATE")) {
 
                     // Update details
                     detailViewSampleID.append($("<p>").html("This plate has geometry " +
                         node.data.element.properties[DATAMODEL.EXPERIMENT_PREFIX + "_PLATE_GEOMETRY"] + "."));
 
-                } else if (node.data.element.sampleTypeCode == "FACS_ARIA_WELL" ||
-                    node.data.element.sampleTypeCode == "FACS_ARIA_TUBE" ||
-                    node.data.element.sampleTypeCode == "INFLUX_TUBE"  ||
-                    node.data.element.sampleTypeCode == "S3E_TUBE"  ||
-                    node.data.element.sampleTypeCode == "MOFLO_XDP_TUBE") {
+                } else if (node.data.element.sampleTypeCode === "FACS_ARIA_WELL" ||
+                    node.data.element.sampleTypeCode === "FACS_ARIA_TUBE" ||
+                    node.data.element.sampleTypeCode === "INFLUX_TUBE"  ||
+                    node.data.element.sampleTypeCode === "S3E_TUBE"  ||
+                    node.data.element.sampleTypeCode === "MOFLO_XDP_TUBE") {
 
                     // This code is specific for the BD FACS ARIA sorter and BD Influx Cell Sorter
 
                     var sortType = "This is a standard sort.";
-                    if (node.data.element.properties[node.data.element.sampleTypeCode + "_ISINDEXSORT"] == "true") {
+                    if (node.data.element.properties[node.data.element.sampleTypeCode + "_ISINDEXSORT"] === "true") {
                         sortType = "This is an index sort.";
                     }
                     detailViewSampleID.append($("<p>").html(sortType));
@@ -215,7 +215,7 @@ DataViewer.prototype.displayDetailsAndActions = function(node) {
 
             case "DataSet":
 
-                if (node.data.element.dataSetTypeCode == (DATAMODEL.EXPERIMENT_PREFIX + "_FCSFILE")) {
+                if (node.data.element.dataSetTypeCode === (DATAMODEL.EXPERIMENT_PREFIX + "_FCSFILE")) {
 
                     // Append the acquisition date if present
                     if (node.data.element.properties[DATAMODEL.EXPERIMENT_PREFIX + "_FCSFILE_ACQ_DATE"]) {
@@ -304,7 +304,7 @@ DataViewer.prototype.displayExportAction = function(node) {
 
     } else {
 
-        if (node.data.type && node.data.type == "specimen") {
+        if (node.data.type && node.data.type === "specimen") {
 
             // Get the specimen name.
             specimenName = node.data.title;
@@ -329,8 +329,8 @@ DataViewer.prototype.displayExportAction = function(node) {
                 // Reference
                 var parent = node.parent;
 
-                if (parent.data.element["@type"] == "Sample" &&
-                    parent.data.element.sampleTypeCode == (DATAMODEL.EXPERIMENT_PREFIX + "_PLATE")) {
+                if (parent.data.element["@type"] === "Sample" &&
+                    parent.data.element.sampleTypeCode === (DATAMODEL.EXPERIMENT_PREFIX + "_PLATE")) {
 
                     // Type
                     type = DATAMODEL.EXPERIMENT_PREFIX + "_PLATE";
@@ -352,7 +352,7 @@ DataViewer.prototype.displayExportAction = function(node) {
                 while (node.parent) {
                     node = node.parent;
                     if (node.data.element &&
-                        node.data.element["@type"] == "Experiment") {
+                        node.data.element["@type"] === "Experiment") {
                         identifier = node.data.element.identifier;
                         break;
                     }
@@ -363,7 +363,7 @@ DataViewer.prototype.displayExportAction = function(node) {
 
             }
 
-        } else if (node.data.type && node.data.type == "tubesets") {
+        } else if (node.data.type && node.data.type === "tubesets") {
 
             // If there are no (loaded) children (yet), just return
             if (!node.childList || node.childList.length == 0) {
@@ -375,9 +375,9 @@ DataViewer.prototype.displayExportAction = function(node) {
             }
 
             // Do we have real samples?
-            if (node.childList.length == 1 &&
+            if (node.childList.length === 1 &&
                 node.childList[0].data &&
-                node.childList[0].data.icon == "empty.png" &&
+                node.childList[0].data.icon === "empty.png" &&
                 node.childList[0].data.title === "<i>None</i>" != -1) {
                 return;
             }
@@ -395,7 +395,7 @@ DataViewer.prototype.displayExportAction = function(node) {
             while (node.parent) {
                 node = node.parent;
                 if (node.data.element &&
-                    node.data.element["@type"] == "Experiment") {
+                    node.data.element["@type"] === "Experiment") {
                     identifier = node.data.element.identifier;
                     break;
                 }
@@ -404,10 +404,10 @@ DataViewer.prototype.displayExportAction = function(node) {
             // Experiment ID (same as identifier)
             experimentId = identifier;
 
-        } else if (node.data.type && node.data.type == "plate_container") {
+        } else if (node.data.type && node.data.type === "plate_container") {
 
             // If there are no (loaded) children (yet), just return
-            if (!node.childList || node.childList.length == 0) {
+            if (!node.childList || node.childList.length === 0) {
                 if (node._isLoading) {
                     this.displayStatus("The actions for this node will be displayed next time you select it.</br />",
                         "info");
@@ -416,9 +416,9 @@ DataViewer.prototype.displayExportAction = function(node) {
             }
 
             // Do we have real samples?
-            if (node.childList.length == 1 &&
+            if (node.childList.length === 1 &&
                 node.childList[0].data &&
-                node.childList[0].data.icon == "empty.png" &&
+                node.childList[0].data.icon === "empty.png" &&
                 node.childList[0].data.title === "<i>None</i>" != -1) {
                 return;
             }
@@ -433,7 +433,7 @@ DataViewer.prototype.displayExportAction = function(node) {
             while (node.parent) {
                 node = node.parent;
                 if (node.data.element &&
-                    node.data.element["@type"] == "Experiment") {
+                    node.data.element["@type"] === "Experiment") {
                     identifier = node.data.element.identifier;
                     break;
                 }
@@ -447,7 +447,7 @@ DataViewer.prototype.displayExportAction = function(node) {
     }
 
     // If no relevant type found, just return here
-    if (type == "") {
+    if (type === "") {
         return;
     }
 
@@ -455,7 +455,7 @@ DataViewer.prototype.displayExportAction = function(node) {
     var link = null;
 
     // Display the "Export to your folder" button only if enabled in the configuration file
-    if (CONFIG['enableExportToUserFolder'] == true) {
+    if (CONFIG['enableExportToUserFolder'] === true) {
 
         img = $("<img>")
             .attr("src", "img/export.png")
@@ -567,7 +567,7 @@ DataViewer.prototype.displayStatus = function(status, level) {
     status_div.show();
 
     // Make sure the level is valid
-    if (["default", "success", "info", "warning", "danger"].indexOf(level) == -1) {
+    if (["default", "success", "info", "warning", "danger"].indexOf(level) === -1) {
         level = "default";
     }
 
@@ -600,9 +600,9 @@ DataViewer.prototype.displayAttachments = function(dataModelObj, attachments) {
 
     // Text
     var text = "";
-    if (dataModelObj.attachments.length == 0) {
+    if (dataModelObj.attachments.length === 0) {
         text = "There are no attachments.";
-    } else if (dataModelObj.attachments.length == 1) {
+    } else if (dataModelObj.attachments.length === 1) {
         text = "There is one attachment."
     } else {
         text = "There are " + dataModelObj.attachments.length + " attachments.";
@@ -717,11 +717,12 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
 
     // Add the options
     var possibleOptions = [500, 1000, 2500, 5000, 10000, 20000, 50000, 100000];
-    for (var i = 0; i < possibleOptions.length; i++) {
-        if (possibleOptions[i] < node.data.parameterInfo.numEvents) {
+    var numEventsInFile = parseInt(node.data.parameterInfo.numEvents);
+    for (i = 0; i < possibleOptions.length; i++) {
+        if (possibleOptions[i] < numEventsInFile) {
             selectNumEventsId.append($("<option>")
                 .attr("value", possibleOptions[i])
-                .text(parseInt(possibleOptions[i])));
+                .text(possibleOptions[i].toString()));
         }
     }
     selectNumEventsId.append($("<option>")
@@ -779,7 +780,7 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
 
     // Add the options
     possibleOptions = ["Linear", "Hyperlog"];
-    for (var i = 0; i < possibleOptions.length; i++) {
+    for (i = 0; i < possibleOptions.length; i++) {
         selectScaleX.append($("<option>")
             .attr("value", possibleOptions[i])
             .text(possibleOptions[i]));
@@ -825,7 +826,7 @@ DataViewer.prototype.renderParameterSelectionForm = function(node) {
 
     // Add the options
     possibleOptions = ["Regular", "First rows"];
-    for (var i = 0; i < possibleOptions.length; i++) {
+    for (i = 0; i < possibleOptions.length; i++) {
         selectSamplingMethod.append($("<option>")
             .attr("value", (i + 1))
             .text(possibleOptions[i]));
@@ -844,7 +845,7 @@ DataViewer.prototype.prepareTitle = function(title, level) {
 
 
     // Make sure the level is valid
-    if (["default", "success", "info", "warning", "danger"].indexOf(level) == -1) {
+    if (["default", "success", "info", "warning", "danger"].indexOf(level) === -1) {
         level = "default";
     }
 
@@ -857,8 +858,8 @@ DataViewer.prototype.prepareTitle = function(title, level) {
  * @param data list of (X, Y) points
  * @param xLabel X label
  * @param yLabel Y label
- * @param displayX string Display type of the parameter for the X axis ("Linear" or "Hyperlog")
- * @param displayY string Display type of the parameter for the Y axis ("Linear" or "Hyperlog")
+ * @param xDisplay string Display type of the parameter for the X axis ("Linear" or "Hyperlog")
+ * @param yDisplay string Display type of the parameter for the Y axis ("Linear" or "Hyperlog")
  */
 DataViewer.prototype.plotFCSData = function(data, xLabel, yLabel, xDisplay, yDisplay) {
 
