@@ -105,9 +105,8 @@ DataViewer.prototype.displayExperimentInfo = function(exp) {
     }
     var acqDetails =
         exp.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_SOFTWARE"] + " on " +
-        "<b>" + hardwareName + "</b> (acquired by " + owner + " on " +
-        (new Date(acqDate).toDateString()) + " and registered on " +
-        (new Date(exp.registrationDetails.registrationDate)).toDateString() + ").";
+        "<b>" + hardwareName + "</b>. Acquired by " + owner + " on " +
+        (new Date(acqDate).toDateString()) + ".";
     experimentAcquisitionDetailsView.append(this.prepareTitle("Acquisition details"));
     experimentAcquisitionDetailsView.append($("<p>").html(acqDetails));
 
