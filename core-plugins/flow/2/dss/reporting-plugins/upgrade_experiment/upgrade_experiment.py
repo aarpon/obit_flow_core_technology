@@ -9,7 +9,7 @@ from ch.systemsx.cisd.openbis.generic.shared.api.v1.dto import SearchCriteria
 from ch.systemsx.cisd.openbis.generic.shared.api.v1.dto import SearchSubCriteria
 from ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.SearchCriteria import MatchClause
 from ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.SearchCriteria import MatchClauseAttribute
-import ch.ethz.scu.obit.bdfacsdivafcs.readers.FCSReader as FCSReader
+import ch.ethz.scu.obit.flow.readers.FCSReader as FCSReader
 import java.io.File
 import xml.etree.ElementTree as xml
 
@@ -66,7 +66,7 @@ def setUpLogging():
 
     # Get path to containing folder
     # __file__ does not work (reliably) in Jython
-    rpPath = "../core-plugins/flow/1/dss/reporting-plugins/upgrade_experiment"
+    rpPath = "../core-plugins/flow/2/dss/reporting-plugins/upgrade_experiment"
 
     # Path to the logs subfolder
     logPath = os.path.join(rpPath, "logs")
