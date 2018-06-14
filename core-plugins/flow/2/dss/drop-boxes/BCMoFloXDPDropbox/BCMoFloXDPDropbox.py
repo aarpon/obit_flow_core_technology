@@ -12,6 +12,7 @@ from datetime import datetime
 import java.io.File
 from org.apache.commons.io import FileUtils
 
+
 #
 # The Processor class performs all steps required for registering datasets
 # from the assigned dropbox folder
@@ -39,10 +40,9 @@ class Processor:
         self._username = ""
 
         # Set up logging
-        logging.basicConfig(filename=logFile, level=logging.DEBUG, 
-                        format='%(asctime)-15s %(levelname)s: %(message)s')
+        logging.basicConfig(filename=logFile, level=logging.DEBUG,
+                            format='%(asctime)-15s %(levelname)s: %(message)s')
         self._logger = logging.getLogger("BDMOFLO_XDP")
-
 
     def dictToXML(self, d):
         """Converts a dictionary into an XML string."""
@@ -59,7 +59,6 @@ class Processor:
 
         # Return the XML string
         return xmlString
-
 
     def createExperiment(self, expId, expName):
         """Create an experiment with given Experiment ID extended with the addition
@@ -92,28 +91,36 @@ class Processor:
 
         return exp
 
-
-    def createSampleWithGenCode(self, spaceCode, sampleType):
+    def createSampleWithGenCode(self, spaceCode, openBISExperiment, sampleType):
         """Create a sample with automatically generated code.
 
         @param spaceCode, the code of the space
+        @param openBISExperiment, the openBIS Experiment object
         @param sampleType, the sample type that must already exist
         @return sample An ISample
         """
 
-        # Make sure there are not slashes in the spaceCode
-        spaceCode = spaceCode.replace("/", "")
+        if self._transaction.serverInformation.get('project-samples-enabled') == 'true':
 
-        # Create the sample
-        sample = self._transaction.createNewSampleWithGeneratedCode(spaceCode,
-                                                                    sampleType)
+            identifier = openBISExperiment.getExperimentIdentifier()
+            project_identifier = identifier[:identifier.rfind('/')]
+            sample = self._transaction.createNewProjectSampleWithGeneratedCode(project_identifier,
+                                                                               sampleType)
+        else:
+
+            # Make sure there are not slashes in the spaceCode
+            spaceCode = spaceCode.replace("/", "")
+
+            # Create the sample
+            sample = self._transaction.createNewSampleWithGeneratedCode(spaceCode,
+                                                                        sampleType)
+
         if not sample:
             msg = "Could not create sample with generated code"
             self._logger.error(msg)
             raise Exception(msg)
 
         return sample
-
 
     def formatExpDateForPostgreSQL(self, expDate):
         """Format the experiment date to be compatible with postgreSQL's
@@ -143,7 +150,6 @@ class Processor:
         else:
             return (year + "-" + month + "-" + day)
 
-
     def getCustomTimeStamp(self):
         """Create an univocal time stamp based on the current date and time
         (works around incomplete API of Jython 2.5).
@@ -151,7 +157,6 @@ class Processor:
 
         t = datetime.now()
         return (t.strftime("%y%d%m%H%M%S") + unicode(t)[20:])
-
 
     def getSubFolders(self):
         """Return a list of subfolders of the passed incoming directory.
@@ -162,7 +167,6 @@ class Processor:
         incomingStr = self._incoming.getAbsolutePath()
         return [name for name in os.listdir(incomingStr)
                 if os.path.isdir(os.path.join(incomingStr, name))]
-
 
     def processExperiment(self, experimentNode):
         """Register an IExperimentUpdatable based on the Experiment XML node.
@@ -250,7 +254,7 @@ class Processor:
         # Add the attachments
         if attachments is not None:
 
-            # Extract all relative file names 
+            # Extract all relative file names
             attachmentFiles = attachments.split(";")
 
             for f in attachmentFiles:
@@ -260,7 +264,7 @@ class Processor:
                     continue
 
                 # Inform
-                msg = "Adding file attachment " + f 
+                msg = "Adding file attachment " + f
                 self._logger.info(msg)
 
                 # Build the full path
@@ -281,7 +285,6 @@ class Processor:
 
         # Return the openBIS Experiment object
         return openBISExperiment
-
 
     def processFCSFile(self, fcsFileNode, openBISTube, openBISExperiment):
         """Register the FCS File using the parsed properties file.
@@ -312,7 +315,7 @@ class Processor:
 
         # Set the file type
         dataset.setFileFormatType("FCS")
-        
+
         # Get the parameter node
         for parameterNode in fcsFileNode:
 
@@ -325,7 +328,7 @@ class Processor:
 
             # Store the parameters in the MOFLO_XDP_FCSFILE_PARAMETERS property
             dataset.setPropertyValue("MOFLO_XDP_FCSFILE_PARAMETERS", parametersXML)
-            
+
             # Log the parameters
             self._logger.info("FCS file parameters (XML): " + str(parametersXML))
 
@@ -338,7 +341,6 @@ class Processor:
 
         # Move the file
         self._transaction.moveFile(fileName, dataset)
-
 
     def processTube(self, tubeNode, openBISContainerSample,
                           specimenName, openBISExperiment):
@@ -373,6 +375,7 @@ class Processor:
         # Create the sample. The Tube is configured in openBIS to
         # auto-generate its own identifier.
         openBISTube = self.createSampleWithGenCode(openBISSpaceIdentifier,
+                                                   openBISExperiment,
                                                    openBISSpecimenType)
         if not openBISTube:
             msg = "Could not create sample with auto-generated identifier"
@@ -399,7 +402,6 @@ class Processor:
         # Return the openBIS ISample
         return openBISTube
 
-
     def processTubeSet(self, experimentNode, openBISExperiment):
         """Register a TubeSet (virtual tube container).
 
@@ -419,6 +421,7 @@ class Processor:
         # Create the sample. The Tubeset is configured in openBIS to
         # auto-generate its own identifier.
         openBISTubeSet = self.createSampleWithGenCode(openBISSpaceIdentifier,
+                                                      openBISExperiment,
                                                       openBISSampleType)
         if not openBISTubeSet:
             msg = "Could not get or create TubeSet"
@@ -435,7 +438,6 @@ class Processor:
 
         # Return the openBIS ISample object
         return openBISTubeSet
-
 
     def register(self, tree):
         """Register the Experiment using the parsed properties file.
@@ -479,7 +481,7 @@ class Processor:
 
                 if nodeType == "Specimen":
 
-                    # A specimen is a direct child of an experiment, and 
+                    # A specimen is a direct child of an experiment, and
                     # the FCS files are therefore associated to tubes.
                     # In this case, we create a virtual TubeSet sample
                     # container (one for all Tubes in the experiment).
@@ -535,7 +537,6 @@ class Processor:
         # Log that we are finished with the registration
         self._logger.info("Registration completed")
 
-
     def retrieveOrCreateTags(self, tagList):
         """Retrieve or create the tags (metaprojects) with specified names."""
 
@@ -576,7 +577,6 @@ class Processor:
             openBISTags.append(metaproject)
 
         return openBISTags
-
 
     def run(self):
         """Run the registration."""
