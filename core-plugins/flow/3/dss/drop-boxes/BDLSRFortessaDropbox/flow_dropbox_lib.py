@@ -98,7 +98,7 @@ def _formatExpDateForPostgreSQL(expDate):
 
     # Try mapping the month to digits (e.g. "06"). If the mapping does
     # not work, return "NOT_FOUND"
-    month = monthMapper.get(month, "NOT_FOUND")
+    month = monthMapper.get(month.upper(), "NOT_FOUND")
 
     # Build the date in the correct format. If the month was not found,
     # return 01-01-1970
@@ -500,6 +500,11 @@ def _processTube(tubeNode,
 
     # Set the name property
     openBISTube.setPropertyValue(openBISTubeSampleType + "_NAME", name)
+
+    # Does the tube have an "indexSort" attribute?
+    indexSort = tubeNode.attrib.get("indexSort")
+    if indexSort is not None:
+        openBISTube.setPropertyValue(openBISTubeSampleType + "_ISINDEXSORT", indexSort)
 
     # Set the parents
     openBISTube.setParentSampleIdentifiers([
