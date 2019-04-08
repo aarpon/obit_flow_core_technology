@@ -10,6 +10,9 @@ define(["openbis",
         "as/dto/dataset/search/DataSetSearchCriteria",
         "dss/dto/datasetfile/search/DataSetFileSearchCriteria",
         "dss/dto/datasetfile/fetchoptions/DataSetFileFetchOptions",
+        "as/dto/service/search/AggregationServiceSearchCriteria",
+        "as/dto/service/fetchoptions/AggregationServiceFetchOptions",
+        "as/dto/service/execute/AggregationServiceExecutionOptions",
         "js/dataviewer",
         "js/util"
     ],
@@ -19,6 +22,9 @@ define(["openbis",
               DataSetSearchCriteria,
               DataSetFileSearchCriteria,
               DataSetFileFetchOptions,
+              AggregationServiceSearchCriteria,
+              AggregationServiceFetchOptions,
+              AggregationServiceExecutionOptions,
               DataViewer,
               naturalSort) {
 
@@ -32,6 +38,12 @@ define(["openbis",
             if (!(this instanceof DataModel)) {
                 throw new TypeError("DataModel constructor cannot be called as a function.");
             }
+
+            /**
+             * Server-side services
+             */
+
+            this.retrieveFCSEventsService = null;
 
             /**
              * Properties
@@ -290,6 +302,7 @@ define(["openbis",
                 var fetchOptions = new SampleFetchOptions();
                 fetchOptions.withProperties();
                 fetchOptions.withDataSets().withType();
+                fetchOptions.withDataSets().withProperties();
                 fetchOptions.withType();
 
                 this.openbisV3.getSamples([sample.permId], fetchOptions).done(function (map) {
@@ -724,11 +737,6 @@ define(["openbis",
                             }
                             break;
 
-                        case (dataModelObj.EXPERIMENT_PREFIX + "_TUBE"):
-
-                            var LOMM = 23;
-                            break;
-
                         case (dataModelObj.EXPERIMENT_PREFIX + "_FCSFILE"):
 
                             // File name
@@ -794,11 +802,8 @@ define(["openbis",
             getAndAddParameterInfoForDatasets: function (node, action) {
 
                 // Consistency check on the node
-                try {
-                    if (node.data.element.dataSetTypeCode !== (this.EXPERIMENT_PREFIX + "_FCSFILE")) {
-                        throw("The node is not of the expected type!");
-                    }
-                } catch (err) {
+
+                if (node.data.element.getType().code !== (this.EXPERIMENT_PREFIX + "_FCSFILE")) {
                     console.log("The node is not of the expected type!")
                     return;
                 }
@@ -954,124 +959,92 @@ define(["openbis",
              * Process the results returned from the retrieveFCSEvents() server-side plug-in
              * @param response JSON object
              */
-            processResultsFromRetrieveFCSEventsServerSidePlugin: function (response) {
+            processResultsFromRetrieveFCSEventsServerSidePlugin: function (table) {
 
-                var status;
-                var unexpected = "Sorry, unexpected feedback from server " +
-                    "obtained. Please contact your administrator.";
-                var level = "";
-                var row;
+                // Did we get the expected result?
+                if (! table.rows || table.rows.length !== 1) {
+                    DATAVIEWER.displayStatus(unexpected, "danger");
+                    return;
+                }
 
-                // Returned parameters
-                var r_UID;
-                var r_Completed;
-                var r_Success;
-                var r_ErrorMessage;
-                var r_Data;
-                var r_Code;
-                var r_ParamX;
-                var r_ParamY;
-                var r_DisplayX;
-                var r_DisplayY;
-                var r_NumEvents;
-                var r_MaxNumEvents;
-                var r_SamplingMethod;
-                var r_NodeKey;
+                // Get the row of results
+                var row = table.rows[0];
 
-                // First check if we have an error
-                if (response.error) {
+                // Retrieve the uid
+                var r_UID = row[0].value;
 
-                    status = "Sorry, could not process request.";
-                    level = "danger";
-                    r_Success = "0";
+                // Is the process completed?
+                var r_Completed = row[1].value;
 
-                } else {
+                if (r_Completed === 0) {
 
-                    // No obvious errors. Retrieve the results.
-                    status = "";
-                    if (response.result.rows.length !== 1) {
-
-                        // Unexpected number of rows returned
-                        status = unexpected;
-                        level = "danger";
-
-                    } else {
-
-                        // We have a potentially valid result
-                        row = response.result.rows[0];
-
-                        // Retrieve the uid
-                        r_UID = row[0].value;
-
-                        // Retrieve the 'completed' status
-                        r_Completed = row[1].value
-
-                        // If the processing is not completed, we wait a few seconds and trigger the
-                        // server-side plug-in again. The interval is defined by the admin.
-                        if (r_Completed == false) {
+                    // Call the plug-in
+                    setTimeout(function () {
 
                             // We only need the UID of the job
                             var parameters = {};
                             parameters["uid"] = r_UID;
 
-                            // Call the plug-in
-                            setTimeout(function () {
-                                    DATAMODEL.openbisServer.createReportFromAggregationService(
-                                        CONFIG['dataStoreServer'], "retrieve_fcs_events",
-                                        parameters, DATAMODEL.processResultsFromRetrieveFCSEventsServerSidePlugin)
-                                },
-                                parseInt(CONFIG['queryPluginStatusInterval']));
+                            // Now call the service
+                            var options = new AggregationServiceExecutionOptions();
+                            options.withParameter("uid", r_UID);
 
-                            // Return here
-                            return;
+                            DATAMODEL.openbisV3.executeAggregationService(
+                                DATAMODEL.retrieveFCSEventsService.getPermId(),
+                                options).then(function(result) {
+                                DATAMODEL.processResultsFromRetrieveFCSEventsServerSidePlugin(result);
+                            })},
+                        parseInt(CONFIG['queryPluginStatusInterval']));
 
-                        } else {
+                    // Return here
+                    return;
 
-                            // Extract returned values for clarity
-                            r_Success = row[2].value;
-                            r_ErrorMessage = row[3].value;
-                            r_Data = row[4].value;
-                            r_Code = row[5].value;
-                            r_ParamX = row[6].value;
-                            r_ParamY = row[7].value;
-                            r_DisplayX = row[8].value;
-                            r_DisplayY = row[9].value;
-                            r_NumEvents = row[10].value;   // Currently not used
-                            r_MaxNumEvents = row[11].value;
-                            r_SamplingMethod = row[12].value;
-                            r_NodeKey = row[13].value;
+                }
 
-                            if (r_Success === "1") {
-                                status = r_ErrorMessage;
-                                level = "success";
+                // We completed the call and we can process the result
 
-                                // Plot the data
-                                DATAVIEWER.plotFCSData(r_Data, r_ParamX, r_ParamY, r_DisplayX, r_DisplayY);
+                // Returned parameters
+                var r_Success = row[2].value;
+                var r_ErrorMessage = row[3].value;
+                var r_Data = row[4].value;
+                var r_Code = row[5].value;
+                var r_ParamX = row[6].value;
+                var r_ParamY = row[7].value;
+                var r_DisplayX = row[8].value;
+                var r_DisplayY = row[9].value;
+                var r_NumEvents = row[10].value;   // Currently not used
+                var r_MaxNumEvents = row[11].value;
+                var r_SamplingMethod = row[12].value;
+                var r_NodeKey = row[13].value;
 
-                                // Cache the plotted data
-                                var dataKey = r_Code + "_" + r_ParamX + "_" + r_ParamY + "_" + r_MaxNumEvents.toString() +
-                                    "_" + r_DisplayX + "_" + r_DisplayY + "_" + r_SamplingMethod.toString();
-                                DATAVIEWER.cacheFCSData(r_NodeKey, dataKey, r_Data);
+                var level;
+                if (r_Success === 1) {
 
-                            } else {
-                                status = "Sorry, there was an error: \"" +
-                                    r_ErrorMessage + "\".";
-                                level = "danger";
-                            }
+                    // Error message and level
+                    status = r_ErrorMessage;
+                    level = "success";
 
-                        }
+                    // Plot the data
+                    DATAVIEWER.plotFCSData(r_Data, r_ParamX, r_ParamY, r_DisplayX, r_DisplayY);
 
-                    }
+                    // Cache the plotted data
+                    var dataKey = r_Code + "_" + r_ParamX + "_" + r_ParamY + "_" + r_MaxNumEvents.toString() +
+                        "_" + r_DisplayX + "_" + r_DisplayY + "_" + r_SamplingMethod.toString();
+                    DATAVIEWER.cacheFCSData(r_NodeKey, dataKey, r_Data);
+
+                } else {
+                    status = "Sorry, there was an error: \"" + r_ErrorMessage + "\".";
+                    level = "danger";
                 }
 
                 // We only display errors
-                if (r_Success === "0") {
+                if (r_Success === 0) {
                     DATAVIEWER.displayStatus(status, level);
                 } else {
                     DATAVIEWER.hideStatus();
                 }
 
-                return response;
+                return table;
 
             },
 
@@ -1123,11 +1096,41 @@ define(["openbis",
                 // Inform the user that we are about to process the request
                 DATAVIEWER.displayStatus("Please wait while processing your request. This might take a while...", "info");
 
-                // Must use global object
-                DATAMODEL.openbisServer.createReportFromAggregationService(
-                    CONFIG['dataStoreServer'],
-                    "retrieve_fcs_events",
-                    parameters, DATAMODEL.processResultsFromRetrieveFCSEventsServerSidePlugin);
+                // Call service
+                if (null === DATAMODEL.retrieveFCSEventsService) {
+                    var criteria = new AggregationServiceSearchCriteria();
+                    criteria.withName().thatEquals("retrieve_fcs_events");
+                    var fetchOptions = new AggregationServiceFetchOptions();
+                    DATAMODEL.openbisV3.searchAggregationServices(criteria, fetchOptions).then(function(result) {
+                            if (undefined === result.objects) {
+                                console.log("Could not retrieve the server-side aggregation service!")
+                                return;
+                            }
+                            DATAMODEL.retrieveFCSEventsService = result.getObjects()[0];
+
+                            // Now call the service
+                            var options = new AggregationServiceExecutionOptions();
+                            for (var key in parameters) {
+                                options.withParameter(key, parameters[key]);
+                            }
+                            DATAMODEL.openbisV3.executeAggregationService(
+                                DATAMODEL.retrieveFCSEventsService.getPermId(),
+                                options).then(function(result) {
+                                    DATAMODEL.processResultsFromRetrieveFCSEventsServerSidePlugin(result);
+                            });
+                        });
+                } else {
+                    // Call the service
+                    var options = new AggregationServiceExecutionOptions();
+                    for (var key in parameters) {
+                        options.withParameter(key, parameters[key]);
+                    }
+                    DATAMODEL.openbisV3.executeAggregationService(
+                        DATAMODEL.retrieveFCSEventsService.getPermId(),
+                        options).then(function(result) {
+                        DATAMODEL.processResultsFromRetrieveFCSEventsServerSidePlugin(result);
+                    });
+                }
             },
 
             /**

@@ -261,6 +261,11 @@ define([], function () {
                 }
             }
 
+            // Do we have an openBIS object?
+            if (null === node.data.element) {
+                return;
+            }
+
             // Adapt the display depending on the element type
             if (node.data.element.getType().code.endsWith("_EXPERIMENT")) {
 
@@ -314,7 +319,7 @@ define([], function () {
                 }
 
                 // Retrieve and store the parameter information
-                DataModel.getAndAddParameterInfoForDatasets(node, function () {
+                DATAMODEL.getAndAddParameterInfoForDatasets(node, function () {
 
                     // Display the form to be used for parameter plotting
                     DATAVIEWER.renderParameterSelectionForm(node);
