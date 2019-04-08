@@ -199,7 +199,7 @@ define([], function () {
             // Get sample tags
             var sampleTags = "<i>None</i>";
             if (experimentSample.parents) {
-                if (experimentSample.parents === 0) {
+                if (experimentSample.parents.length === 0) {
                     sampleTags = "<i>None</i>";
                 } else {
                     var tags = [];
