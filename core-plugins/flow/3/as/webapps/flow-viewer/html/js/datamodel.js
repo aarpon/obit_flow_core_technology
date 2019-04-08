@@ -278,15 +278,19 @@ define(["openbis",
              *                  nodes will be appended.
              * @return  dataset The dataset associated to the sample
              */
-            getDataSets: function (sample, node) {
+            getDataSets: function (node) {
 
                 // Alias
                 var dataModelObj = this;
 
+                // Get the sample
+                var sample = node.data.element;
+
                 // Get the dataset
                 var fetchOptions = new SampleFetchOptions();
                 fetchOptions.withProperties();
-                fetchOptions.withDataSets();
+                fetchOptions.withDataSets().withType();
+                fetchOptions.withType();
 
                 this.openbisV3.getSamples([sample.permId], fetchOptions).done(function (map) {
 
@@ -301,56 +305,59 @@ define(["openbis",
 
                     } else {
 
-                        // Get the dataSet
-                        var dataSet = map[sample.permId];
+                        // Get the updated sample
+                        var updated_sample = map[sample.permId];
+
+                        // Get the dataset
+                        var datasets = updated_sample.getDataSets();
+                        var dataset = datasets[0];
 
                         // Get the file
                         var criteria = new DataSetFileSearchCriteria();
                         var dataSetCriteria = criteria.withDataSet().withOrOperator();
-                        dataSetCriteria.withPermId(dataSet.permId);
+                        dataSetCriteria.withPermId().thatEquals(dataset.permId.permId);
 
                         var fetchOptions = new DataSetFileFetchOptions();
 
                         // Query the server
                         dataModelObj.openbisV3.getDataStoreFacade().searchFiles(criteria, fetchOptions).done(function (result) {
 
-                            // Find the only fcs file and add its name and URL to the DynaTree
-                            result.forEach(function (f) {
+                            // Extract the files
+                            var datasetFiles = result.getObjects();
 
-                                if (!f.isDirectory &&
-                                    f.pathInDataSet.toLowerCase().indexOf(".fcs") !== -1) {
+                            // Find the only fcs file and add its name and URL to the DynaTree
+                            datasetFiles.forEach(function (f) {
+
+                                if (!f.isDirectory() &&
+                                    f.getPath().toLowerCase().indexOf(".fcs") !== -1) {
 
                                     // Append the file name to the dataset object for
                                     // use in addToTreeModel()
                                     var filename = '';
-                                    var indx = f.pathInDataSet.lastIndexOf("/");
-                                    if (indx === -1 || indx === f.pathInDataSet.length - 1) {
+                                    var indx = f.getPath().lastIndexOf("/");
+                                    if (indx === -1 || indx === f.getPath().length - 1) {
                                         // This should not happen, but we build in
                                         // a fallback anyway
-                                        filename = f.pathInDataSet;
+                                        filename = f.getPath();
                                     } else {
-                                        filename = f.pathInDataSet.substr(indx + 1);
+                                        filename = f.getPath().substr(indx + 1);
                                     }
                                     dataset.filename = filename;
 
-                                    // Retrieve the file URL
-                                    dataModelObj.openbisServer.getDownloadUrlForFileForDataSetInSession(
-                                        dataset.code, f.pathInDataSet, function (url) {
+                                    // Build the download URL
+                                    var url = f.getDataStore().getDownloadUrl() + "datastore_server/" +
+                                        f.permId.dataSetId.permId + "/" + f.getPath() + "?sessionID=" +
+                                        dataModelObj.openbisV3.getWebAppContext().sessionId;
 
-                                            // Create a node to pass to addToTreeModel()
-                                            var resp = {
-                                                result: []
-                                            };
+                                    // Store it in the dataset object
+                                    var eUrl = encodeURI(url);
+                                    eUrl = eUrl.replace('+', '%2B');
+                                    dataset.url = eUrl;
 
-                                            // Store it in the dataset object
-                                            var eUrl = encodeURI(url);
-                                            eUrl = eUrl.replace('+', '%2B');
-                                            dataset.url = eUrl;
-
-                                            // Add the results to the tree
-                                            resp.result.push(dataset);
-                                            dataModelObj.addToTreeModel(resp, node);
-                                        });
+                                    // Add the results to the tree
+                                    var result = [];
+                                    result.push(dataset);
+                                    dataModelObj.addToTreeModel(result, node);
                                 }
                             });
 
