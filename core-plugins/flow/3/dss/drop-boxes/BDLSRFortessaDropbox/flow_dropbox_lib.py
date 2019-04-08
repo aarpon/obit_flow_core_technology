@@ -2,8 +2,22 @@ import re
 import os
 import logging
 from datetime import datetime
-from __builtin__ import None
+from __builtin__ import None, True
 import xml.etree.ElementTree as xml
+
+
+def _supportIndexSorting(tubeSampleType):
+    """Return true if the experiment with given prefix supports index sorting.
+    
+    @param tubeSampleType: Type of the sample Tube. 
+    """
+    prefix = tubeSampleType[:-5]
+    if prefix in ["FACS_ARIA", "INFLUX", "MOFLO_XDP", "S3E"]:
+        return True
+    elif prefix in ["LSR_FORTESSA"]:
+        return False
+    else:
+        raise Exception("Unknown prefix!")
 
 
 def _collectionNameFromIdentifier(openBISCollectionIdentifier):
@@ -502,9 +516,10 @@ def _processTube(tubeNode,
     openBISTube.setPropertyValue(openBISTubeSampleType + "_NAME", name)
 
     # Does the tube have an "indexSort" attribute?
-    indexSort = tubeNode.attrib.get("indexSort")
-    if indexSort is not None:
-        openBISTube.setPropertyValue(openBISTubeSampleType + "_ISINDEXSORT", indexSort)
+    if _supportIndexSorting(openBISTubeSampleType):
+        indexSort = tubeNode.attrib.get("indexSort")
+        if indexSort is not None:
+            openBISTube.setPropertyValue(openBISTubeSampleType + "_ISINDEXSORT", indexSort)
 
     # Set the parents
     openBISTube.setParentSampleIdentifiers([
@@ -786,6 +801,7 @@ def _register_single(tree, transaction, prefix, version, logger):
     openBISTubeSampleType = prefix + "_TUBE"
     openBISTubeSetSampleType = prefix + "_TUBESET"
     openBISSpecimenSampleType = prefix + "_SPECIMEN"
+    openBISWellSampleType = prefix + "_WELL"
 
     # Get the root node (obitXML)
     rootNode = tree.getroot()
@@ -938,7 +954,7 @@ def _register_single(tree, transaction, prefix, version, logger):
                         openBISWellSample = _processWell(wellNode,
                                                         transaction,
                                                         openBISCollection,
-                                                        openBISTubeSampleType,
+                                                        openBISWellSampleType,
                                                         openBISExperimentSample,
                                                         openBISSpecimenSample,
                                                         openBISTraySample,
