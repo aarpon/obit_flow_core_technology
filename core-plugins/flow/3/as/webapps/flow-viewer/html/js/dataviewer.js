@@ -352,36 +352,45 @@ define([], function () {
             var type = "";
             var identifier = "";
             var specimenName = "";
-            var experimentId = null;
+            var experimentId = "";
 
             // Get element type and code
             if (node.data.element) {
 
-                // Get type
-                switch (node.data.element["@type"]) {
-                    case "Experiment":
-                        experimentId = node.data.element.identifier;
-                        type = node.data.element.experimentTypeCode;
-                        identifier = node.data.element.identifier;
-                        break;
-
-                    case "Sample":
-                        experimentId = node.data.element.experimentIdentifierOrNull;
-                        type = node.data.element.sampleTypeCode;
-                        identifier = node.data.element.identifier;
-                        break;
-
-                    case "DataSet":
-                        experimentId = node.data.element.experimentIdentifier;
-                        type = node.data.element.dataSetTypeCode;
-                        identifier = node.data.element.code;
-                        break;
-
-                    default:
-                        experimentId = "";
-                        type = "";
-                        identifier = "";
+                type = node.data.element.getType().code;
+                if (node.data.element.identifier) {
+                    identifier = node.data.element.identifier.identifier;
+                } else {
+                    identifier = "";
                 }
+                specimenName = "";
+                experimentId = DATAMODEL.experimentSample.getExperiment().identifier;
+
+                // // Get type
+                // switch (node.data.element["@type"]) {
+                //     case "Experiment":
+                //         // experimentId = node.data.element.identifier;
+                //         // type = node.data.element.experimentTypeCode;
+                //         // identifier = node.data.element.identifier;
+                //         break;
+                //
+                //     case "Sample":
+                //         // experimentId = node.data.element.experimentIdentifierOrNull;
+                //         // type = node.data.element.sampleTypeCode;
+                //         // identifier = node.data.element.identifier;
+                //         break;
+                //
+                //     case "DataSet":
+                //         // experimentId = node.data.element.experimentIdentifier;
+                //         // type = node.data.element.dataSetTypeCode;
+                //         // identifier = node.data.element.code;
+                //         break;
+                //
+                //     default:
+                //         experimentId = "";
+                //         type = "";
+                //         identifier = "";
+                // }
 
             } else {
 
@@ -525,11 +534,6 @@ define([], function () {
 
                 }
 
-            }
-
-            // If no relevant type found, just return here
-            if (type === "") {
-                return;
             }
 
             var img = null;

@@ -124,6 +124,7 @@ define(["openbis",
                 fetchOptions.withType();
                 fetchOptions.withProperties();
                 fetchOptions.withDataSets().withType();
+                fetchOptions.withExperiment();
 
                 var parentFetchOptions = new SampleFetchOptions();
                 parentFetchOptions.withType();
