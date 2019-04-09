@@ -68,18 +68,18 @@ define([], function () {
         displayExperimentInfo: function(experimentSample) {
 
             // Get the experiment name view
-            var experimentNameView_div = $("#experimentNameView");
+            let experimentNameView_div = $("#experimentNameView");
             experimentNameView_div.empty();
 
             // Prepare title
-            var titleId = $("<h2>").html(experimentSample.properties["$NAME"]);
+            let titleId = $("<h2>").html(experimentSample.properties["$NAME"]);
 
             // check that the experiment is at the latest version
             if (!experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_VERSION"] ||
                 experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_VERSION"] < DATAMODEL.EXPERIMENT_LATEST_VERSION) {
 
                 // Prepend "Upgrade" button
-                var updateButton = $("<input>")
+                let updateButton = $("<input>")
                     .attr("type", "button")
                     .attr("value", "Upgrade")
                     .addClass("upgradeButton")
@@ -98,17 +98,17 @@ define([], function () {
             experimentNameView_div.append(titleId);
 
             // Display the experiment info
-            var detailView = $("#detailView");
+            let detailView = $("#detailView");
             detailView.empty();
 
-            var experimentDescriptionView = $("#experimentDescriptionView");
+            let experimentDescriptionView = $("#experimentDescriptionView");
             experimentDescriptionView.empty();
 
-            var experimentAcquisitionDetailsView = $("#experimentAcquisitionDetailsView");
+            let experimentAcquisitionDetailsView = $("#experimentAcquisitionDetailsView");
             experimentAcquisitionDetailsView.empty();
 
             // Display the experiment description
-            var description = experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_DESCRIPTION"];
+            let description = experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_DESCRIPTION"];
             if (undefined === description || description === "") {
                 description = "<i>No description provided.</i>";
             }
@@ -116,17 +116,17 @@ define([], function () {
             experimentDescriptionView.append($("<p>").html(description));
 
             // Display the acquisition details
-            var hardwareName = "";
+            let hardwareName = "";
             if (experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME"]) {
                 hardwareName = experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME"];
             } else {
                 hardwareName = " (generic) " + experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_HARDWARE"];
             }
-            var owner = "an unknown user";
+            let owner = "an unknown user";
             if (experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_OWNER"] !== undefined) {
                 owner = experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_OWNER"];
             }
-            var acqDetails =
+            let acqDetails =
                 experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_SOFTWARE"] + " on " +
                 "<b>" + hardwareName + "</b>. Acquired by " + owner + " and registered on " +
                 (new Date(experimentSample.registrationDate)).toDateString() + ".";
@@ -148,15 +148,15 @@ define([], function () {
         displayAttachments: function(experimentSample) {
 
             // Get the div
-            var experimentAttachmentsViewId = $("#experimentAttachmentsView");
+            let experimentAttachmentsViewId = $("#experimentAttachmentsView");
 
             // Clear the attachment div
             experimentAttachmentsViewId.empty();
 
             // Text
-            var text = "";
-            var n = 0;
-            for (var i = 0; i < experimentSample.dataSets.length; i++) {
+            let text = "";
+            let n = 0;
+            for (let i = 0; i < experimentSample.dataSets.length; i++) {
                 if (experimentSample.dataSets[i].type.code === "ATTACHMENT") {
                     n += 1;
                 }
@@ -170,9 +170,9 @@ define([], function () {
             }
 
             // Link to the data-sets tab
-            var link = $("<a>").text(text).attr("href", "#").attr("title", text).click(
+            let link = $("<a>").text(text).attr("href", "#").attr("title", text).click(
                 function () {
-                    var url = "#entity=SAMPLE&permId=" + experimentSample.permId +
+                    let url = "#entity=SAMPLE&permId=" + experimentSample.permId +
                         "&ui-subtab=data-sets-section&ui-timestamp=" + (new Date().getTime());
                     window.top.location.hash = url;
                     return false;
@@ -193,17 +193,17 @@ define([], function () {
         displayTags: function(experimentSample) {
 
             // Get the div
-            var experimentTagView = $("#experimentTagView");
+            let experimentTagView = $("#experimentTagView");
             experimentTagView.empty();
 
             // Get sample tags
-            var sampleTags = "<i>None</i>";
+            let sampleTags = "<i>None</i>";
             if (experimentSample.parents) {
                 if (experimentSample.parents.length === 0) {
                     sampleTags = "<i>None</i>";
                 } else {
-                    var tags = [];
-                    for (var i = 0; i < experimentSample.parents.length; i++) {
+                    let tags = [];
+                    for (let i = 0; i < experimentSample.parents.length; i++) {
                         if (experimentSample.parents[i].type.code === "ORGANIZATION_UNIT") {
                             tags.push(experimentSample.parents[i].properties["$NAME"]);
                         }
@@ -224,12 +224,12 @@ define([], function () {
         displayDetailsAndActions: function(node) {
 
             // Store some references
-            var statusID = $("#status");
-            var detailViewSampleName = $("#detailViewSampleName");
-            var detailViewActionID = $("#detailViewAction");
-            var detailViewActionExplID = $("#detailViewActionExpl");
-            var detailViewSampleID = $("#detailViewSample");
-            var detailViewPlotID = $('#detailViewPlot');
+            let statusID = $("#status");
+            let detailViewSampleName = $("#detailViewSampleName");
+            let detailViewActionID = $("#detailViewAction");
+            let detailViewActionExplID = $("#detailViewActionExpl");
+            let detailViewSampleID = $("#detailViewSample");
+            let detailViewPlotID = $('#detailViewPlot');
 
             // Clear previous views
             statusID.empty();
@@ -286,7 +286,7 @@ define([], function () {
 
                 // This code is specific for the BD FACS ARIA sorter and BD Influx Cell Sorter
 
-                var sortType = "This is a standard sort.";
+                let sortType = "This is a standard sort.";
                 if (node.data.element.properties[node.data.element.getType().code + "_ISINDEXSORT"] === "true") {
                     sortType = "This is an index sort.";
                 }
@@ -303,8 +303,8 @@ define([], function () {
                 if (node.data.element.properties[DATAMODEL.EXPERIMENT_PREFIX + "_FCSFILE_ACQ_DATE"]) {
 
                     detailViewSampleID.empty();
-                    var title = $("<h4>").html(node.data.title);
-                    var regDate = new Date(node.data.element.properties[
+                    let title = $("<h4>").html(node.data.title);
+                    let regDate = new Date(node.data.element.properties[
                     DATAMODEL.EXPERIMENT_PREFIX + "_FCSFILE_ACQ_DATE"]).toDateString();
                     title.append($("<span>").addClass("fcsAcqDate").html(" (acquired " + regDate + ")"));
                     detailViewSampleID.append(title);
@@ -349,10 +349,10 @@ define([], function () {
             // Get the type and identifier of the element associated to the node.
             // If the node is associated to a specimen, the type and identifier
             // will instead be those of the parent node.
-            var type = "";
-            var identifier = "";
-            var specimenName = "";
-            var experimentId = "";
+            let type = "";
+            let identifier = "";
+            let specimenName = "";
+            let experimentId = "";
 
             // Get element type and code
             if (node.data.element) {
@@ -417,7 +417,7 @@ define([], function () {
                     if (node.parent && node.parent.data && node.parent.data.element) {
 
                         // Reference
-                        var parent = node.parent;
+                        let parent = node.parent;
 
                         if (parent.data.element["@type"] === "Sample" &&
                             parent.data.element.sampleTypeCode === (DATAMODEL.EXPERIMENT_PREFIX + "_PLATE")) {
@@ -536,8 +536,8 @@ define([], function () {
 
             }
 
-            var img = null;
-            var link = null;
+            let img = null;
+            let link = null;
 
             // Display the "Export to your folder" button only if enabled in the configuration file
             if (CONFIG['enableExportToUserFolder'] === true) {
@@ -610,12 +610,12 @@ define([], function () {
             // Build and display the call
             if (node.data.element && node.data.element.hasOwnProperty("url")) {
 
-                var img = $("<img>")
+                let img = $("<img>")
                     .attr("src", "img/download.png")
                     .attr("width", 32)
                     .attr("height", 32);
 
-                var link = $("<a>")
+                let link = $("<a>")
                     .addClass("action")
                     .hover(function () {
                             $("#detailViewActionExpl").html("Download " + node.data.element.filename + ".");
@@ -645,7 +645,7 @@ define([], function () {
         displayStatus: function(status, level) {
 
             // Get the the status div
-            var status_div = $("#status");
+            let status_div = $("#status");
 
             // Clear the status
             status_div.empty();
@@ -658,7 +658,7 @@ define([], function () {
                 level = "default";
             }
 
-            var d = $("<div>")
+            let d = $("<div>")
                 .addClass("alert fade in")
                 .addClass("alert-" + level)
                 .html(status);
@@ -685,7 +685,7 @@ define([], function () {
             }
 
             // Update details
-            var detailViewSampleID = $("#detailViewSample");
+            let detailViewSampleID = $("#detailViewSample");
 
             detailViewSampleID.append($("<p>").html("This file contains " +
                 node.data.parameterInfo.numParameters + " parameters and " +
@@ -693,23 +693,23 @@ define([], function () {
             );
 
             // Create a form for the plot parameters
-            var form = $("<form>")
+            let form = $("<form>")
                 .addClass("form-group")
                 .attr("id", "parameter_form");
             detailViewSampleID.append(form);
-            var formId = $("#parameter_form");
+            let formId = $("#parameter_form");
 
             // Create divs to spatially organize the groups of parameters
-            var xAxisDiv = $("<div>")
+            let xAxisDiv = $("<div>")
                 .attr("id", "xAxisDiv")
                 .addClass("plotBasicParamsDiv");
-            var yAxisDiv = $("<div>")
+            let yAxisDiv = $("<div>")
                 .attr("id", "yAxisDiv")
                 .addClass("plotBasicParamsDiv");
-            var eventsDiv = $("<div>")
+            let eventsDiv = $("<div>")
                 .attr("id", "eventsDiv")
                 .addClass("plotBasicParamsDiv");
-            var plotDiv = $("<div>")
+            let plotDiv = $("<div>")
                 .attr("id", "plotDiv")
                 .addClass("plotBasicParamsDiv");
 
@@ -723,26 +723,26 @@ define([], function () {
             xAxisDiv.append($("<label>")
                 .attr("for", "parameter_form_select_X_axis")
                 .html("X axis"));
-            var selectXAxis = $("<select>")
+            let selectXAxis = $("<select>")
                 .addClass("form_control")
                 .attr("id", "parameter_form_select_X_axis");
             xAxisDiv.append(selectXAxis);
-            var selectXAxisId = $("#parameter_form_select_X_axis");
+            let selectXAxisId = $("#parameter_form_select_X_axis");
 
             // Y axis parameters
             yAxisDiv.append($("<label>")
                 .attr("for", "parameter_form_select_Y_axis")
                 .html("Y axis"));
-            var selectYAxis = $("<select>")
+            let selectYAxis = $("<select>")
                 .addClass("form_control")
                 .attr("id", "parameter_form_select_Y_axis");
             yAxisDiv.append(selectYAxis);
-            var selectYAxisId = $("#parameter_form_select_Y_axis");
+            let selectYAxisId = $("#parameter_form_select_Y_axis");
 
             // Add all options
-            for (var i = 0; i < node.data.parameterInfo.numParameters; i++) {
-                var name = node.data.parameterInfo["names"][i];
-                var compositeName = node.data.parameterInfo["compositeNames"][i];
+            for (let i = 0; i < node.data.parameterInfo.numParameters; i++) {
+                let name = node.data.parameterInfo["names"][i];
+                let compositeName = node.data.parameterInfo["compositeNames"][i];
                 selectXAxisId.append($("<option>")
                     .attr("value", name)
                     .text(compositeName));
@@ -759,16 +759,16 @@ define([], function () {
             eventsDiv.append($("<label>")
                 .attr("for", "parameter_form_select_num_events")
                 .html("Events to plot"));
-            var selectNumEvents = $("<select>")
+            let selectNumEvents = $("<select>")
                 .addClass("form_control")
                 .attr("id", "parameter_form_select_num_events");
             eventsDiv.append(selectNumEvents);
-            var selectNumEventsId = $("#parameter_form_select_num_events");
+            let selectNumEventsId = $("#parameter_form_select_num_events");
 
             // Add the options
-            var possibleOptions = [500, 1000, 2500, 5000, 10000, 20000, 50000, 100000];
-            var numEventsInFile = parseInt(node.data.parameterInfo.numEvents);
-            for (i = 0; i < possibleOptions.length; i++) {
+            let possibleOptions = [500, 1000, 2500, 5000, 10000, 20000, 50000, 100000];
+            let numEventsInFile = parseInt(node.data.parameterInfo.numEvents);
+            for (let i = 0; i < possibleOptions.length; i++) {
                 if (possibleOptions[i] < numEventsInFile) {
                     selectNumEventsId.append($("<option>")
                         .attr("value", possibleOptions[i])
@@ -787,22 +787,22 @@ define([], function () {
             }
 
             // Add "Plot" button
-            var plotButton = $("<input>")
+            let plotButton = $("<input>")
                 .attr("type", "button")
                 .attr("value", "Plot")
                 .click(function () {
 
                     // Get the selected parameters and their display scaling
-                    var paramX = selectXAxisId.find(":selected").val();
-                    var paramY = selectYAxisId.find(":selected").val();
-                    var displayX = selectScaleX.find(":selected").val();
-                    var displayY = selectScaleY.find(":selected").val();
+                    let paramX = selectXAxisId.find(":selected").val();
+                    let paramY = selectYAxisId.find(":selected").val();
+                    let displayX = selectScaleX.find(":selected").val();
+                    let displayY = selectScaleY.find(":selected").val();
 
                     // How many events to plot?
-                    var numEvents = selectNumEvents.val();
+                    let numEvents = selectNumEvents.val();
 
                     // Sampling method
-                    var samplingMethod = selectSamplingMethod.find(":selected").val();
+                    let samplingMethod = selectSamplingMethod.find(":selected").val();
 
                     DATAMODEL.generateFCSPlot(
                         node,
@@ -817,20 +817,20 @@ define([], function () {
             plotDiv.append(plotButton);
 
             // Add a selector with the scaling for axis X
-            var xAxisScalingDiv = xAxisDiv.append($("<div>")
+            let xAxisScalingDiv = xAxisDiv.append($("<div>")
                 .attr("id", "xAxisScalingDiv"));
-            var xAxisScalingdId = $("#xAxisScalingDiv");
+            let xAxisScalingdId = $("#xAxisScalingDiv");
             xAxisScalingdId.append($("<label>")
                 .attr("for", "parameter_form_select_scaleX")
                 .html("Scale for X axis"));
-            var selectScaleX = $("<select>")
+            let selectScaleX = $("<select>")
                 .addClass("form_control")
                 .attr("id", "parameter_form_select_scaleX");
             xAxisScalingdId.append(selectScaleX);
 
             // Add the options
             possibleOptions = ["Linear", "Hyperlog"];
-            for (i = 0; i < possibleOptions.length; i++) {
+            for (let i = 0; i < possibleOptions.length; i++) {
                 selectScaleX.append($("<option>")
                     .attr("value", possibleOptions[i])
                     .text(possibleOptions[i]));
@@ -840,20 +840,20 @@ define([], function () {
             selectScaleX.val(0);
 
             // Add a selector with the scaling for axis Y
-            var yAxisScalingDiv = yAxisDiv.append($("<div>")
+            let yAxisScalingDiv = yAxisDiv.append($("<div>")
                 .attr("id", "yAxisScalingDiv"));
-            var yAxisScalingId = $("#yAxisScalingDiv");
+            let yAxisScalingId = $("#yAxisScalingDiv");
             yAxisScalingId.append($("<label>")
                 .attr("for", "parameter_form_select_scaleY")
                 .html("Scale for Y axis"));
-            var selectScaleY = $("<select>")
+            let selectScaleY = $("<select>")
                 .addClass("form_control")
                 .attr("id", "parameter_form_select_scaleY");
             yAxisScalingId.append(selectScaleY);
 
             // Add the options
             possibleOptions = ["Linear", "Hyperlog"];
-            for (var i = 0; i < possibleOptions.length; i++) {
+            for (let i = 0; i < possibleOptions.length; i++) {
                 selectScaleY.append($("<option>")
                     .attr("value", possibleOptions[i])
                     .text(possibleOptions[i]));
@@ -863,20 +863,20 @@ define([], function () {
             selectScaleY.val(0);
 
             // Add a selector with the sampling method
-            var eventSamplingDiv = eventsDiv.append($("<div>")
+            let eventSamplingDiv = eventsDiv.append($("<div>")
                 .attr("id", "eventSamplingDiv"));
-            var eventSamplingId = $("#eventSamplingDiv");
+            let eventSamplingId = $("#eventSamplingDiv");
             eventSamplingId.append($("<label>")
                 .attr("for", "parameter_form_select_sampling_method")
                 .html("Sampling"));
-            var selectSamplingMethod = $("<select>")
+            let selectSamplingMethod = $("<select>")
                 .addClass("form_control")
                 .attr("id", "parameter_form_select_sampling_method");
             eventSamplingId.append(selectSamplingMethod);
 
             // Add the options
             possibleOptions = ["Regular", "First rows"];
-            for (i = 0; i < possibleOptions.length; i++) {
+            for (let i = 0; i < possibleOptions.length; i++) {
                 selectSamplingMethod.append($("<option>")
                     .attr("value", (i + 1))
                     .text(possibleOptions[i]));
@@ -901,8 +901,8 @@ define([], function () {
             data = JSON.parse(data);
 
             // Axis type is always linear, since the transformations are all done server side.
-            var xType = "linear";
-            var yType = "linear";
+            let xType = "linear";
+            let yType = "linear";
 
             $('#detailViewPlot').highcharts({
                 chart: {
@@ -980,10 +980,10 @@ define([], function () {
         cacheFCSData: function(nodeKey, dataKey, fcsData) {
 
             // Retrieve the tree object
-            var tree = $("#treeView").dynatree("getTree");
+            let tree = $("#treeView").dynatree("getTree");
             if (tree) {
                 // Load the node with specified key path
-                var node = tree.getNodeByKey(nodeKey);
+                let node = tree.getNodeByKey(nodeKey);
                 if (node) {
 
                     // Cache the data
