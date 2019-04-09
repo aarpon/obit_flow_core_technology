@@ -28,116 +28,28 @@ define([], function () {
         constructor: DataViewer,
 
         /**
-         * Draw the initial root structure.
+         * Caches the retrieved FCS data to the node with given key under its own data key.
          *
-         * The tree will then be extended dynamically (via lazy
-         * loading) using DynaTree methods.
-         *
-         * @param tree DynaTree object
+         * @param nodeKey key of the node to update.
+         * @param dataKey key under which to store the data.
+         * @param fcsData data to be plotted.
          */
-        drawTree: function(tree) {
+        cacheFCSData: function(nodeKey, dataKey, fcsData) {
 
-            // Display the tree
-            $("#treeView").dynatree(tree);
+            // Retrieve the tree object
+            let tree = $("#treeView").dynatree("getTree");
+            if (tree) {
+                // Load the node with specified key path
+                let node = tree.getNodeByKey(nodeKey);
+                if (node) {
 
-        },
-
-        /**
-         * Prepare a title div to be added to the page.
-         *
-         * @param title Text for the title
-         * @param level One of "default", "info", "success", "warning", "danger". Default is "default".
-         */
-        prepareTitle: function(title, level) {
-
-
-            // Make sure the level is valid
-            if (["default", "success", "info", "warning", "danger"].indexOf(level) === -1) {
-                level = "default";
+                    // Cache the data
+                    if (!node.data.cached) {
+                        node.data.cached = {};
+                    }
+                    node.data.cached[dataKey] = fcsData;
+                }
             }
-
-            return ($("<p>").append($("<span>").addClass("label").addClass("label-" + level).text(title)));
-
-        },
-
-        /**
-         * Displays experiment info
-         *
-         * @param experimentSample openBIS Experiment object
-         */
-        displayExperimentInfo: function(experimentSample) {
-
-            // Get the experiment name view
-            let experimentNameView_div = $("#experimentNameView");
-            experimentNameView_div.empty();
-
-            // Prepare title
-            let titleId = $("<h2>").html(experimentSample.properties["$NAME"]);
-
-            // check that the experiment is at the latest version
-            if (!experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_VERSION"] ||
-                experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_VERSION"] < DATAMODEL.EXPERIMENT_LATEST_VERSION) {
-
-                // Prepend "Upgrade" button
-                let updateButton = $("<input>")
-                    .attr("type", "button")
-                    .attr("value", "Upgrade")
-                    .addClass("upgradeButton")
-                    .click(function () {
-
-                        // Disable the Upgrade button
-                        $(this).prop("disabled", true);
-
-                        // Call the server-side plug-in
-                        DATAMODEL.upgradeExperiment(DATAMODEL.exp.permId);
-                    });
-                titleId.prepend(updateButton);
-
-            }
-
-            experimentNameView_div.append(titleId);
-
-            // Display the experiment info
-            let detailView = $("#detailView");
-            detailView.empty();
-
-            let experimentDescriptionView = $("#experimentDescriptionView");
-            experimentDescriptionView.empty();
-
-            let experimentAcquisitionDetailsView = $("#experimentAcquisitionDetailsView");
-            experimentAcquisitionDetailsView.empty();
-
-            // Display the experiment description
-            let description = experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_DESCRIPTION"];
-            if (undefined === description || description === "") {
-                description = "<i>No description provided.</i>";
-            }
-            experimentDescriptionView.append(this.prepareTitle("Description"));
-            experimentDescriptionView.append($("<p>").html(description));
-
-            // Display the acquisition details
-            let hardwareName = "";
-            if (experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME"]) {
-                hardwareName = experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME"];
-            } else {
-                hardwareName = " (generic) " + experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_HARDWARE"];
-            }
-            let owner = "an unknown user";
-            if (experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_OWNER"] !== undefined) {
-                owner = experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_OWNER"];
-            }
-            let acqDetails =
-                experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_SOFTWARE"] + " on " +
-                "<b>" + hardwareName + "</b>. Acquired by " + owner + " and registered on " +
-                (new Date(experimentSample.registrationDate)).toDateString() + ".";
-            experimentAcquisitionDetailsView.append(this.prepareTitle("Acquisition details"));
-            experimentAcquisitionDetailsView.append($("<p>").html(acqDetails));
-
-            // Display the tags
-            this.displayTags(experimentSample);
-
-            // Display the attachments
-            this.displayAttachments(experimentSample);
         },
 
         /**
@@ -182,37 +94,6 @@ define([], function () {
 
             // Display the link
             experimentAttachmentsViewId.append(link);
-
-        },
-
-        /**
-         * Display attachment info and link to the Attachments tab.
-         *
-         * @param experimentSample {...}_EXPERIMENT sample.
-         */
-        displayTags: function(experimentSample) {
-
-            // Get the div
-            let experimentTagView = $("#experimentTagView");
-            experimentTagView.empty();
-
-            // Get sample tags
-            let sampleTags = "<i>None</i>";
-            if (experimentSample.parents) {
-                if (experimentSample.parents.length === 0) {
-                    sampleTags = "<i>None</i>";
-                } else {
-                    let tags = [];
-                    for (let i = 0; i < experimentSample.parents.length; i++) {
-                        if (experimentSample.parents[i].type.code === "ORGANIZATION_UNIT") {
-                            tags.push(experimentSample.parents[i].properties["$NAME"]);
-                        }
-                    }
-                    sampleTags = tags.join(", ");
-                }
-            }
-            experimentTagView.append(this.prepareTitle("Tags", "info"));
-            experimentTagView.append($("<p>").html(sampleTags));
 
         },
 
@@ -319,7 +200,7 @@ define([], function () {
                 }
 
                 // Retrieve and store the parameter information
-                DATAMODEL.getAndAddParameterInfoForDatasets(node, function () {
+                DATAMODEL.getAndAddParameterInfoForDataSets(node, function () {
 
                     // Display the form to be used for parameter plotting
                     DATAVIEWER.renderParameterSelectionForm(node);
@@ -336,6 +217,122 @@ define([], function () {
             // Display the export action
             this.displayExportAction(node);
 
+        },
+
+        /**
+         * Build and display the link to download the FCS file via browser
+         *
+         * @param node: DataTree node
+         */
+        displayDownloadAction: function(node) {
+
+            // Build and display the call
+            if (node.data.element && node.data.element.hasOwnProperty("url")) {
+
+                let img = $("<img>")
+                    .attr("src", "img/download.png")
+                    .attr("width", 32)
+                    .attr("height", 32);
+
+                let link = $("<a>")
+                    .addClass("action")
+                    .hover(function () {
+                            $("#detailViewActionExpl").html("Download " + node.data.element.filename + ".");
+                        },
+                        function () {
+                            $("#detailViewActionExpl").html("");
+                        })
+                    .attr("href", node.data.element.url)
+                    .attr("title", "")
+                    .html("")
+
+
+                link.prepend(img);
+                link.prepend(img);
+
+                $("#detailViewAction").append(link);
+
+            }
+        },
+
+        /**
+         * Displays experiment info
+         *
+         * @param experimentSample openBIS Experiment object
+         */
+        displayExperimentInfo: function(experimentSample) {
+
+            // Get the experiment name view
+            let experimentNameView_div = $("#experimentNameView");
+            experimentNameView_div.empty();
+
+            // Prepare title
+            let titleId = $("<h2>").html(experimentSample.properties["$NAME"]);
+
+            // check that the experiment is at the latest version
+            if (!experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_VERSION"] ||
+                experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_VERSION"] < DATAMODEL.EXPERIMENT_LATEST_VERSION) {
+
+                // Prepend "Upgrade" button
+                let updateButton = $("<input>")
+                    .attr("type", "button")
+                    .attr("value", "Upgrade")
+                    .addClass("upgradeButton")
+                    .click(function () {
+
+                        // Disable the Upgrade button
+                        $(this).prop("disabled", true);
+
+                        // Call the server-side plug-in
+                        DATAMODEL.callServerSidePluginUpgradeExperiment(DATAMODEL.exp.permId);
+                    });
+                titleId.prepend(updateButton);
+
+            }
+
+            experimentNameView_div.append(titleId);
+
+            // Display the experiment info
+            let detailView = $("#detailView");
+            detailView.empty();
+
+            let experimentDescriptionView = $("#experimentDescriptionView");
+            experimentDescriptionView.empty();
+
+            let experimentAcquisitionDetailsView = $("#experimentAcquisitionDetailsView");
+            experimentAcquisitionDetailsView.empty();
+
+            // Display the experiment description
+            let description = experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_DESCRIPTION"];
+            if (undefined === description || description === "") {
+                description = "<i>No description provided.</i>";
+            }
+            experimentDescriptionView.append(this.prepareTitle("Description"));
+            experimentDescriptionView.append($("<p>").html(description));
+
+            // Display the acquisition details
+            let hardwareName = "";
+            if (experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME"]) {
+                hardwareName = experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME"];
+            } else {
+                hardwareName = " (generic) " + experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_HARDWARE"];
+            }
+            let owner = "an unknown user";
+            if (experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_OWNER"] !== undefined) {
+                owner = experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_OWNER"];
+            }
+            let acqDetails =
+                experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_ACQ_SOFTWARE"] + " on " +
+                "<b>" + hardwareName + "</b>. Acquired by " + owner + " and registered on " +
+                (new Date(experimentSample.registrationDate)).toDateString() + ".";
+            experimentAcquisitionDetailsView.append(this.prepareTitle("Acquisition details"));
+            experimentAcquisitionDetailsView.append($("<p>").html(acqDetails));
+
+            // Display the tags
+            this.displayTags(experimentSample);
+
+            // Display the attachments
+            this.displayAttachments(experimentSample);
         },
 
         /**
@@ -559,7 +556,7 @@ define([], function () {
                         })
                     .attr("title", "")
                     .click(function () {
-                        DATAMODEL.exportDatasets(
+                        DATAMODEL.callServerSidePluginExportDataSets(
                             experimentId, DATAMODEL.experimentType,
                             type, identifier, specimenName, "normal");
                         return false;
@@ -588,7 +585,7 @@ define([], function () {
                         $("#detailViewActionExpl").html("");
                     })
                 .click(function () {
-                    DATAMODEL.exportDatasets(
+                    DATAMODEL.callServerSidePluginExportDataSets(
                         experimentId, DATAMODEL.experimentType,
                         type, identifier, specimenName, "zip");
                     return false;
@@ -598,42 +595,6 @@ define([], function () {
 
             $("#detailViewAction").append(link);
 
-        },
-
-        /**
-         * Build and display the link to download the FCS file via browser
-         *
-         * @param node: DataTree node
-         */
-        displayDownloadAction: function(node) {
-
-            // Build and display the call
-            if (node.data.element && node.data.element.hasOwnProperty("url")) {
-
-                let img = $("<img>")
-                    .attr("src", "img/download.png")
-                    .attr("width", 32)
-                    .attr("height", 32);
-
-                let link = $("<a>")
-                    .addClass("action")
-                    .hover(function () {
-                            $("#detailViewActionExpl").html("Download " + node.data.element.filename + ".");
-                        },
-                        function () {
-                            $("#detailViewActionExpl").html("");
-                        })
-                    .attr("href", node.data.element.url)
-                    .attr("title", "")
-                    .html("")
-
-
-                link.prepend(img);
-                link.prepend(img);
-
-                $("#detailViewAction").append(link);
-
-            }
         },
 
         /**
@@ -666,10 +627,158 @@ define([], function () {
         },
 
         /**
+         * Display attachment info and link to the Attachments tab.
+         *
+         * @param experimentSample {...}_EXPERIMENT sample.
+         */
+        displayTags: function(experimentSample) {
+
+            // Get the div
+            let experimentTagView = $("#experimentTagView");
+            experimentTagView.empty();
+
+            // Get sample tags
+            let sampleTags = "<i>None</i>";
+            if (experimentSample.parents) {
+                if (experimentSample.parents.length === 0) {
+                    sampleTags = "<i>None</i>";
+                } else {
+                    let tags = [];
+                    for (let i = 0; i < experimentSample.parents.length; i++) {
+                        if (experimentSample.parents[i].type.code === "ORGANIZATION_UNIT") {
+                            tags.push(experimentSample.parents[i].properties["$NAME"]);
+                        }
+                    }
+                    sampleTags = tags.join(", ");
+                }
+            }
+            experimentTagView.append(this.prepareTitle("Tags", "info"));
+            experimentTagView.append($("<p>").html(sampleTags));
+
+        },
+
+        /**
+         * Draw the initial root structure.
+         *
+         * The tree will then be extended dynamically (via lazy
+         * loading) using DynaTree methods.
+         *
+         * @param tree DynaTree object
+         */
+        drawTree: function(tree) {
+
+            // Display the tree
+            $("#treeView").dynatree(tree);
+
+        },
+
+        /**
          * Hide the status div.
          */
         hideStatus: function() {
             $("#status").hide();
+        },
+
+        /**
+         * Display a scatter plot using HighCharts
+         *
+         * @param data list of (X, Y) points
+         * @param xLabel X label
+         * @param yLabel Y label
+         * @param xDisplay string Display type of the parameter for the X axis ("Linear" or "Hyperlog")
+         * @param yDisplay string Display type of the parameter for the Y axis ("Linear" or "Hyperlog")
+         */
+        plotFCSData: function(data, xLabel, yLabel, xDisplay, yDisplay) {
+
+            // Make sure to have a proper array
+            data = JSON.parse(data);
+
+            // Axis type is always linear, since the transformations are all done server side.
+            let xType = "linear";
+            let yType = "linear";
+
+            $('#detailViewPlot').highcharts({
+                chart: {
+                    type: 'scatter',
+                    zoomType: 'xy'
+                },
+                title: {
+                    text: yLabel + " vs. " + xLabel
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    title: {
+                        enabled: true,
+                        text: xLabel
+                    },
+                    type: xType,
+                    startOnTick: true,
+                    endOnTick: true,
+                    showLastLabel: true
+                },
+                yAxis: {
+                    title: {
+                        enabled: true,
+                        text: yLabel
+                    },
+                    type: yType,
+                    startOnTick: true,
+                    endOnTick: true,
+                    showLastLabel: true
+                },
+                plotOptions: {
+                    area: {
+                        turboThreshold: 10
+                    },
+                    scatter: {
+                        marker: {
+                            radius: 1,
+                            states: {
+                                hover: {
+                                    enabled: true,
+                                    lineColor: 'rgb(100,100,100)'
+                                }
+                            }
+                        },
+                        states: {
+                            hover: {
+                                marker: {
+                                    enabled: false
+                                }
+                            }
+                        },
+                        tooltip: {
+                            headerFormat: '',
+                            pointFormat: '{point.x:.2f}, {point.y:.2f}'
+                        }
+                    }
+                },
+                series: [{
+                    name: '',
+                    color: 'rgba(223, 83, 83, .5)',
+                    data: data
+                }]
+            });
+        },
+
+        /**
+         * Prepare a title div to be added to the page.
+         *
+         * @param title Text for the title
+         * @param level One of "default", "info", "success", "warning", "danger". Default is "default".
+         */
+        prepareTitle: function(title, level) {
+
+
+            // Make sure the level is valid
+            if (["default", "success", "info", "warning", "danger"].indexOf(level) === -1) {
+                level = "default";
+            }
+
+            return ($("<p>").append($("<span>").addClass("label").addClass("label-" + level).text(title)));
+
         },
 
         /**
@@ -804,7 +913,7 @@ define([], function () {
                     // Sampling method
                     let samplingMethod = selectSamplingMethod.find(":selected").val();
 
-                    DATAMODEL.generateFCSPlot(
+                    DATAMODEL.callServerSidePluginGenerateFCSPlot(
                         node,
                         node.data.element.code,
                         paramX,
@@ -884,116 +993,7 @@ define([], function () {
 
             // Pre-select "Linear"
             selectSamplingMethod.val(0);
-        },
-
-        /**
-         * Display a scatter plot using HighCharts
-         *
-         * @param data list of (X, Y) points
-         * @param xLabel X label
-         * @param yLabel Y label
-         * @param xDisplay string Display type of the parameter for the X axis ("Linear" or "Hyperlog")
-         * @param yDisplay string Display type of the parameter for the Y axis ("Linear" or "Hyperlog")
-         */
-        plotFCSData: function(data, xLabel, yLabel, xDisplay, yDisplay) {
-
-            // Make sure to have a proper array
-            data = JSON.parse(data);
-
-            // Axis type is always linear, since the transformations are all done server side.
-            let xType = "linear";
-            let yType = "linear";
-
-            $('#detailViewPlot').highcharts({
-                chart: {
-                    type: 'scatter',
-                    zoomType: 'xy'
-                },
-                title: {
-                    text: yLabel + " vs. " + xLabel
-                },
-                subtitle: {
-                    text: ''
-                },
-                xAxis: {
-                    title: {
-                        enabled: true,
-                        text: xLabel
-                    },
-                    type: xType,
-                    startOnTick: true,
-                    endOnTick: true,
-                    showLastLabel: true
-                },
-                yAxis: {
-                    title: {
-                        enabled: true,
-                        text: yLabel
-                    },
-                    type: yType,
-                    startOnTick: true,
-                    endOnTick: true,
-                    showLastLabel: true
-                },
-                plotOptions: {
-                    area: {
-                        turboThreshold: 10
-                    },
-                    scatter: {
-                        marker: {
-                            radius: 1,
-                            states: {
-                                hover: {
-                                    enabled: true,
-                                    lineColor: 'rgb(100,100,100)'
-                                }
-                            }
-                        },
-                        states: {
-                            hover: {
-                                marker: {
-                                    enabled: false
-                                }
-                            }
-                        },
-                        tooltip: {
-                            headerFormat: '',
-                            pointFormat: '{point.x:.2f}, {point.y:.2f}'
-                        }
-                    }
-                },
-                series: [{
-                    name: '',
-                    color: 'rgba(223, 83, 83, .5)',
-                    data: data
-                }]
-            });
-        },
-
-        /**
-         * Caches the retrieved FCS data to the node with given key under its own data key.
-         *
-         * @param nodeKey key of the node to update.
-         * @param dataKey key under which to store the data.
-         * @param fcsData data to be plotted.
-         */
-        cacheFCSData: function(nodeKey, dataKey, fcsData) {
-
-            // Retrieve the tree object
-            let tree = $("#treeView").dynatree("getTree");
-            if (tree) {
-                // Load the node with specified key path
-                let node = tree.getNodeByKey(nodeKey);
-                if (node) {
-
-                    // Cache the data
-                    if (!node.data.cached) {
-                        node.data.cached = {};
-                    }
-                    node.data.cached[dataKey] = fcsData;
-                }
-            }
-        },
+        }
     };
 
     // Return a DataViewer object
