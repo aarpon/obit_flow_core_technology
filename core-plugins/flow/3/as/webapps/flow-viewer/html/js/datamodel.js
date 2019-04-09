@@ -44,6 +44,8 @@ define(["openbis",
              */
 
             this.retrieveFCSEventsService = null;
+            this.exportDatasetsService = null;
+            this.upgradeExperimentService = null;
 
             /**
              * Properties
@@ -76,7 +78,7 @@ define(["openbis",
             this.openbisV3.loginFromContext();
 
             // Retrieve information from the context
-            var webappcontext = this.openbisV3.getWebAppContext();
+            let webappcontext = this.openbisV3.getWebAppContext();
 
             // {...}_EXPERIMENT sample identifier
             this.experimentSampleId = webappcontext.getEntityIdentifier();
@@ -117,22 +119,22 @@ define(["openbis",
             getFlowExperimentSampleAndDisplay: function () {
 
                 // Search for the sample of type and given perm id
-                var criteria = new SampleSearchCriteria();
+                let criteria = new SampleSearchCriteria();
                 criteria.withType().withCode().thatEquals(this.experimentSampleType);
                 criteria.withCode().thatEquals(this.experimentSampleId);
-                var fetchOptions = new SampleFetchOptions();
+                let fetchOptions = new SampleFetchOptions();
                 fetchOptions.withType();
                 fetchOptions.withProperties();
                 fetchOptions.withDataSets().withType();
                 fetchOptions.withExperiment();
 
-                var parentFetchOptions = new SampleFetchOptions();
+                let parentFetchOptions = new SampleFetchOptions();
                 parentFetchOptions.withType();
                 parentFetchOptions.withProperties();
                 fetchOptions.withParentsUsing(parentFetchOptions);
 
                 // Keep a reference to this object (for the callback)
-                var dataModelObj = this;
+                let dataModelObj = this;
 
                 // Query the server
                 this.openbisV3.searchSamples(criteria, fetchOptions).done(function (result) {
@@ -162,10 +164,10 @@ define(["openbis",
             initializeTreeModel: function () {
 
                 // Alias
-                var dataModelObj = this;
+                const dataModelObj = this;
 
                 // First-level children
-                var first_level_children = [];
+                let first_level_children = [];
                 if (dataModelObj.SUPPORTS_PLATE_ACQ[dataModelObj.experimentSampleType]) {
 
                     first_level_children = [
@@ -286,7 +288,6 @@ define(["openbis",
 
             /**
              * Get the dataset associated to a given sample
-             * @param   sample  A sample
              * @param   node    The DynaTree (parent) node to which the generated
              *                  nodes will be appended.
              * @return  dataset The dataset associated to the sample
@@ -294,13 +295,13 @@ define(["openbis",
             getDataSets: function (node) {
 
                 // Alias
-                var dataModelObj = this;
+                const dataModelObj = this;
 
                 // Get the sample
-                var sample = node.data.element;
+                let sample = node.data.element;
 
                 // Get the dataset
-                var fetchOptions = new SampleFetchOptions();
+                let fetchOptions = new SampleFetchOptions();
                 fetchOptions.withProperties();
                 fetchOptions.withDataSets().withType();
                 fetchOptions.withDataSets().withProperties();
@@ -320,24 +321,24 @@ define(["openbis",
                     } else {
 
                         // Get the updated sample
-                        var updated_sample = map[sample.permId];
+                        let updated_sample = map[sample.permId];
 
                         // Get the dataset
-                        var datasets = updated_sample.getDataSets();
-                        var dataset = datasets[0];
+                        let datasets = updated_sample.getDataSets();
+                        let dataset = datasets[0];
 
                         // Get the file
-                        var criteria = new DataSetFileSearchCriteria();
-                        var dataSetCriteria = criteria.withDataSet().withOrOperator();
+                        let criteria = new DataSetFileSearchCriteria();
+                        let dataSetCriteria = criteria.withDataSet().withOrOperator();
                         dataSetCriteria.withPermId().thatEquals(dataset.permId.permId);
 
-                        var fetchOptions = new DataSetFileFetchOptions();
+                        let fetchOptions = new DataSetFileFetchOptions();
 
                         // Query the server
                         dataModelObj.openbisV3.getDataStoreFacade().searchFiles(criteria, fetchOptions).done(function (result) {
 
                             // Extract the files
-                            var datasetFiles = result.getObjects();
+                            let datasetFiles = result.getObjects();
 
                             // Find the only fcs file and add its name and URL to the DynaTree
                             datasetFiles.forEach(function (f) {
@@ -347,8 +348,8 @@ define(["openbis",
 
                                     // Append the file name to the dataset object for
                                     // use in addToTreeModel()
-                                    var filename = '';
-                                    var indx = f.getPath().lastIndexOf("/");
+                                    let filename = '';
+                                    let indx = f.getPath().lastIndexOf("/");
                                     if (indx === -1 || indx === f.getPath().length - 1) {
                                         // This should not happen, but we build in
                                         // a fallback anyway
@@ -359,17 +360,17 @@ define(["openbis",
                                     dataset.filename = filename;
 
                                     // Build the download URL
-                                    var url = f.getDataStore().getDownloadUrl() + "datastore_server/" +
+                                    let url = f.getDataStore().getDownloadUrl() + "datastore_server/" +
                                         f.permId.dataSetId.permId + "/" + f.getPath() + "?sessionID=" +
                                         dataModelObj.openbisV3.getWebAppContext().sessionId;
 
                                     // Store it in the dataset object
-                                    var eUrl = encodeURI(url);
+                                    let eUrl = encodeURI(url);
                                     eUrl = eUrl.replace('+', '%2B');
                                     dataset.url = eUrl;
 
                                     // Add the results to the tree
-                                    var result = [];
+                                    let result = [];
                                     result.push(dataset);
                                     dataModelObj.addToTreeModel(result, node);
                                 }
@@ -387,18 +388,18 @@ define(["openbis",
             getPlates: function (node) {
 
                 // Alias
-                var dataModelObj = this;
+                const dataModelObj = this;
 
                 // Required arguments
-                var plateSampleType = dataModelObj.EXPERIMENT_PREFIX + "_PLATE";
+                const plateSampleType = dataModelObj.EXPERIMENT_PREFIX + "_PLATE";
 
                 // Search for the sample of type {...}_TUBESET and given perm id
-                var criteria = new SampleSearchCriteria();
+                let criteria = new SampleSearchCriteria();
                 criteria.withType().withCode().thatEquals(plateSampleType);
                 criteria.withParents().withCode().thatEquals(this.experimentSampleId);
                 criteria.withParents().withType().withCode().thatEquals(this.experimentSampleType);
 
-                var fetchOptions = new SampleFetchOptions();
+                let fetchOptions = new SampleFetchOptions();
                 fetchOptions.withType();
                 fetchOptions.withProperties();
 
@@ -406,7 +407,7 @@ define(["openbis",
                 this.openbisV3.searchSamples(criteria, fetchOptions).done(function (result) {
 
                     // Retrieve the plates
-                    var plates = result.getObjects();
+                    let plates = result.getObjects();
 
                     if (plates.length === 0) {
                         dataModelObj.addToTreeModel([], node);
@@ -427,24 +428,24 @@ define(["openbis",
             getTubes: function (node) {
 
                 // Alias
-                var dataModelObj = this;
+                const dataModelObj = this;
 
                 // Required arguments
-                var tubesetSampleType = dataModelObj.EXPERIMENT_PREFIX + "_TUBESET";
+                const tubesetSampleType = dataModelObj.EXPERIMENT_PREFIX + "_TUBESET";
 
                 // Search for the sample of type {...}_TUBESET and given perm id
-                var criteria = new SampleSearchCriteria();
+                let criteria = new SampleSearchCriteria();
                 criteria.withType().withCode().thatEquals(tubesetSampleType);
                 criteria.withParents().withCode().thatEquals(this.experimentSampleId);
                 criteria.withParents().withType().withCode().thatEquals(this.experimentSampleType);
 
-                var fetchOptions = new SampleFetchOptions();
+                let fetchOptions = new SampleFetchOptions();
                 fetchOptions.withProperties();
                 fetchOptions.withType();
                 fetchOptions.withChildren().withType();
                 fetchOptions.withChildren().withProperties();
 
-                var parentFetchOptions = new SampleFetchOptions();
+                let parentFetchOptions = new SampleFetchOptions();
                 parentFetchOptions.withType();
                 parentFetchOptions.withProperties();
                 parentFetchOptions.withChildren().withParents().withType();
@@ -461,7 +462,7 @@ define(["openbis",
                     }
 
                     // Retrieve the sample
-                    var tubesetSample = result.objects[0];
+                    let tubesetSample = result.objects[0];
 
                     // Pass the children of the tubeset to the addToTreeModel() method
                     dataModelObj.addToTreeModel(tubesetSample.children, node);
@@ -475,17 +476,17 @@ define(["openbis",
             getWells: function (node) {
 
                 // Alias
-                var dataModelObj = this;
+                const dataModelObj = this;
 
                 // Retrieve the plate (sample) from the node
-                var plateSample = node.data.element;
+                let plateSample = node.data.element;
 
-                var fetchOptions = new SampleFetchOptions();
+                let fetchOptions = new SampleFetchOptions();
                 fetchOptions.withChildren();
                 fetchOptions.withChildren().withType();
                 fetchOptions.withChildren().withProperties();
 
-                var parentFetchOptions = new SampleFetchOptions();
+                let parentFetchOptions = new SampleFetchOptions();
                 parentFetchOptions.withType();
                 parentFetchOptions.withProperties();
                 parentFetchOptions.withChildren().withParents().withType();
@@ -506,10 +507,10 @@ define(["openbis",
                     } else {
 
                         // Get the sample (plate)
-                        var sample = map[plateSample.permId];
+                        let sample = map[plateSample.permId];
 
                         // Get the wells
-                        var wells = sample.children;
+                        let wells = sample.children;
 
                         // Pass the children of the tubeset to the addToTreeModel() method
                         dataModelObj.addToTreeModel(wells, node);
@@ -527,7 +528,7 @@ define(["openbis",
             addToTreeModel: function (result, node) {
 
                 // Alias
-                var dataModelObj = this;
+                const dataModelObj = this;
 
                 // Server returned an error condition: set node status accordingly
                 if (result == null || result.hasOwnProperty("error")) {
@@ -563,20 +564,20 @@ define(["openbis",
                 // the openBIS sample to be used later. In case of wells and tubes,
                 // we actually create an array of specimens, each of which has tubes
                 // or wells as children.
-                var res = [];
+                let res = [];
                 $.each(result, function (index, sample) {
 
                     // Declare some variables
-                    var i = 0;
-                    var parent = null;
-                    var specimenNode = null;
-                    var specimenSample = null;
-                    var specimenName = null;
-                    var indx = -1;
-                    var specimenType = dataModelObj.EXPERIMENT_PREFIX + "_SPECIMEN";
+                    let i = 0;
+                    let parent = null;
+                    let specimenNode = null;
+                    let specimenSample = null;
+                    let specimenName = null;
+                    let indx = -1;
+                    const specimenType = dataModelObj.EXPERIMENT_PREFIX + "_SPECIMEN";
 
                     // Get element type
-                    var elementType = sample.getType().code;
+                    let elementType = sample.getType().code;
 
                     switch (elementType) {
 
@@ -614,7 +615,10 @@ define(["openbis",
                             specimenNode = null;
 
                             // Specimen name
-                            specimenName = specimenSample.properties["$NAME"];
+                            specimenName = "";
+                            if (null !== specimenSample) {
+                                specimenName = specimenSample.properties["$NAME"];
+                            }
 
                             // Do we already have a Specimen node?
                             indx = dataModelObj.findIn(res, specimenName);
@@ -643,7 +647,7 @@ define(["openbis",
 
                             // Now we create the well node and add it as a child of
                             // the correct specimen node
-                            var wellNode = {
+                            let wellNode = {
                                 title: sample.properties[dataModelObj.EXPERIMENT_PREFIX + "_WELL_NAME"],
                                 icon: "well.png",
                                 isFolder: true,
@@ -690,7 +694,10 @@ define(["openbis",
                             specimenNode = null;
 
                             // Specimen name
-                            specimenName = specimenSample.properties["$NAME"];
+                            specimenName = "";
+                            if (null !== specimenSample) {
+                                specimenName = specimenSample.properties["$NAME"];
+                            }
 
                             // Do we already have a Specimen node?
                             indx = dataModelObj.findIn(res, specimenName);
@@ -718,7 +725,7 @@ define(["openbis",
 
                             // Now we create the tube node and add it as a child of
                             // the correct specimen node
-                            var tubeNode = {
+                            let tubeNode = {
                                 title: sample.properties[dataModelObj.EXPERIMENT_PREFIX + "_TUBE_NAME"],
                                 icon: "tube.png",
                                 isFolder: true,
@@ -787,7 +794,7 @@ define(["openbis",
                 if (res.length === 0) {
                     return -1;
                 }
-                for (var i = 0; i < res.length; i++) {
+                for (let i = 0; i < res.length; i++) {
                     if (res[i].title === title) {
                         return i;
                     }
@@ -819,41 +826,41 @@ define(["openbis",
                 if (!node.data.parameterInfo) {
 
                     // Retrieve parameter information
-                    var parametersXML = $.parseXML(node.data.element.properties[this.EXPERIMENT_PREFIX + "_FCSFILE_PARAMETERS"]);
-                    var parameters = parametersXML.childNodes[0];
+                    const parametersXML = $.parseXML(node.data.element.properties[this.EXPERIMENT_PREFIX + "_FCSFILE_PARAMETERS"]);
+                    const parameters = parametersXML.childNodes[0];
 
-                    var numParameters = parameters.getAttribute("numParameters");
-                    var numEvents = parameters.getAttribute("numEvents");
+                    const numParameters = parameters.getAttribute("numParameters");
+                    const numEvents = parameters.getAttribute("numEvents");
 
-                    var names = [];
-                    var compositeNames = [];
-                    var display = [];
+                    let names = [];
+                    let compositeNames = [];
+                    let display = [];
 
                     // Parameter numbering starts at 1
-                    var parametersToDisplay = 0;
-                    for (var i = 1; i <= numParameters; i++) {
+                    let parametersToDisplay = 0;
+                    for (let i = 1; i <= numParameters; i++) {
 
                         // If the parameter contains the PnCHANNELTYPE attribute (BD Influx Cell Sorter),
                         // we only add it if the channel type is 6.
-                        var channelType = parameters.getAttribute("P" + i + "CHANNELTYPE");
+                        let channelType = parameters.getAttribute("P" + i + "CHANNELTYPE");
                         if (channelType != null && channelType !== 6) {
                             continue;
                         }
 
                         // Store the parameter name
-                        var name = parameters.getAttribute("P" + i + "N");
+                        let name = parameters.getAttribute("P" + i + "N");
                         names.push(name);
 
                         // Store the composite name
-                        var pStr = parameters.getAttribute("P" + i + "S");
-                        var composite = name;
+                        let pStr = parameters.getAttribute("P" + i + "S");
+                        let composite = name;
                         if (pStr !== "") {
                             composite = name + " (" + pStr + ")";
                         }
                         compositeNames.push(composite);
 
                         // Store the display scale
-                        var displ = parameters.getAttribute("P" + i + "DISPLAY");
+                        let displ = parameters.getAttribute("P" + i + "DISPLAY");
                         display.push(displ);
 
                         // Update the count of parameters to display
@@ -882,100 +889,103 @@ define(["openbis",
              */
             upgradeExperiment: function (expPermId) {
 
-                // Check that this is an experiment node
-
-                // Parameters for the aggregation service
-                var parameters = {
-                    expPermId: expPermId
-                };
-
-                // Message
-                var unexpected = "Sorry, unexpected feedback from server " +
-                    "obtained. Please contact your administrator.";
-
-                // Returned parameters
-                var r_Success;
-                var r_ErrorMessage;
-
-                // Inform the user that we are about to process the request
-                DATAVIEWER.displayStatus("Please wait while processing your request. This might take a while...", "info");
-
-                // Must use global object
-                DATAMODEL.openbisServer.createReportFromAggregationService(
-                    CONFIG.dataStoreServer,
-                    "upgrade_experiment",
-                    parameters,
-                    function (response) {
-
-                        var status;
-                        var level;
-                        var row;
-
-                        if (response.error) {
-                            status = "Sorry, could not process request.";
-                            level = "danger";
-                            r_Success = "0";
-                        } else {
-                            status = "";
-                            if (response.result.rows.length !== 1) {
-                                status = unexpected;
-                                level = "danger";
-                            } else {
-                                row = response.result.rows[0];
-                                if (row.length !== 2) {
-                                    status = unexpected;
-                                    level = "danger";
-                                } else {
-
-                                    // Extract returned values for clarity
-                                    r_Success = row[0].value;
-                                    r_ErrorMessage = row[1].value;
-
-                                    if (r_Success === "1") {
-                                        status = r_ErrorMessage;
-                                        level = "success";
-
-                                    } else {
-                                        status = "Sorry, there was an error: \"" +
-                                            r_ErrorMessage + "\".";
-                                        level = "danger";
-                                    }
-                                }
-                            }
+                // Retrieve the service if necessary
+                if (null === DATAMODEL.upgradeExperimentService) {
+                    let criteria = new AggregationServiceSearchCriteria();
+                    criteria.withName().thatEquals("upgrade_experiment");
+                    let fetchOptions = new AggregationServiceFetchOptions();
+                    DATAMODEL.openbisV3.searchAggregationServices(criteria, fetchOptions).then(function(result) {
+                        if (undefined === result.objects) {
+                            console.log("Could not retrieve the server-side aggregation service!");
+                            return;
                         }
-                        // We only display errors
-                        DATAVIEWER.displayStatus(status, level);
+                        DATAMODEL.upgradeExperimentService = result.getObjects()[0];
 
-                        // Reload the page after a short delay
-                        if (r_Success === "1") {
-                            setTimeout(function () {
-                                window.location.reload();
-                            }, 1000);
-                        }
-
+                        // Now call the service
+                        let options = new AggregationServiceExecutionOptions();
+                        options.withParameter("expPermId", expPermId);
+                        DATAMODEL.openbisV3.executeAggregationService(
+                            DATAMODEL.upgradeExperimentService.getPermId(),
+                            options).then(function(result) {
+                            DATAMODEL.processResultsFromUpgradeExperimentServerSidePlugin(result);
+                        });
                     });
+                } else {
+                    // Call the service
+                    let options = new AggregationServiceExecutionOptions();
+                    options.withParameter("expPermId", expPermId);
+                    DATAMODEL.openbisV3.executeAggregationService(
+                        DATAMODEL.upgradeExperimentService.getPermId(),
+                        options).then(function(result) {
+                        DATAMODEL.processResultsFromUpgradeExperimentServerSidePlugin(result);
+                    });
+                }
             },
 
             /**
              * Process the results returned from the retrieveFCSEvents() server-side plug-in
-             * @param response JSON object
+             * @param table Result table
+             */
+            processResultsFromUpgradeExperimentServerSidePlugin: function (table) {
+
+                // Did we get the expected result?
+                if (! table.rows || table.rows.length !== 1) {
+                    DATAVIEWER.displayStatus(
+                        "There was an error retrieving the data to plot!",
+                        "danger");
+                    return;
+                }
+
+                // Get the row of results
+                let row = table.rows[0];
+
+                // Extract returned values for clarity
+                let r_Success = row[0].value;
+                let r_Message = row[1].value;
+
+                let level;
+                if (r_Success === 1) {
+                    status = r_Message;
+                    level = "success";
+                } else {
+                    status = "Sorry, there was an error: \"" +
+                        r_Message + "\".";
+                    level = "danger";
+                }
+
+                // Display the message
+                DATAVIEWER.displayStatus(status, level);
+
+                // Reload the page after a short delay
+                if (r_Success === 1) {
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 1000);
+                }
+            },
+
+            /**
+             * Process the results returned from the retrieveFCSEvents() server-side plug-in
+             * @param table Result table
              */
             processResultsFromRetrieveFCSEventsServerSidePlugin: function (table) {
 
                 // Did we get the expected result?
                 if (! table.rows || table.rows.length !== 1) {
-                    DATAVIEWER.displayStatus(unexpected, "danger");
+                    DATAVIEWER.displayStatus(
+                        "There was an error retrieving the data to plot!",
+                        "danger");
                     return;
                 }
 
                 // Get the row of results
-                var row = table.rows[0];
+                let row = table.rows[0];
 
                 // Retrieve the uid
-                var r_UID = row[0].value;
+                let r_UID = row[0].value;
 
                 // Is the process completed?
-                var r_Completed = row[1].value;
+                let r_Completed = row[1].value;
 
                 if (r_Completed === 0) {
 
@@ -983,11 +993,11 @@ define(["openbis",
                     setTimeout(function () {
 
                             // We only need the UID of the job
-                            var parameters = {};
+                            let parameters = {};
                             parameters["uid"] = r_UID;
 
                             // Now call the service
-                            var options = new AggregationServiceExecutionOptions();
+                            let options = new AggregationServiceExecutionOptions();
                             options.withParameter("uid", r_UID);
 
                             DATAMODEL.openbisV3.executeAggregationService(
@@ -1005,20 +1015,20 @@ define(["openbis",
                 // We completed the call and we can process the result
 
                 // Returned parameters
-                var r_Success = row[2].value;
-                var r_ErrorMessage = row[3].value;
-                var r_Data = row[4].value;
-                var r_Code = row[5].value;
-                var r_ParamX = row[6].value;
-                var r_ParamY = row[7].value;
-                var r_DisplayX = row[8].value;
-                var r_DisplayY = row[9].value;
-                var r_NumEvents = row[10].value;   // Currently not used
-                var r_MaxNumEvents = row[11].value;
-                var r_SamplingMethod = row[12].value;
-                var r_NodeKey = row[13].value;
+                let r_Success = row[2].value;
+                let r_ErrorMessage = row[3].value;
+                let r_Data = row[4].value;
+                let r_Code = row[5].value;
+                let r_ParamX = row[6].value;
+                let r_ParamY = row[7].value;
+                let r_DisplayX = row[8].value;
+                let r_DisplayY = row[9].value;
+                let r_NumEvents = row[10].value;   // Currently not used
+                let r_MaxNumEvents = row[11].value;
+                let r_SamplingMethod = row[12].value;
+                let r_NodeKey = row[13].value;
 
-                var level;
+                let level;
                 if (r_Success === 1) {
 
                     // Error message and level
@@ -1029,7 +1039,7 @@ define(["openbis",
                     DATAVIEWER.plotFCSData(r_Data, r_ParamX, r_ParamY, r_DisplayX, r_DisplayY);
 
                     // Cache the plotted data
-                    var dataKey = r_Code + "_" + r_ParamX + "_" + r_ParamY + "_" + r_MaxNumEvents.toString() +
+                    let dataKey = r_Code + "_" + r_ParamX + "_" + r_ParamY + "_" + r_MaxNumEvents.toString() +
                         "_" + r_DisplayX + "_" + r_DisplayY + "_" + r_SamplingMethod.toString();
                     DATAVIEWER.cacheFCSData(r_NodeKey, dataKey, r_Data);
 
@@ -1064,7 +1074,7 @@ define(["openbis",
 
                 // Check whether the data for the plot is already cached
                 if (node.data.cached) {
-                    var key = code + "_" + paramX + "_" + paramY + "_" + maxNumEvents.toString() +
+                    let key = code + "_" + paramX + "_" + paramY + "_" + maxNumEvents.toString() +
                         "_" + displayX + "_" + displayY + "_" + samplingMethod.toString();
                     if (node.data.cached.hasOwnProperty(key)) {
 
@@ -1082,7 +1092,7 @@ define(["openbis",
                 }
 
                 // Parameters for the aggregation service
-                var parameters = {
+                let parameters = {
                     code: code,
                     paramX: paramX,
                     paramY: paramY,
@@ -1095,23 +1105,24 @@ define(["openbis",
                 };
 
                 // Inform the user that we are about to process the request
-                DATAVIEWER.displayStatus("Please wait while processing your request. This might take a while...", "info");
+                DATAVIEWER.displayStatus("Please wait while processing your request. This might take a while...",
+                    "info");
 
                 // Call service
                 if (null === DATAMODEL.retrieveFCSEventsService) {
-                    var criteria = new AggregationServiceSearchCriteria();
+                    let criteria = new AggregationServiceSearchCriteria();
                     criteria.withName().thatEquals("retrieve_fcs_events");
-                    var fetchOptions = new AggregationServiceFetchOptions();
+                    let fetchOptions = new AggregationServiceFetchOptions();
                     DATAMODEL.openbisV3.searchAggregationServices(criteria, fetchOptions).then(function(result) {
                             if (undefined === result.objects) {
-                                console.log("Could not retrieve the server-side aggregation service!")
+                                console.log("Could not retrieve the server-side aggregation service!");
                                 return;
                             }
                             DATAMODEL.retrieveFCSEventsService = result.getObjects()[0];
 
                             // Now call the service
-                            var options = new AggregationServiceExecutionOptions();
-                            for (var key in parameters) {
+                            let options = new AggregationServiceExecutionOptions();
+                            for (let key in parameters) {
                                 options.withParameter(key, parameters[key]);
                             }
                             DATAMODEL.openbisV3.executeAggregationService(
@@ -1122,9 +1133,9 @@ define(["openbis",
                         });
                 } else {
                     // Call the service
-                    var options = new AggregationServiceExecutionOptions();
-                    for (var key in parameters) {
-                        options.withParameter(key, parameters[key]);
+                    let options = new AggregationServiceExecutionOptions();
+                    for (let k in parameters) {
+                        options.withParameter(k, parameters[k]);
                     }
                     DATAMODEL.openbisV3.executeAggregationService(
                         DATAMODEL.retrieveFCSEventsService.getPermId(),
@@ -1136,133 +1147,113 @@ define(["openbis",
 
             /**
              * Process the results returned from the exportDatasets() server-side plug-in
-             * @param response JSON object
+             * @param table Result table
              */
-            processResultsFromExportDatasetsServerSidePlugin: function (response) {
+            processResultsFromExportDatasetsServerSidePlugin: function (table) {
 
-                var status;
-                var unexpected = "Sorry, unexpected feedback from server " +
-                    "obtained. Please contact your administrator.";
-                var level = "";
-                var row;
+                // Did we get the expected result?
+                if (!table.rows || table.rows.length !== 1) {
+                    DATAVIEWER.displayStatus(
+                        "There was an error exporting the data!",
+                        "danger");
+                    return;
+                }
 
-                // Returned parameters
-                var r_UID;
-                var r_Completed;
-                var r_Success;
-                var r_ErrorMessage;
-                var r_NCopiedFiles;
-                var r_RelativeExpFolder;
-                var r_ZipArchiveFileName;
-                var r_Mode;
+                // Get the row of results
+                let row = table.rows[0];
 
-                // First check if we have an error
-                if (response.error) {
+                // Retrieve the uid
+                let r_UID = row[0].value;
 
-                    status = "Sorry, could not process request.";
-                    level = "danger";
-                    r_Success = "0";
+                // Is the process completed?
+                let r_Completed = row[1].value;
 
-                } else {
+                if (r_Completed === 0) {
 
-                    // No obvious errors. Retrieve the results.
-                    status = "";
-                    if (response.result.rows.length !== 1) {
-
-                        // Unexpected number of rows returned
-                        status = unexpected;
-                        level = "danger";
-
-                    } else {
-
-                        // We have a potentially valid result
-                        row = response.result.rows[0];
-
-                        // Retrieve the uid
-                        r_UID = row[0].value;
-
-                        // Retrieve the 'completed' status
-                        r_Completed = row[1].value;
-
-                        // If the processing is not completed, we wait a few seconds and trigger the
-                        // server-side plug-in again. The interval is defined by the admin.
-                        if (r_Completed === "0") {
+                    // Call the plug-in
+                    setTimeout(function () {
 
                             // We only need the UID of the job
-                            var parameters = {};
+                            let parameters = {};
                             parameters["uid"] = r_UID;
 
-                            // Call the plug-in
-                            setTimeout(function () {
-                                    DATAMODEL.openbisServer.createReportFromAggregationService(
-                                        CONFIG['dataStoreServer'], "export_flow_datasets",
-                                        parameters, DATAMODEL.processResultsFromExportDatasetsServerSidePlugin)
-                                },
-                                parseInt(CONFIG['queryPluginStatusInterval']));
+                            // Now call the service
+                            let options = new AggregationServiceExecutionOptions();
+                            options.withParameter("uid", r_UID);
 
-                            // Return here
-                            return;
+                            DATAMODEL.openbisV3.executeAggregationService(
+                                DATAMODEL.exportDatasetsService.getPermId(),
+                                options).then(function (result) {
+                                DATAMODEL.processResultsFromExportDatasetsServerSidePlugin(result);
+                            })
+                        },
+                        parseInt(CONFIG['queryPluginStatusInterval']));
 
-                        } else {
+                    // Return here
+                    return;
 
-                            if (row.length !== 8) {
-
-                                // Again, something is wrong with the returned results
-                                status = unexpected;
-                                level = "error";
-
-                            } else {
-
-                                // Extract returned values for clarity
-                                r_Success = row[2].value;
-                                r_ErrorMessage = row[3].value;
-                                r_NCopiedFiles = row[4].value;
-                                r_RelativeExpFolder = row[5].value;
-                                r_ZipArchiveFileName = row[6].value;
-                                r_Mode = row[7].value;
-
-                                if (r_Success === "1") {
-                                    var snip = "<b>Congratulations!</b>&nbsp;";
-                                    if (r_NCopiedFiles === 1) {
-                                        snip = snip +
-                                            "<span class=\"badge\">1</span> file was ";
-                                    } else {
-                                        snip = snip +
-                                            "<span class=\"badge\">" +
-                                            r_NCopiedFiles + "</span> files were ";
-                                    }
-                                    if (r_Mode === "normal") {
-                                        status = snip + "successfully exported to " +
-                                            "{...}/" + r_RelativeExpFolder + ".";
-                                    } else {
-                                        // Add a placeholder to store the download URL.
-                                        status = snip + "successfully packaged. <span id=\"download_url_span\"></span>";
-                                    }
-                                    level = "success";
-                                } else {
-                                    if (r_Mode === "normal") {
-                                        status = "Sorry, there was an error exporting " +
-                                            "to your user folder:<br /><br />\"" +
-                                            r_ErrorMessage + "\".";
-                                    } else {
-                                        status = "Sorry, there was an error packaging your files for download!";
-                                    }
-                                    level = "error";
-                                }
-                            }
-                        }
-                    }
                 }
+
+                // The service completed. We can now process the results.
+
+                // Level of the message
+                let level = "";
+
+                // Returned parameters
+                let r_Success = row[2].value;
+                let r_ErrorMessage = row[3].value;
+                let r_NCopiedFiles = row[4].value;
+                let r_RelativeExpFolder = row[5].value;
+                let r_ZipArchiveFileName = row[6].value;
+                let r_Mode = row[7].value;
+
+                if (r_Success === 1) {
+                    let snip = "<b>Congratulations!</b>&nbsp;";
+                    if (r_NCopiedFiles === 1) {
+                        snip = snip + "<span class=\"badge\">1</span> file was ";
+                    } else {
+                        snip = snip + "<span class=\"badge\">" + r_NCopiedFiles + "</span> files were ";
+                    }
+                    if (r_Mode === "normal") {
+                        status = snip + "successfully exported to {...}/" + r_RelativeExpFolder + ".";
+                    } else {
+                        // Add a placeholder to store the download URL.
+                        status = snip + "successfully packaged. <span id=\"download_url_span\"></span>";
+                    }
+                    level = "success";
+                } else {
+                    if (r_Mode === "normal") {
+                        status = "Sorry, there was an error exporting " +
+                            "to your user folder:<br /><br />\"" +
+                            r_ErrorMessage + "\".";
+                    } else {
+                        status = "Sorry, there was an error packaging your files for download!";
+                    }
+                    level = "error";
+                }
+
                 DATAVIEWER.displayStatus(status, level);
 
-                // Retrieve the URL (asynchronously)
-                if (r_Success === "1" && r_Mode === "zip") {
-                    DATAMODEL.openbisServer.createSessionWorkspaceDownloadUrl(r_ZipArchiveFileName,
-                        function (url) {
-                            var downloadString =
-                                '<img src="img/download.png" heigth="32" width="32"/>&nbsp;<a href="' + url + '">Download</a>!';
+                if (r_Success === 1 && r_Mode === "zip") {
+
+                    // Build the download URL with a little hack
+                    DATAMODEL.openbisV3.getDataStoreFacade().createDataSetUpload("dummy").then(function(result) {
+                        let url = result.getUrl();
+                        let indx = url.indexOf("/datastore_server/store_share_file_upload");
+                        if (indx !== -1) {
+                            let dssUrl = url.substring(0, indx);
+                            let downloadUrl = encodeURI(
+                                dssUrl + "/datastore_server/session_workspace_file_download?" +
+                            "sessionID=" + DATAMODEL.openbisV3.getWebAppContext().sessionId + "&filePath=" +
+                                r_RelativeExpFolder);
+
+                            let downloadString =
+                                '<img src="img/download.png" heigth="32" width="32"/>&nbsp;<a href="' +
+                                downloadUrl + '">Download</a>!';
                             $("#download_url_span").html(downloadString);
-                        });
+
+                        }
+                    });
                 }
             },
 
@@ -1279,7 +1270,7 @@ define(["openbis",
             exportDatasets: function (experimentId, experimentType, type, identifier, specimen, mode) {
 
                 // Parameters for the aggregation service
-                var parameters = {
+                let parameters = {
                     experimentId: experimentId,
                     experimentType: experimentType,
                     entityType: type,
@@ -1291,10 +1282,41 @@ define(["openbis",
                 // Inform the user that we are about to process the request
                 DATAVIEWER.displayStatus("Please wait while processing your request. This might take a while...", "info");
 
-                // Must use global object
-                DATAMODEL.openbisServer.createReportFromAggregationService(
-                    CONFIG['dataStoreServer'], "export_flow_datasets",
-                    parameters, DATAMODEL.processResultsFromExportDatasetsServerSidePlugin);
+                // Call service
+                if (null === DATAMODEL.exportDatasetsService) {
+                    let criteria = new AggregationServiceSearchCriteria();
+                    criteria.withName().thatEquals("export_flow_datasets");
+                    let fetchOptions = new AggregationServiceFetchOptions();
+                    DATAMODEL.openbisV3.searchAggregationServices(criteria, fetchOptions).then(function(result) {
+                        if (undefined === result.objects) {
+                            console.log("Could not retrieve the server-side aggregation service!")
+                            return;
+                        }
+                        DATAMODEL.exportDatasetsService = result.getObjects()[0];
+
+                        // Now call the service
+                        let options = new AggregationServiceExecutionOptions();
+                        for (let key in parameters) {
+                            options.withParameter(key, parameters[key]);
+                        }
+                        DATAMODEL.openbisV3.executeAggregationService(
+                            DATAMODEL.exportDatasetsService.getPermId(),
+                            options).then(function(result) {
+                            DATAMODEL.processResultsFromExportDatasetsServerSidePlugin(result);
+                        });
+                    });
+                } else {
+                    // Call the service
+                    let options = new AggregationServiceExecutionOptions();
+                    for (let k in parameters) {
+                        options.withParameter(k, parameters[k]);
+                    }
+                    DATAMODEL.openbisV3.executeAggregationService(
+                        DATAMODEL.exportDatasetsService.getPermId(),
+                        options).then(function(result) {
+                        DATAMODEL.processResultsFromExportDatasetsServerSidePlugin(result);
+                    });
+                }
             },
 
             /**

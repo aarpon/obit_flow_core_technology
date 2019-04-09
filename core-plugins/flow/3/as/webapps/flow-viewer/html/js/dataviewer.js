@@ -456,7 +456,7 @@ define([], function () {
                 } else if (node.data.type && node.data.type === "tubesets") {
 
                     // If there are no (loaded) children (yet), just return
-                    if (!node.childList || node.childList.length == 0) {
+                    if (!node.childList || node.childList.length === 0) {
                         if (node._isLoading) {
                             this.displayStatus("The actions for this node will be displayed next time you select it.</br />",
                                 "info");
