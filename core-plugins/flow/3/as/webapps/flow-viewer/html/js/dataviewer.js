@@ -131,9 +131,9 @@ define([], function () {
             detailViewSampleName.append($("<h4>").html(node.data.title));
 
             if (node.data.type) {
-                if (node.data.type === "plate_container") {
+                if (node.data.type === "ALL_PLATES") {
                     detailViewSampleID.append($("<p>").html("This is the set of all plates contained in this experiment."));
-                } else if (node.data.type === "tubesets") {
+                } else if (node.data.type === "TUBESET") {
                     detailViewSampleID.append($("<p>").html("This is the virtual set of all tubes contained in this experiment."));
                 } else if (node.data.type === "specimen") {
                     detailViewSampleID.append($("<p>").html("This is a specimen."));
@@ -346,192 +346,246 @@ define([], function () {
             // Get the type and identifier of the element associated to the node.
             // If the node is associated to a specimen, the type and identifier
             // will instead be those of the parent node.
-            let type = "";
-            let identifier = "";
-            let specimenName = "";
-            let experimentId = "";
 
-            // Get element type and code
-            if (node.data.element) {
+            // Prepare the arguments for the service
 
-                type = node.data.element.getType().code;
-                if (node.data.element.identifier) {
-                    identifier = node.data.element.identifier.identifier;
-                } else {
-                    identifier = "";
-                }
-                specimenName = "";
-                experimentId = DATAMODEL.experimentSample.getExperiment().identifier;
+            // Constants
+            const collectionId = DATAMODEL.experimentSample.experiment.getIdentifier().identifier;
+            const collectionType = DATAMODEL.experimentSample.experiment.getType().code;
+            const experimentSampleId = DATAMODEL.experimentSampleId;
+            const experimentSampleType = DATAMODEL.experimentSampleType;
 
-                // // Get type
-                // switch (node.data.element["@type"]) {
-                //     case "Experiment":
-                //         // experimentId = node.data.element.identifier;
-                //         // type = node.data.element.experimentTypeCode;
-                //         // identifier = node.data.element.identifier;
-                //         break;
-                //
-                //     case "Sample":
-                //         // experimentId = node.data.element.experimentIdentifierOrNull;
-                //         // type = node.data.element.sampleTypeCode;
-                //         // identifier = node.data.element.identifier;
-                //         break;
-                //
-                //     case "DataSet":
-                //         // experimentId = node.data.element.experimentIdentifier;
-                //         // type = node.data.element.dataSetTypeCode;
-                //         // identifier = node.data.element.code;
-                //         break;
-                //
-                //     default:
-                //         experimentId = "";
-                //         type = "";
-                //         identifier = "";
-                // }
+            // Variables
+            let entityId = "";
+            let entityType = "";
+            let mode = "";
+            let task = "";
 
+            // Now process the nodes
+            if (node.data.type === "EXPERIMENT_SAMPLE") {
+                task = "EXPERIMENT_SAMPLE";
+                entityId = experimentSampleId;
+                entityType = experimentSampleType;
+            } else if (node.data.type === "ALL_PLATES") {
+                task = "ALL_PLATES";
+                entityId = experimentSampleId;
+                entityType = experimentSampleType;
+            } else if (node.data.type === "PLATE") {
+                task = "PLATE";
+                entityId = node.data.element.getIdentifier().identifier;
+                entityType = node.data.element.getType().code;
+            } else if (node.data.type === "WELL") {
+                task = "WELL";
+                entityId = node.data.element.getIdentifier().identifier;
+                entityType = node.data.element.getType().code;
+            } else if (node.data.type === "TUBESET") {
+                task = "TUBESET";
+                entityId = experimentSampleId;
+                entityType = experimentSampleType;
+            } else if (node.data.type === "TUBE") {
+                task = "TUBE";
+                entityId = node.data.element.getIdentifier().identifier;
+                entityType = node.data.element.getType().code;
+            } else if (node.data.type === "FCS") {
+                task = "FCS";
+                entityId = node.data.element.getPermId().permId;
+                entityType = node.data.element.getType().code;
+            } else if (node.data.type === "SPECIMEN") {
+                task = "SPECIMEN";
+                entityId = node.data.element.getPermId().identifier;
+                entityType = node.data.element.getType().code;
+            } else if (node.data.type === "EMPTY") {
+                // This is a node that does not have children;
+                // for example a place-holder for an experiment
+                // that does not contain any plates. In this case,
+                // no action is shown.
+                return;
             } else {
-
-                if (node.data.type && node.data.type === "specimen") {
-
-                    // Get the specimen name.
-                    specimenName = node.data.title;
-
-                    // In case of a specimen, we filter WELLS or TUBES for the
-                    // associated property {exp_prefix}_SPECIMEN.
-                    // We must treat the two cases differently, though.
-                    //
-                    // In the case of wells, we can make use of the fact that
-                    // wells are contained in a plate. So we can use the plate
-                    // identifier to get the wells, and then filter them by
-                    // specimen.
-                    //
-                    // In the case of tubes, they do not have a parent, so we
-                    // simply need to get all tubes in the experiment and check
-                    // that their {exp_prefix}_SPECIMEN property matches the
-                    // given specimen.
-
-                    // Do we have a parent?
-                    if (node.parent && node.parent.data && node.parent.data.element) {
-
-                        // Reference
-                        let parent = node.parent;
-
-                        if (parent.data.element["@type"] === "Sample" &&
-                            parent.data.element.sampleTypeCode === (DATAMODEL.EXPERIMENT_PREFIX + "_PLATE")) {
-
-                            // Type
-                            type = DATAMODEL.EXPERIMENT_PREFIX + "_PLATE";
-
-                            // Get plate's identifier
-                            identifier = parent.data.element.identifier;
-
-                            // Experiment ID
-                            experimentId = parent.data.element.experimentIdentifierOrNull;
-
-                        }
-
-                    } else {
-
-                        // We set the parent to point to the experiment
-                        type = DATAMODEL.EXPERIMENT_PREFIX + "_TUBESET";
-
-                        // Walk up the tree until we reach the experiment
-                        while (node.parent) {
-                            node = node.parent;
-                            if (node.data.element &&
-                                node.data.element["@type"] === "Experiment") {
-                                identifier = node.data.element.identifier;
-                                break;
-                            }
-                        }
-
-                        // Experiment ID (same as identifier)
-                        experimentId = identifier;
-
-                    }
-
-                } else if (node.data.type && node.data.type === "tubesets") {
-
-                    // If there are no (loaded) children (yet), just return
-                    if (!node.childList || node.childList.length === 0) {
-                        if (node._isLoading) {
-                            this.displayStatus("The actions for this node will be displayed next time you select it.</br />",
-                                "info");
-                        }
-                        return;
-                    }
-
-                    // Do we have real samples?
-                    if (node.childList.length === 1 &&
-                        node.childList[0].data &&
-                        node.childList[0].data.icon === "empty.png" &&
-                        node.childList[0].data.title === "<i>None</i>" != -1) {
-                        return;
-                    }
-
-                    // This is the same as the tubeset case before, but without
-                    // filtering by the specimen
-
-                    // Empty specimen
-                    specimenName = "";
-
-                    // Tubeset
-                    type = DATAMODEL.EXPERIMENT_PREFIX + "_TUBESET";
-
-                    // Walk up the tree until we reach the experiment
-                    while (node.parent) {
-                        node = node.parent;
-                        if (node.data.element &&
-                            node.data.element["@type"] === "Experiment") {
-                            identifier = node.data.element.identifier;
-                            break;
-                        }
-                    }
-
-                    // Experiment ID (same as identifier)
-                    experimentId = identifier;
-
-                } else if (node.data.type && node.data.type === "plate_container") {
-
-                    // If there are no (loaded) children (yet), just return
-                    if (!node.childList || node.childList.length === 0) {
-                        if (node._isLoading) {
-                            this.displayStatus("The actions for this node will be displayed next time you select it.</br />",
-                                "info");
-                        }
-                        return;
-                    }
-
-                    // Do we have real samples?
-                    if (node.childList.length === 1 &&
-                        node.childList[0].data &&
-                        node.childList[0].data.icon === "empty.png" &&
-                        node.childList[0].data.title === "<i>None</i>" != -1) {
-                        return;
-                    }
-
-                    // Empty specimen
-                    specimenName = "";
-
-                    // All plates in the experiment
-                    type = DATAMODEL.EXPERIMENT_PREFIX + "_ALL_PLATES";
-
-                    // Walk up the tree until we reach the experiment
-                    while (node.parent) {
-                        node = node.parent;
-                        if (node.data.element &&
-                            node.data.element["@type"] === "Experiment") {
-                            identifier = node.data.element.identifier;
-                            break;
-                        }
-                    }
-
-                    // Experiment ID (same as identifier)
-                    experimentId = identifier;
-
-                }
-
+                console.log('Unexpected node type!');
+                return;
             }
+
+            // // Get element type and code
+            // if (node.data.element) {
+            //
+            //     entityType = node.data.element.getType().code;
+            //     if (node.data.element.identifier) {
+            //         entityIdentifier = node.data.element.identifier.identifier;
+            //     } else {
+            //         entityIdentifier = "";
+            //     }
+            //     specimenName = "";
+            //     collectionId = DATAMODEL.experimentSample.getExperiment().identifier.identifier;
+            //
+            //     // // Get type
+            //     // switch (node.data.element["@type"]) {
+            //     //     case "Experiment":
+            //     //         // experimentId = node.data.element.identifier;
+            //     //         // type = node.data.element.experimentTypeCode;
+            //     //         // identifier = node.data.element.identifier;
+            //     //         break;
+            //     //
+            //     //     case "Sample":
+            //     //         // experimentId = node.data.element.experimentIdentifierOrNull;
+            //     //         // type = node.data.element.sampleTypeCode;
+            //     //         // identifier = node.data.element.identifier;
+            //     //         break;
+            //     //
+            //     //     case "DataSet":
+            //     //         // experimentId = node.data.element.experimentIdentifier;
+            //     //         // type = node.data.element.dataSetTypeCode;
+            //     //         // identifier = node.data.element.code;
+            //     //         break;
+            //     //
+            //     //     default:
+            //     //         experimentId = "";
+            //     //         type = "";
+            //     //         identifier = "";
+            //     // }
+            //
+            // } else {
+            //
+            //     if (node.data.type && node.data.type === "specimen") {
+            //
+            //         // Get the specimen name.
+            //         specimenName = node.data.title;
+            //
+            //         // In case of a specimen, we filter WELLS or TUBES for the
+            //         // associated property {exp_prefix}_SPECIMEN.
+            //         // We must treat the two cases differently, though.
+            //         //
+            //         // In the case of wells, we can make use of the fact that
+            //         // wells are contained in a plate. So we can use the plate
+            //         // identifier to get the wells, and then filter them by
+            //         // specimen.
+            //         //
+            //         // In the case of tubes, they do not have a parent, so we
+            //         // simply need to get all tubes in the experiment and check
+            //         // that their {exp_prefix}_SPECIMEN property matches the
+            //         // given specimen.
+            //
+            //         // Do we have a parent?
+            //         if (node.parent && node.parent.data && node.parent.data.element) {
+            //
+            //             // Reference
+            //             let parent = node.parent;
+            //
+            //             if (parent.data.element["@type"] === "Sample" &&
+            //                 parent.data.element.sampleTypeCode === (DATAMODEL.EXPERIMENT_PREFIX + "_PLATE")) {
+            //
+            //                 // Type
+            //                 entityType = DATAMODEL.EXPERIMENT_PREFIX + "_PLATE";
+            //
+            //                 // Get plate's identifier
+            //                 entityIdentifier = parent.data.element.identifier;
+            //
+            //                 // Experiment ID
+            //                 collectionId = parent.data.element.experimentIdentifierOrNull;
+            //
+            //             }
+            //
+            //         } else {
+            //
+            //             // We set the parent to point to the experiment
+            //             entityType = DATAMODEL.EXPERIMENT_PREFIX + "_TUBESET";
+            //
+            //             // Walk up the tree until we reach the experiment
+            //             while (node.parent) {
+            //                 node = node.parent;
+            //                 if (node.data.element &&
+            //                     node.data.element["@type"] === "Experiment") {
+            //                     entityIdentifier = node.data.element.identifier;
+            //                     break;
+            //                 }
+            //             }
+            //
+            //             // Experiment ID (same as identifier)
+            //             collectionId = identifier;
+            //
+            //         }
+            //
+            //     } else if (node.data.type && node.data.type === "TUBESET") {
+            //
+            //         // If there are no (loaded) children (yet), just return
+            //         if (!node.childList || node.childList.length === 0) {
+            //             if (node._isLoading) {
+            //                 this.displayStatus("The actions for this node will be displayed next time you select it.</br />",
+            //                     "info");
+            //             }
+            //             return;
+            //         }
+            //
+            //         // Do we have real samples?
+            //         if (node.childList.length === 1 &&
+            //             node.childList[0].data &&
+            //             node.childList[0].data.icon === "empty.png" &&
+            //             node.childList[0].data.title === "<i>None</i>" != -1) {
+            //             return;
+            //         }
+            //
+            //         // This is the same as the tubeset case before, but without
+            //         // filtering by the specimen
+            //
+            //         // Empty specimen
+            //         specimenName = "";
+            //
+            //         // Tubeset
+            //         entityType = DATAMODEL.EXPERIMENT_PREFIX + "_TUBESET";
+            //
+            //         // Walk up the tree until we reach the experiment
+            //         while (node.parent) {
+            //             node = node.parent;
+            //             if (node.data.element &&
+            //                 node.data.element["@type"] === "Experiment") {
+            //                 entityIdentifier = node.data.element.identifier;
+            //                 break;
+            //             }
+            //         }
+            //
+            //         // Experiment ID (same as identifier)
+            //         collectionId = entityIdentifier;
+            //
+            //     } else if (node.data.type && node.data.type === "ALL_PLATES") {
+            //
+            //         // If there are no (loaded) children (yet), just return
+            //         if (!node.childList || node.childList.length === 0) {
+            //             if (node._isLoading) {
+            //                 this.displayStatus("The actions for this node will be displayed next time you select it.</br />",
+            //                     "info");
+            //             }
+            //             return;
+            //         }
+            //
+            //         // Do we have real samples?
+            //         if (node.childList.length === 1 &&
+            //             node.childList[0].data &&
+            //             node.childList[0].data.icon === "empty.png" &&
+            //             node.childList[0].data.title === "<i>None</i>" != -1) {
+            //             return;
+            //         }
+            //
+            //         // Empty specimen
+            //         specimenName = "";
+            //
+            //         // All plates in the experiment
+            //         entityType = DATAMODEL.EXPERIMENT_PREFIX + "_ALL_PLATES";
+            //
+            //         // Walk up the tree until we reach the experiment
+            //         while (node.parent) {
+            //             node = node.parent;
+            //             if (node.data.element &&
+            //                 node.data.element["@type"] === "Experiment") {
+            //                 entityIdentifier = node.data.element.identifier;
+            //                 break;
+            //             }
+            //         }
+            //
+            //         // Experiment ID (same as identifier)
+            //         collectionId = entityIdentifier;
+            //
+            //     }
+            //
+            // }
 
             let img = null;
             let link = null;
@@ -557,8 +611,9 @@ define([], function () {
                     .attr("title", "")
                     .click(function () {
                         DATAMODEL.callServerSidePluginExportDataSets(
-                            experimentId, DATAMODEL.experimentType,
-                            type, identifier, specimenName, "normal");
+                            task, collectionId, collectionType,
+                            experimentSampleId, experimentSampleType,
+                            entityId, entityType, "normal");
                         return false;
                     });
 
@@ -586,8 +641,9 @@ define([], function () {
                     })
                 .click(function () {
                     DATAMODEL.callServerSidePluginExportDataSets(
-                        experimentId, DATAMODEL.experimentType,
-                        type, identifier, specimenName, "zip");
+                        task, collectionId, collectionType,
+                        experimentSampleId, experimentSampleType,
+                        entityId, entityType, "zip");
                     return false;
                 });
 

@@ -118,14 +118,14 @@ define(["openbis",
              * @param result  Array of objects to be added to the tree model.
              * @param node    The parent DynaTree node
              */
-            addToTreeModel: function (result, node) {
+            addToTreeModel: function (result, parentNode) {
 
                 // Alias
                 const dataModelObj = this;
 
                 // Server returned an error condition: set node status accordingly
                 if (result == null || result.hasOwnProperty("error")) {
-                    node.setLazyNodeStatus(DTNodeStatus_Error,
+                    parentNode.setLazyNodeStatus(DTNodeStatus_Error,
                         {
                             tooltip: response.error.data.exceptionTypeName,
                             info: "Error retrieving information."
@@ -137,17 +137,18 @@ define(["openbis",
                 if (result.length === 0) {
 
                     // PWS status OK
-                    node.setLazyNodeStatus(DTNodeStatus_Ok);
+                    parentNode.setLazyNodeStatus(DTNodeStatus_Ok);
 
                     // Customize the node
-                    if (node && node.data && node.data.type &&
-                        (node.data.type === "plate_container" || node.data.type === "tubesets")) {
-                        node.addChild({
+                    if (parentNode && parentNode.data && parentNode.data.type &&
+                        (parentNode.data.type === "ALL_PLATES" || parentNode.data.type === "TUBESET")) {
+                        parentNode.addChild({
                             title: "<i>none</i>",
                             icon: "empty.png",
                             isFolder: false,
                             isLazy: false,
-                            unselectable: true
+                            unselectable: true,
+                            type: "EMPTY"
                         });
                     }
                     return;
@@ -181,8 +182,8 @@ define(["openbis",
                                 icon: "plate.png",
                                 isFolder: true,
                                 isLazy: true,
-                                expCode: node.data.expCode,
-                                type: "wells",
+                                expCode: parentNode.data.expCode,
+                                type: "PLATE",
                                 element: sample
                             });
                             break;
@@ -225,8 +226,8 @@ define(["openbis",
                                     icon: "specimen.png",
                                     isFolder: true,
                                     isLazy: false,
-                                    expCode: node.data.expCode,
-                                    type: "specimen",
+                                    expCode: parentNode.data.expCode,
+                                    type: "SPECIMEN",
                                     element: null,
                                     children: []
                                 };
@@ -245,8 +246,8 @@ define(["openbis",
                                 icon: "well.png",
                                 isFolder: true,
                                 isLazy: true,
-                                expCode: node.data.expCode,
-                                type: "fcs",
+                                expCode: parentNode.data.expCode,
+                                type: "WELL",
                                 element: sample
                             };
 
@@ -303,8 +304,8 @@ define(["openbis",
                                     icon: "specimen.png",
                                     isFolder: true,
                                     isLazy: false,
-                                    expCode: node.data.expCode,
-                                    type: "specimen",
+                                    expCode: parentNode.data.expCode,
+                                    type: "SPECIMEN",
                                     element: null,
                                     children: []
                                 };
@@ -323,8 +324,8 @@ define(["openbis",
                                 icon: "tube.png",
                                 isFolder: true,
                                 isLazy: true,
-                                expCode: node.data.expCode,
-                                type: "fcs",
+                                expCode: parentNode.data.expCode,
+                                type: "TUBE",
                                 element: sample
                             };
 
@@ -346,8 +347,8 @@ define(["openbis",
                                 icon: "fcs.png",
                                 isFolder: false,
                                 isLazy: false,
-                                expCode: node.data.expCode,
-                                type: "leaf",
+                                expCode: parentNode.data.expCode,
+                                type: "FCS",
                                 element: sample
                             });
                             break;
@@ -355,7 +356,7 @@ define(["openbis",
                         default:
 
                             // Unexpected sample type!
-                            node.setLazyNodeStatus(DTNodeStatus_Error,
+                            parentNode.setLazyNodeStatus(DTNodeStatus_Error,
                                 {
                                     tooltip: elementType,
                                     info: "Unexpected element type!"
@@ -367,11 +368,11 @@ define(["openbis",
                 });
 
                 // PWS status OK
-                node.setLazyNodeStatus(DTNodeStatus_Ok);
-                node.addChild(res);
+                parentNode.setLazyNodeStatus(DTNodeStatus_Ok);
+                parentNode.addChild(res);
 
                 // Natural-sort children nodes
-                node.sortChildren(this.customSort, true);
+                parentNode.sortChildren(this.customSort, true);
             },
 
             /**
@@ -393,22 +394,34 @@ define(["openbis",
             /**
              * Call an aggregation plug-in to copy the datasets associated to selected
              * node to the user folder.
-             * @param experimentId string Experiment identifier
-             * @param experimentType string Type of the experiment (LSR_FORTESSA_EXPERIMENT or FACS_ARIA_EXPERIMENT)
-             * @param type string Type of the element to process
-             * @param identifier string Identified of the element to process
-             * @param specimen string Specimen name or ""
+             * @param task Helper argument to define what to export. One of:
+             *             EXPERIMENT_SAMPLE,  ALL_PLATES, PLATE, WELL, TUBESET, TUBE, SPECIMEN, FCS
+             * @param collectionId string Collection identifier
+             * @param collectionType string Collection type
+             * @param experimentSampleId string Identifier of the experiment (sample)
+             * @param experimentSampleType string Type of the experiment (sample)
+             * @param entityId string Identifier of the element to process
+             * @param entityType string Type of the element to process
              * @param mode string One of "normal" or "zip"
              */
-            callServerSidePluginExportDataSets: function (experimentId, experimentType, type, identifier, specimen, mode) {
+            callServerSidePluginExportDataSets: function (task,
+                                                          collectionId,
+                                                          collectionType,
+                                                          experimentSampleId,
+                                                          experimentSampleType,
+                                                          entityId,
+                                                          entityType,
+                                                          mode) {
 
                 // Parameters for the aggregation service
                 let parameters = {
-                    experimentId: experimentId,
-                    experimentType: experimentType,
-                    entityType: type,
-                    entityId: identifier,
-                    specimen: specimen,
+                    task: task,
+                    collectionId: collectionId,
+                    collectionType: collectionType,
+                    expSampleId: experimentSampleId,
+                    expSampleType: experimentSampleType,
+                    entityId: entityId,
+                    entityType: entityType,
                     mode: mode
                 };
 
@@ -588,26 +601,32 @@ define(["openbis",
                 switch (node.data.type) {
 
                     // Extract and display the plates
-                    case "plate_container":
+                    case "ALL_PLATES":
                         this.getPlates(node);
                         break;
 
                     // Extract and display the tubes
                     // (and corresponding specimens)
-                    case "tubesets":
+                    case "TUBESET":
                         this.getTubes(node);
                         break;
 
                     // Extract and display the wells in current plate
                     // (and corresponding specimens)
-                    case "wells":
+                    case "PLATE":
 
                         this.getWells(node);
                         break;
 
                     // Extract and displays dataset and FCS file
-                    // associated to either a well or a tube
-                    case "fcs":
+                    // associated to a well
+                    case "WELL":
+                        this.getDataSets(node);
+                        break;
+
+                    // Extract and displays dataset and FCS file
+                    // associated to a tube
+                    case "TUBE":
                         this.getDataSets(node);
                         break;
 
@@ -741,6 +760,7 @@ define(["openbis",
                 fetchOptions.withProperties();
                 fetchOptions.withDataSets().withType();
                 fetchOptions.withExperiment();
+                fetchOptions.withExperiment().withType();
 
                 let parentFetchOptions = new SampleFetchOptions();
                 parentFetchOptions.withType();
@@ -867,7 +887,7 @@ define(["openbis",
 
             /**
              * Get the Plates for current experiment
-             * @param node Plate_container node to which the Plates are to be added.
+             * @param node ALL_PLATES node to which the Plates are to be added.
              */
             getPlates: function (node) {
 
@@ -1024,29 +1044,29 @@ define(["openbis",
                             isFolder: true,
                             isLazy: true,
                             expCode: dataModelObj.experimentSample.code,
-                            type: 'plate_container'
+                            type: 'ALL_PLATES'
                         },
                         {
-                            title: "Tubesets",
+                            title: "Tubes",
                             element: null,
                             icon: "folder.png",
                             isFolder: true,
                             isLazy: true,
                             expCode: dataModelObj.experimentSample.code,
-                            type: 'tubesets'
+                            type: 'TUBESET'
                         }];
 
                 } else {
 
                     first_level_children = [
                         {
-                            title: "Tubesets",
+                            title: "Tubes",
                             element: null,
                             icon: "folder.png",
                             isFolder: true,
                             isLazy: true,
                             expCode: dataModelObj.experimentSample.code,
-                            type: 'tubesets'
+                            type: 'TUBESET'
                         }];
                 }
 
@@ -1077,6 +1097,7 @@ define(["openbis",
                                 title: dataModelObj.expName,
                                 expCode: dataModelObj.experimentSample.code,
                                 element: dataModelObj.experimentSample,
+                                type: "EXPERIMENT_SAMPLE",
                                 icon: "experiment.png",
                                 isFolder: true,
                                 isLazy: false,
