@@ -116,7 +116,7 @@ define(["openbis",
              * used with DynaTree
              *
              * @param result  Array of objects to be added to the tree model.
-             * @param node    The parent DynaTree node
+             * @param parentNode    The parent DynaTree node
              */
             addToTreeModel: function (result, parentNode) {
 
@@ -395,7 +395,7 @@ define(["openbis",
              * Call an aggregation plug-in to copy the datasets associated to selected
              * node to the user folder.
              * @param task Helper argument to define what to export. One of:
-             *             EXPERIMENT_SAMPLE,  ALL_PLATES, PLATE, WELL, TUBESET, TUBE, SPECIMEN, FCS
+             *             EXPERIMENT_SAMPLE,  ALL_PLATES, PLATE, ALL_TUBES
              * @param collectionId string Collection identifier
              * @param collectionType string Collection type
              * @param experimentSampleId string Identifier of the experiment (sample)
@@ -409,8 +409,8 @@ define(["openbis",
                                                           collectionType,
                                                           experimentSampleId,
                                                           experimentSampleType,
-                                                          entityId,
-                                                          entityType,
+                                                          plateId,
+                                                          plateType,
                                                           mode) {
 
                 // Parameters for the aggregation service
@@ -420,8 +420,8 @@ define(["openbis",
                     collectionType: collectionType,
                     expSampleId: experimentSampleId,
                     expSampleType: experimentSampleType,
-                    entityId: entityId,
-                    entityType: entityType,
+                    plateId: plateId,
+                    plateType: plateType,
                     mode: mode
                 };
 
@@ -1085,6 +1085,10 @@ define(["openbis",
                         },
                         debugLevel: 0,
                         onActivate: function (node) {
+                            // Display
+                            DATAVIEWER.displayDetailsAndActions(node);
+                        },
+                        onSelect: function (node) {
                             // Display
                             DATAVIEWER.displayDetailsAndActions(node);
                         },
