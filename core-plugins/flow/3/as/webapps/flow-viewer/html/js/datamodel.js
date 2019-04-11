@@ -1213,7 +1213,7 @@ define(["openbis",
                             let downloadUrl = encodeURI(
                                 dssUrl + "/datastore_server/session_workspace_file_download?" +
                                 "sessionID=" + DATAMODEL.openbisV3.getWebAppContext().sessionId + "&filePath=" +
-                                r_RelativeExpFolder);
+                                r_ZipArchiveFileName);
 
                             let downloadString =
                                 '<img src="img/download.png" heigth="32" width="32"/>&nbsp;<a href="' +
