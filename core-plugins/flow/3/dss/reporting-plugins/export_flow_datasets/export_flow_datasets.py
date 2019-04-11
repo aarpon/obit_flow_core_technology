@@ -181,8 +181,14 @@ class Mover():
         # Set all relevant entity types for current experiment type
         self._expSamplePrefix = self._expSampleType[0:self._expSampleType.find("_EXPERIMENT")]
 
+        # Original experiment (sample) name
+        originalExperimentSampleName = self._experimentSample.getPropertyValue("$NAME")
+
         # Experiment sample name (to be used in the output folder)
-        self._experimentSampleName = self._expSampleId[self._expSampleId.rfind("/") + 1:]
+        self._experimentSampleName = self._expSampleId[self._expSampleId.rfind("/") + 1:] + \
+            "/" + originalExperimentSampleName
+
+        self._logger.info("Experiment name: " + self._experimentSampleName)
 
         # Collection name (to be used in the output folder)
         self._collectionName = self._collectionId[self._collectionId.rfind("/") + 1:]
