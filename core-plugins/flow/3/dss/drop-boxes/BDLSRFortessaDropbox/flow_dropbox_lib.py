@@ -108,7 +108,17 @@ def _formatExpDateForPostgreSQL(expDate):
                    'SEP': '09', 'OCT': '10', 'NOV': '11', 'DEC': '12'}
 
     # Separate the date into day, month, and year
-    day, month, year = expDate.split("-")
+    tryOtherFormat = False
+    try:
+        day, month, year = expDate.split("-")
+    except ValueError:
+        tryOtherFormat = True
+
+    if tryOtherFormat:
+        try:
+            day, month, year = expDate.split(" ")
+        except ValueError:
+            month = -1
 
     # Try mapping the month to digits (e.g. "06"). If the mapping does
     # not work, return "NOT_FOUND"
