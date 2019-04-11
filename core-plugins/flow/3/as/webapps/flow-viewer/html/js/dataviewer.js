@@ -143,7 +143,7 @@ define([], function () {
                     detailViewSampleID
                         .append($("<p>")
                             .html("This is the virtual set of all tubes contained in this experiment."));
-                } else if (node.data.type === "specimen") {
+                } else if (node.data.type === "SPECIMEN") {
                     detailViewSampleID
                         .append($("<p>")
                             .html("This is a specimen."));
@@ -175,13 +175,7 @@ define([], function () {
                 detailViewSampleID.append($("<p>").html("This plate has geometry " +
                     node.data.element.properties[DATAMODEL.EXPERIMENT_PREFIX + "_PLATE_GEOMETRY"] + "."));
 
-            } else if (node.data.element.getType().code === "FACS_ARIA_WELL" ||
-                node.data.element.getType().code === "FACS_ARIA_TUBE" ||
-                node.data.element.getType().code === "INFLUX_TUBE" ||
-                node.data.element.getType().code === "S3E_TUBE" ||
-                node.data.element.getType().code === "MOFLO_XDP_TUBE") {
-
-                // This code is specific for the BD FACS ARIA sorter and BD Influx Cell Sorter
+            } else if (node.data.element.getType().code.endsWith("_TUBE")) {
 
                 let sortType = "This is a standard sort.";
                 if (node.data.element.properties[node.data.element.getType().code + "_ISINDEXSORT"] === "true") {
