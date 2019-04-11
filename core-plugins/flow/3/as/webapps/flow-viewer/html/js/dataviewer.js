@@ -650,7 +650,7 @@ define([], function () {
             let detailViewSampleID = $("#detailViewSample");
 
             // Check that the parameter info is present
-            if (node.data.parameterInfo) {
+            if (! node.data.parameterInfo) {
 
                 // Display a button to trigger experiment update
                 let updateButton = $("<input>")
