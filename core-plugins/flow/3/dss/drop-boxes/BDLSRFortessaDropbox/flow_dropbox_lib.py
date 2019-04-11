@@ -934,7 +934,7 @@ def _register_single(tree, transaction, prefix, version, logger):
                         raise Exception(msg)
 
                     # Now we process the Specimen node
-                    specimenNameProperty = experimentChildNode.attrib.get("name")
+                    specimenNameProperty = specimenNode.attrib.get("name")
                     openBISSpecimenSample = _processSpecimenNode(experimentChildNode,
                                                                 transaction,
                                                                 openBISCollection,
