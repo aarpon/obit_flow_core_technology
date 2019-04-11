@@ -16,7 +16,7 @@ def process(transaction):
     #
     # Run registration
     #
-    prefix = "MoFlo_XDP"
+    prefix = "MOFLO_XDP"
     version = 2
     logger = setup_logger("../core-plugins/flow/3/dss/drop-boxes/BCMoFloXDPDropbox/logs", prefix)
     register(transaction, prefix, version, logger)
