@@ -555,7 +555,7 @@ define(["openbis",
              * Update an outdated experiment.
              * @param expPermId string Experiment perm identifier.
              */
-            callServerSidePluginUpgradeExperiment: function (expPermId) {
+            callServerSidePluginUpgradeExperiment: function (collectionPermId, expSamplePermId) {
 
                 // Retrieve the service if necessary
                 if (null === DATAMODEL.upgradeExperimentService) {
@@ -571,7 +571,8 @@ define(["openbis",
 
                         // Now call the service
                         let options = new AggregationServiceExecutionOptions();
-                        options.withParameter("expPermId", expPermId);
+                        options.withParameter("collectionPermId", collectionPermId);
+                        options.withParameter("expSamplePermId", expSamplePermId);
                         DATAMODEL.openbisV3.executeAggregationService(
                             DATAMODEL.upgradeExperimentService.getPermId(),
                             options).then(function(result) {
@@ -581,7 +582,8 @@ define(["openbis",
                 } else {
                     // Call the service
                     let options = new AggregationServiceExecutionOptions();
-                    options.withParameter("expPermId", expPermId);
+                    options.withParameter("collectionPermId", collectionPermId);
+                    options.withParameter("expSamplePermId", expSamplePermId);
                     DATAMODEL.openbisV3.executeAggregationService(
                         DATAMODEL.upgradeExperimentService.getPermId(),
                         options).then(function(result) {

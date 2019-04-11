@@ -82,7 +82,11 @@ define([], function () {
             }
 
             // Link to the data-sets tab
-            let link = $("<a>").text(text).attr("href", "#").attr("title", text).click(
+            let link = $("<a>")
+                .text(text)
+                .attr("href", "#")
+                .attr("title", text)
+                .click(
                 function () {
                     let url = "#entity=SAMPLE&permId=" + experimentSample.permId +
                         "&ui-subtab=data-sets-section&ui-timestamp=" + (new Date().getTime());
@@ -132,11 +136,17 @@ define([], function () {
 
             if (node.data.type) {
                 if (node.data.type === "ALL_PLATES") {
-                    detailViewSampleID.append($("<p>").html("This is the set of all plates contained in this experiment."));
+                    detailViewSampleID
+                        .append($("<p>")
+                            .html("This is the set of all plates contained in this experiment."));
                 } else if (node.data.type === "TUBESET") {
-                    detailViewSampleID.append($("<p>").html("This is the virtual set of all tubes contained in this experiment."));
+                    detailViewSampleID
+                        .append($("<p>")
+                            .html("This is the virtual set of all tubes contained in this experiment."));
                 } else if (node.data.type === "specimen") {
-                    detailViewSampleID.append($("<p>").html("This is a specimen."));
+                    detailViewSampleID
+                        .append($("<p>")
+                            .html("This is a specimen."));
                 } else {
                     // Ignore
                 }
@@ -268,27 +278,6 @@ define([], function () {
             // Prepare title
             let titleId = $("<h2>").html(experimentSample.properties["$NAME"]);
 
-            // check that the experiment is at the latest version
-            if (!experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_VERSION"] ||
-                experimentSample.properties[DATAMODEL.EXPERIMENT_PREFIX + "_EXPERIMENT_VERSION"] < DATAMODEL.EXPERIMENT_LATEST_VERSION) {
-
-                // Prepend "Upgrade" button
-                let updateButton = $("<input>")
-                    .attr("type", "button")
-                    .attr("value", "Upgrade")
-                    .addClass("upgradeButton")
-                    .click(function () {
-
-                        // Disable the Upgrade button
-                        $(this).prop("disabled", true);
-
-                        // Call the server-side plug-in
-                        DATAMODEL.callServerSidePluginUpgradeExperiment(DATAMODEL.exp.permId);
-                    });
-                titleId.prepend(updateButton);
-
-            }
-
             experimentNameView_div.append(titleId);
 
             // Display the experiment info
@@ -357,7 +346,6 @@ define([], function () {
             // Variables
             let plateId = "";
             let plateType = "";
-            let mode = "";
             let task = "";
 
             // Now process the nodes. Only some will have an
@@ -658,13 +646,33 @@ define([], function () {
          */
         renderParameterSelectionForm: function(node) {
 
+            // Get details div
+            let detailViewSampleID = $("#detailViewSample");
+
             // Check that the parameter info is present
-            if (!node.data.parameterInfo) {
+            if (node.data.parameterInfo) {
+
+                // Display a button to trigger experiment update
+                let updateButton = $("<input>")
+                    .attr("type", "button")
+                    .attr("value", "Upgrade experiment")
+                    .addClass("upgradeButton")
+                    .click(function () {
+
+                        // Disable the Upgrade button
+                        $(this).prop("disabled", true);
+                        $(this).attr("value", "Please wait: the page will reload automatically")
+
+                        // Call the server-side plug-in
+                        DATAMODEL.callServerSidePluginUpgradeExperiment(
+                            DATAMODEL.experimentSample.experiment.permId.permId,
+                            DATAMODEL.experimentSample.permId.permId);
+                    });
+                    detailViewSampleID.empty();
+                    detailViewSampleID.append(updateButton);
+
                 return;
             }
-
-            // Update details
-            let detailViewSampleID = $("#detailViewSample");
 
             detailViewSampleID.append($("<p>").html("This file contains " +
                 node.data.parameterInfo.numParameters + " parameters and " +
