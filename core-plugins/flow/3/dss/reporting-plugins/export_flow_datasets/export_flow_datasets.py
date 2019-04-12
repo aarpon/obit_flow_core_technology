@@ -23,7 +23,7 @@ from threading import Thread
 import logging
 from __builtin__ import True, None
 
-_DEBUG = True
+_DEBUG = False
 
 
 def touch(full_file):
