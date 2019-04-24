@@ -188,6 +188,7 @@ class Mover():
         self._experimentSampleName = self._expSampleId[self._expSampleId.rfind("/") + 1:] + \
             "/" + originalExperimentSampleName
 
+        # Inform
         self._logger.info("Experiment name: " + self._experimentSampleName)
 
         # Collection name (to be used in the output folder)
