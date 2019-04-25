@@ -866,7 +866,7 @@ define(["openbis",
                                     dataset.filename = filename;
 
                                     // Build the download URL
-                                    let url = f.getDataStore().getDownloadUrl() + "datastore_server/" +
+                                    let url = f.getDataStore().getDownloadUrl() + "/datastore_server/" +
                                         f.permId.dataSetId.permId + "/" + f.getPath() + "?sessionID=" +
                                         dataModelObj.openbisV3.getWebAppContext().sessionId;
 
