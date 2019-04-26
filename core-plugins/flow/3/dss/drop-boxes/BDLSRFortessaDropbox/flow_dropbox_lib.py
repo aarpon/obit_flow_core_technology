@@ -467,6 +467,9 @@ def _processTrayNode(trayNode,
     # Set the plate name
     openBISTray.setPropertyValue(openBISTraySampleType + "_NAME", name)
 
+    # Set the $NAME property to be compatible with ELN
+    openBISTray.setPropertyValue("$NAME", name)
+
     # Set the tray geometry
     openBISTray.setPropertyValue(openBISTraySampleType + "_GEOMETRY", trayGeometry)
 
@@ -531,6 +534,9 @@ def _processTube(tubeNode,
 
     # Set the name property
     openBISTube.setPropertyValue(openBISTubeSampleType + "_NAME", name)
+
+    # Set the $NAME property to be compatible with ELN
+    openBISTube.setPropertyValue("$NAME", name)
 
     # Does the tube have an "indexSort" attribute?
     if _supportIndexSorting(openBISTubeSampleType):
@@ -668,6 +674,9 @@ def _processWell(wellNode,
 
     # Set the name property
     openBISWell.setPropertyValue(openBISWellSampleType + "_NAME", name)
+
+    # Set the $NAME property to be compatible with ELN
+    openBISWell.setPropertyValue("$NAME", name)
 
     # Set the parents
     openBISWell.setParentSampleIdentifiers([
