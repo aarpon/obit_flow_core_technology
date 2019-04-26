@@ -756,7 +756,7 @@ define(["openbis",
                 // Search for the sample of type and given perm id
                 let criteria = new SampleSearchCriteria();
                 criteria.withType().withCode().thatEquals(this.experimentSampleType);
-                criteria.withCode().thatEquals(this.experimentSampleId);
+                criteria.withIdentifier().thatEquals(this.experimentSampleId);
                 let fetchOptions = new SampleFetchOptions();
                 fetchOptions.withType();
                 fetchOptions.withProperties();
@@ -902,7 +902,7 @@ define(["openbis",
                 // Search for the sample of type {...}_TUBESET and given perm id
                 let criteria = new SampleSearchCriteria();
                 criteria.withType().withCode().thatEquals(plateSampleType);
-                criteria.withParents().withCode().thatEquals(this.experimentSampleId);
+                criteria.withParents().withPermId().thatEquals(this.experimentSample.permId.permId);
                 criteria.withParents().withType().withCode().thatEquals(this.experimentSampleType);
 
                 let fetchOptions = new SampleFetchOptions();
@@ -942,7 +942,7 @@ define(["openbis",
                 // Search for the sample of type {...}_TUBESET and given perm id
                 let criteria = new SampleSearchCriteria();
                 criteria.withType().withCode().thatEquals(tubesetSampleType);
-                criteria.withParents().withCode().thatEquals(this.experimentSampleId);
+                criteria.withParents().withPermId().thatEquals(this.experimentSample.permId.permId);
                 criteria.withParents().withType().withCode().thatEquals(this.experimentSampleType);
 
                 let fetchOptions = new SampleFetchOptions();
