@@ -1067,6 +1067,13 @@ assignment_SAMPLE_FACS_ARIA_SPECIMEN_ANNOTATIONS_STATE.setSection('General Info'
 assignment_SAMPLE_FACS_ARIA_SPECIMEN_ANNOTATIONS_STATE.setPositionInForms(2)
 assignment_SAMPLE_FACS_ARIA_SPECIMEN_ANNOTATIONS_STATE.setShownEdit(False)
 
+# SAMPLE_FACS_ARIA_TUBE_NAME
+assignment_SAMPLE_FACS_ARIA_TUBE_NAME = tr.assignPropertyType(samp_type_FACS_ARIA_TUBE, prop_type_NAME)
+assignment_SAMPLE_FACS_ARIA_TUBE_NAME.setMandatory(False)
+assignment_SAMPLE_FACS_ARIA_TUBE_NAME.setSection('General Info')
+assignment_SAMPLE_FACS_ARIA_TUBE_NAME.setPositionInForms(1)
+assignment_SAMPLE_FACS_ARIA_TUBE_NAME.setShownEdit(True)
+
 # SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_TUBE_NAME
 assignment_SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_TUBE_NAME = tr.assignPropertyType(samp_type_FACS_ARIA_TUBE,
                                                                              prop_type_FACS_ARIA_TUBE_NAME)
@@ -1204,6 +1211,13 @@ assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_NAME.setSection(None)
 assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_NAME.setPositionInForms(3)
 assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_NAME.setShownEdit(False)
 
+# SAMPLE_INFLUX_TUBE_NAME
+assignment_SAMPLE_INFLUX_TUBE_NAME = tr.assignPropertyType(samp_type_INFLUX_TUBE, prop_type_NAME)
+assignment_SAMPLE_INFLUX_TUBE_NAME.setMandatory(False)
+assignment_SAMPLE_INFLUX_TUBE_NAME.setSection('General Info')
+assignment_SAMPLE_INFLUX_TUBE_NAME.setPositionInForms(1)
+assignment_SAMPLE_INFLUX_TUBE_NAME.setShownEdit(True)
+
 # SAMPLE_INFLUX_TUBE_INFLUX_TUBE_ISINDEXSORT
 assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_ISINDEXSORT = tr.assignPropertyType(samp_type_INFLUX_TUBE,
                                                                               prop_type_INFLUX_TUBE_ISINDEXSORT)
@@ -1327,6 +1341,13 @@ assignment_SAMPLE_LSR_FORTESSA_PLATE_LSR_FORTESSA_PLATE_NAME.setSection(None)
 assignment_SAMPLE_LSR_FORTESSA_PLATE_LSR_FORTESSA_PLATE_NAME.setPositionInForms(2)
 assignment_SAMPLE_LSR_FORTESSA_PLATE_LSR_FORTESSA_PLATE_NAME.setShownEdit(False)
 
+# SAMPLE_LSR_FORTESSA_PLATE_NAME
+assignment_SAMPLE_LSR_FORTESSA_PLATE_NAME = tr.assignPropertyType(samp_type_LSR_FORTESSA_PLATE, prop_type_NAME)
+assignment_SAMPLE_LSR_FORTESSA_PLATE_NAME.setMandatory(False)
+assignment_SAMPLE_LSR_FORTESSA_PLATE_NAME.setSection('General Info')
+assignment_SAMPLE_LSR_FORTESSA_PLATE_NAME.setPositionInForms(1)
+assignment_SAMPLE_LSR_FORTESSA_PLATE_NAME.setShownEdit(True)
+
 # SAMPLE_LSR_FORTESSA_SPECIMEN_NAME
 assignment_SAMPLE_LSR_FORTESSA_SPECIMEN_NAME = tr.assignPropertyType(samp_type_LSR_FORTESSA_SPECIMEN, prop_type_NAME)
 assignment_SAMPLE_LSR_FORTESSA_SPECIMEN_NAME.setMandatory(False)
@@ -1350,6 +1371,13 @@ assignment_SAMPLE_LSR_FORTESSA_TUBE_LSR_FORTESSA_TUBE_NAME.setSection(None)
 assignment_SAMPLE_LSR_FORTESSA_TUBE_LSR_FORTESSA_TUBE_NAME.setPositionInForms(1)
 assignment_SAMPLE_LSR_FORTESSA_TUBE_LSR_FORTESSA_TUBE_NAME.setShownEdit(False)
 
+# SAMPLE_LSR_FORTESSA_TUBE_NAME
+assignment_SAMPLE_LSR_FORTESSA_TUBE_NAME = tr.assignPropertyType(samp_type_LSR_FORTESSA_TUBE, prop_type_NAME)
+assignment_SAMPLE_LSR_FORTESSA_TUBE_NAME.setMandatory(False)
+assignment_SAMPLE_LSR_FORTESSA_TUBE_NAME.setSection('General Info')
+assignment_SAMPLE_LSR_FORTESSA_TUBE_NAME.setPositionInForms(1)
+assignment_SAMPLE_LSR_FORTESSA_TUBE_NAME.setShownEdit(True)
+
 # SAMPLE_LSR_FORTESSA_WELL_LSR_FORTESSA_WELL_NAME
 assignment_SAMPLE_LSR_FORTESSA_WELL_LSR_FORTESSA_WELL_NAME = tr.assignPropertyType(samp_type_LSR_FORTESSA_WELL,
                                                                                    prop_type_LSR_FORTESSA_WELL_NAME)
@@ -1357,6 +1385,13 @@ assignment_SAMPLE_LSR_FORTESSA_WELL_LSR_FORTESSA_WELL_NAME.setMandatory(False)
 assignment_SAMPLE_LSR_FORTESSA_WELL_LSR_FORTESSA_WELL_NAME.setSection(None)
 assignment_SAMPLE_LSR_FORTESSA_WELL_LSR_FORTESSA_WELL_NAME.setPositionInForms(1)
 assignment_SAMPLE_LSR_FORTESSA_WELL_LSR_FORTESSA_WELL_NAME.setShownEdit(False)
+
+# SAMPLE_LSR_FORTESSA_WELL_NAME
+assignment_SAMPLE_LSR_FORTESSA_WELL_NAME = tr.assignPropertyType(samp_type_LSR_FORTESSA_WELL, prop_type_NAME)
+assignment_SAMPLE_LSR_FORTESSA_WELL_NAME.setMandatory(False)
+assignment_SAMPLE_LSR_FORTESSA_WELL_NAME.setSection('General Info')
+assignment_SAMPLE_LSR_FORTESSA_WELL_NAME.setPositionInForms(1)
+assignment_SAMPLE_LSR_FORTESSA_WELL_NAME.setShownEdit(True)
 
 # BC MOFLO XDP
 # ------------------------------------------------------------------------------
@@ -1478,6 +1513,13 @@ assignment_SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_TUBE_NAME.setMandatory(False)
 assignment_SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_TUBE_NAME.setSection(None)
 assignment_SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_TUBE_NAME.setPositionInForms(3)
 assignment_SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_TUBE_NAME.setShownEdit(False)
+
+# SAMPLE_MOFLO_XDP_TUBE_NAME
+assignment_SAMPLE_MOFLO_XDP_TUBE_NAME = tr.assignPropertyType(samp_type_MOFLO_XDP_TUBE, prop_type_NAME)
+assignment_SAMPLE_MOFLO_XDP_TUBE_NAME.setMandatory(False)
+assignment_SAMPLE_MOFLO_XDP_TUBE_NAME.setSection('General Info')
+assignment_SAMPLE_MOFLO_XDP_TUBE_NAME.setPositionInForms(1)
+assignment_SAMPLE_MOFLO_XDP_TUBE_NAME.setShownEdit(True)
 
 # SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_TUBE_ISINDEXSORT
 assignment_SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_TUBE_ISINDEXSORT = tr.assignPropertyType(samp_type_MOFLO_XDP_TUBE,
@@ -1606,6 +1648,13 @@ assignment_SAMPLE_S3E_TUBE_S3E_TUBE_NAME.setMandatory(False)
 assignment_SAMPLE_S3E_TUBE_S3E_TUBE_NAME.setSection(None)
 assignment_SAMPLE_S3E_TUBE_S3E_TUBE_NAME.setPositionInForms(3)
 assignment_SAMPLE_S3E_TUBE_S3E_TUBE_NAME.setShownEdit(False)
+
+# SAMPLE_S3E_TUBE_NAME
+assignment_SAMPLE_S3_TUBE_NAME = tr.assignPropertyType(samp_type_S3E_TUBE, prop_type_NAME)
+assignment_SAMPLE_S3_TUBE_NAME.setMandatory(False)
+assignment_SAMPLE_S3_TUBE_NAME.setSection('General Info')
+assignment_SAMPLE_S3_TUBE_NAME.setPositionInForms(1)
+assignment_SAMPLE_S3_TUBE_NAME.setShownEdit(True)
 
 # SAMPLE_S3E_TUBE_S3E_TUBE_ISINDEXSORT
 assignment_SAMPLE_S3E_TUBE_S3E_TUBE_ISINDEXSORT = tr.assignPropertyType(samp_type_S3E_TUBE,
