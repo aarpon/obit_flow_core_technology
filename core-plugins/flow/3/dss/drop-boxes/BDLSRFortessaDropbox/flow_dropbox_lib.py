@@ -344,6 +344,7 @@ def _processExperimentNode(experimentNode,
 
 def _processSpecimenNode(specimenNode,
                          transaction,
+                         specimens,
                          openBISCollection,
                          openBISSpecimenSampleType,
                          specimenName,
@@ -376,7 +377,13 @@ def _processSpecimenNode(specimenNode,
     # Get the identifier of the space all relevant attributes
     openBISSpaceIdentifier = specimenNode.attrib.get("openBISSpaceIdentifier")
 
-    # Create the sample. The Tubeset is configured in openBIS to
+    # If the Specimen object already exists, return it; otherwise,
+    # create a new one.
+    if specimenName in specimens:
+        logger.info("Reusing Specimen " + specimenName)
+        return specimens[specimenName]
+
+    # Create the sample. The Specimen is configured in openBIS to
     # auto-generate its own identifier.
     openBISSpecimen = _createSampleWithGenCode(transaction,
                                               openBISSpaceIdentifier,
@@ -804,6 +811,10 @@ def _register_single(tree, transaction, prefix, version, logger):
     @param logger The logger object.
     """
 
+    # Keep track of the Specimens already created since they can be
+    # common to different plates and across plates and tubes
+    specimens = {}
+
     # Some sample types we will need
     openBISDataSetType = prefix + "_FCSFILE"
     openBISExperimentSampleType = prefix + "_EXPERIMENT"
@@ -883,10 +894,15 @@ def _register_single(tree, transaction, prefix, version, logger):
                 specimenNameProperty = experimentChildNode.attrib.get("name")
                 openBISSpecimenSample = _processSpecimenNode(experimentChildNode,
                                                             transaction,
+                                                            specimens,
                                                             openBISCollection,
                                                             openBISSpecimenSampleType,
                                                             specimenNameProperty,
                                                             logger)
+
+                # If this is a new Specimen, add it to the specimens dictionary
+                if specimenNameProperty not in specimens:
+                    specimens[specimenNameProperty] = openBISSpecimenSample
 
                 # Now iterate over the children of the Specimen
                 for tubeNode in experimentChildNode:
@@ -947,10 +963,15 @@ def _register_single(tree, transaction, prefix, version, logger):
                     specimenNameProperty = specimenNode.attrib.get("name")
                     openBISSpecimenSample = _processSpecimenNode(experimentChildNode,
                                                                 transaction,
+                                                                specimens,
                                                                 openBISCollection,
                                                                 openBISSpecimenSampleType,
                                                                 specimenNameProperty,
                                                                 logger)
+
+                    # If this is a new Specimen, add it to the specimens dictionary
+                    if specimenNameProperty not in specimens:
+                        specimens[specimenNameProperty] = openBISSpecimenSample
 
                     for wellNode in specimenNode:
 
