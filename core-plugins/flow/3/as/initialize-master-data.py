@@ -524,12 +524,6 @@ prop_type_FACS_ARIA_FCSFILE_PARAMETERS.setLabel('FCS parameters')
 prop_type_FACS_ARIA_FCSFILE_PARAMETERS.setManagedInternally(False)
 prop_type_FACS_ARIA_FCSFILE_PARAMETERS.setInternalNamespace(False)
 
-# FACS_ARIA_SPECIMEN
-prop_type_FACS_ARIA_SPECIMEN = tr.getOrCreateNewPropertyType('FACS_ARIA_SPECIMEN', DataType.VARCHAR)
-prop_type_FACS_ARIA_SPECIMEN.setLabel('Specimen')
-prop_type_FACS_ARIA_SPECIMEN.setManagedInternally(False)
-prop_type_FACS_ARIA_SPECIMEN.setInternalNamespace(False)
-
 # FACS_ARIA_TUBE_ISINDEXSORT
 prop_type_FACS_ARIA_TUBE_ISINDEXSORT = tr.getOrCreateNewPropertyType('FACS_ARIA_TUBE_ISINDEXSORT', DataType.BOOLEAN)
 prop_type_FACS_ARIA_TUBE_ISINDEXSORT.setLabel('Index sort')
@@ -608,12 +602,6 @@ prop_type_INFLUX_FCSFILE_PARAMETERS = tr.getOrCreateNewPropertyType('INFLUX_FCSF
 prop_type_INFLUX_FCSFILE_PARAMETERS.setLabel('FCS parameters')
 prop_type_INFLUX_FCSFILE_PARAMETERS.setManagedInternally(False)
 prop_type_INFLUX_FCSFILE_PARAMETERS.setInternalNamespace(False)
-
-# INFLUX_SPECIMEN
-prop_type_INFLUX_SPECIMEN = tr.getOrCreateNewPropertyType('INFLUX_SPECIMEN', DataType.VARCHAR)
-prop_type_INFLUX_SPECIMEN.setLabel('Specimen')
-prop_type_INFLUX_SPECIMEN.setManagedInternally(False)
-prop_type_INFLUX_SPECIMEN.setInternalNamespace(False)
 
 # INFLUX_TUBE_ISINDEXSORT
 prop_type_INFLUX_TUBE_ISINDEXSORT = tr.getOrCreateNewPropertyType('INFLUX_TUBE_ISINDEXSORT', DataType.BOOLEAN)
@@ -714,12 +702,6 @@ prop_type_LSR_FORTESSA_PLATE_NAME.setLabel('Plate name')
 prop_type_LSR_FORTESSA_PLATE_NAME.setManagedInternally(False)
 prop_type_LSR_FORTESSA_PLATE_NAME.setInternalNamespace(False)
 
-# LSR_FORTESSA_SPECIMEN
-prop_type_LSR_FORTESSA_SPECIMEN = tr.getOrCreateNewPropertyType('LSR_FORTESSA_SPECIMEN', DataType.VARCHAR)
-prop_type_LSR_FORTESSA_SPECIMEN.setLabel('Specimen')
-prop_type_LSR_FORTESSA_SPECIMEN.setManagedInternally(False)
-prop_type_LSR_FORTESSA_SPECIMEN.setInternalNamespace(False)
-
 # LSR_FORTESSA_TUBE_NAME
 prop_type_LSR_FORTESSA_TUBE_NAME = tr.getOrCreateNewPropertyType('LSR_FORTESSA_TUBE_NAME', DataType.VARCHAR)
 prop_type_LSR_FORTESSA_TUBE_NAME.setLabel('Tube name')
@@ -800,12 +782,6 @@ prop_type_MOFLO_XDP_FCSFILE_PARAMETERS.setLabel('FCS parameters')
 prop_type_MOFLO_XDP_FCSFILE_PARAMETERS.setManagedInternally(False)
 prop_type_MOFLO_XDP_FCSFILE_PARAMETERS.setInternalNamespace(False)
 
-# MOFLO_XDP_SPECIMEN
-prop_type_MOFLO_XDP_SPECIMEN = tr.getOrCreateNewPropertyType('MOFLO_XDP_SPECIMEN', DataType.VARCHAR)
-prop_type_MOFLO_XDP_SPECIMEN.setLabel('Specimen')
-prop_type_MOFLO_XDP_SPECIMEN.setManagedInternally(False)
-prop_type_MOFLO_XDP_SPECIMEN.setInternalNamespace(False)
-
 # MOFLO_XDP_TUBE_ISINDEXSORT
 prop_type_MOFLO_XDP_TUBE_ISINDEXSORT = tr.getOrCreateNewPropertyType('MOFLO_XDP_TUBE_ISINDEXSORT', DataType.BOOLEAN)
 prop_type_MOFLO_XDP_TUBE_ISINDEXSORT.setLabel('Index sort')
@@ -882,12 +858,6 @@ prop_type_S3E_FCSFILE_PARAMETERS = tr.getOrCreateNewPropertyType('S3E_FCSFILE_PA
 prop_type_S3E_FCSFILE_PARAMETERS.setLabel('FCS parameters')
 prop_type_S3E_FCSFILE_PARAMETERS.setManagedInternally(False)
 prop_type_S3E_FCSFILE_PARAMETERS.setInternalNamespace(False)
-
-# S3E_SPECIMEN
-prop_type_S3E_SPECIMEN = tr.getOrCreateNewPropertyType('S3E_SPECIMEN', DataType.VARCHAR)
-prop_type_S3E_SPECIMEN.setLabel('Specimen')
-prop_type_S3E_SPECIMEN.setManagedInternally(False)
-prop_type_S3E_SPECIMEN.setInternalNamespace(False)
 
 # S3E_TUBE_ISINDEXSORT
 prop_type_S3E_TUBE_ISINDEXSORT = tr.getOrCreateNewPropertyType('S3E_TUBE_ISINDEXSORT', DataType.BOOLEAN)
@@ -1105,14 +1075,6 @@ assignment_SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_TUBE_NAME.setSection(None)
 assignment_SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_TUBE_NAME.setPositionInForms(1)
 assignment_SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_TUBE_NAME.setShownEdit(False)
 
-# SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_SPECIMEN
-assignment_SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_SPECIMEN = tr.assignPropertyType(samp_type_FACS_ARIA_TUBE,
-                                                                            prop_type_FACS_ARIA_SPECIMEN)
-assignment_SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_SPECIMEN.setMandatory(False)
-assignment_SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_SPECIMEN.setSection(None)
-assignment_SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_SPECIMEN.setPositionInForms(2)
-assignment_SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_SPECIMEN.setShownEdit(False)
-
 # SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_TUBE_ISINDEXSORT
 assignment_SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_TUBE_ISINDEXSORT = tr.assignPropertyType(samp_type_FACS_ARIA_TUBE,
                                                                                     prop_type_FACS_ARIA_TUBE_ISINDEXSORT)
@@ -1233,13 +1195,6 @@ assignment_SAMPLE_INFLUX_SPECIMEN_ANNOTATIONS_STATE.setMandatory(False)
 assignment_SAMPLE_INFLUX_SPECIMEN_ANNOTATIONS_STATE.setSection('General Info')
 assignment_SAMPLE_INFLUX_SPECIMEN_ANNOTATIONS_STATE.setPositionInForms(2)
 assignment_SAMPLE_INFLUX_SPECIMEN_ANNOTATIONS_STATE.setShownEdit(False)
-
-# SAMPLE_INFLUX_TUBE_INFLUX_SPECIMEN
-assignment_SAMPLE_INFLUX_TUBE_INFLUX_SPECIMEN = tr.assignPropertyType(samp_type_INFLUX_TUBE, prop_type_INFLUX_SPECIMEN)
-assignment_SAMPLE_INFLUX_TUBE_INFLUX_SPECIMEN.setMandatory(False)
-assignment_SAMPLE_INFLUX_TUBE_INFLUX_SPECIMEN.setSection(None)
-assignment_SAMPLE_INFLUX_TUBE_INFLUX_SPECIMEN.setPositionInForms(2)
-assignment_SAMPLE_INFLUX_TUBE_INFLUX_SPECIMEN.setShownEdit(False)
 
 # SAMPLE_INFLUX_TUBE_INFLUX_TUBE_NAME
 assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_NAME = tr.assignPropertyType(samp_type_INFLUX_TUBE,
@@ -1395,14 +1350,6 @@ assignment_SAMPLE_LSR_FORTESSA_TUBE_LSR_FORTESSA_TUBE_NAME.setSection(None)
 assignment_SAMPLE_LSR_FORTESSA_TUBE_LSR_FORTESSA_TUBE_NAME.setPositionInForms(1)
 assignment_SAMPLE_LSR_FORTESSA_TUBE_LSR_FORTESSA_TUBE_NAME.setShownEdit(False)
 
-# SAMPLE_LSR_FORTESSA_TUBE_LSR_FORTESSA_SPECIMEN
-assignment_SAMPLE_LSR_FORTESSA_TUBE_LSR_FORTESSA_SPECIMEN = tr.assignPropertyType(samp_type_LSR_FORTESSA_TUBE,
-                                                                                  prop_type_LSR_FORTESSA_SPECIMEN)
-assignment_SAMPLE_LSR_FORTESSA_TUBE_LSR_FORTESSA_SPECIMEN.setMandatory(False)
-assignment_SAMPLE_LSR_FORTESSA_TUBE_LSR_FORTESSA_SPECIMEN.setSection(None)
-assignment_SAMPLE_LSR_FORTESSA_TUBE_LSR_FORTESSA_SPECIMEN.setPositionInForms(2)
-assignment_SAMPLE_LSR_FORTESSA_TUBE_LSR_FORTESSA_SPECIMEN.setShownEdit(False)
-
 # SAMPLE_LSR_FORTESSA_WELL_LSR_FORTESSA_WELL_NAME
 assignment_SAMPLE_LSR_FORTESSA_WELL_LSR_FORTESSA_WELL_NAME = tr.assignPropertyType(samp_type_LSR_FORTESSA_WELL,
                                                                                    prop_type_LSR_FORTESSA_WELL_NAME)
@@ -1410,14 +1357,6 @@ assignment_SAMPLE_LSR_FORTESSA_WELL_LSR_FORTESSA_WELL_NAME.setMandatory(False)
 assignment_SAMPLE_LSR_FORTESSA_WELL_LSR_FORTESSA_WELL_NAME.setSection(None)
 assignment_SAMPLE_LSR_FORTESSA_WELL_LSR_FORTESSA_WELL_NAME.setPositionInForms(1)
 assignment_SAMPLE_LSR_FORTESSA_WELL_LSR_FORTESSA_WELL_NAME.setShownEdit(False)
-
-# SAMPLE_LSR_FORTESSA_WELL_LSR_FORTESSA_SPECIMEN
-assignment_SAMPLE_LSR_FORTESSA_WELL_LSR_FORTESSA_SPECIMEN = tr.assignPropertyType(samp_type_LSR_FORTESSA_WELL,
-                                                                                  prop_type_LSR_FORTESSA_SPECIMEN)
-assignment_SAMPLE_LSR_FORTESSA_WELL_LSR_FORTESSA_SPECIMEN.setMandatory(False)
-assignment_SAMPLE_LSR_FORTESSA_WELL_LSR_FORTESSA_SPECIMEN.setSection(None)
-assignment_SAMPLE_LSR_FORTESSA_WELL_LSR_FORTESSA_SPECIMEN.setPositionInForms(2)
-assignment_SAMPLE_LSR_FORTESSA_WELL_LSR_FORTESSA_SPECIMEN.setShownEdit(False)
 
 # BC MOFLO XDP
 # ------------------------------------------------------------------------------
@@ -1531,14 +1470,6 @@ assignment_SAMPLE_MOFLO_XDP_SPECIMEN_ANNOTATIONS_STATE.setMandatory(False)
 assignment_SAMPLE_MOFLO_XDP_SPECIMEN_ANNOTATIONS_STATE.setSection('General Info')
 assignment_SAMPLE_MOFLO_XDP_SPECIMEN_ANNOTATIONS_STATE.setPositionInForms(2)
 assignment_SAMPLE_MOFLO_XDP_SPECIMEN_ANNOTATIONS_STATE.setShownEdit(False)
-
-# SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_SPECIMEN
-assignment_SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_SPECIMEN = tr.assignPropertyType(samp_type_MOFLO_XDP_TUBE,
-                                                                            prop_type_MOFLO_XDP_SPECIMEN)
-assignment_SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_SPECIMEN.setMandatory(False)
-assignment_SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_SPECIMEN.setSection(None)
-assignment_SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_SPECIMEN.setPositionInForms(2)
-assignment_SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_SPECIMEN.setShownEdit(False)
 
 # SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_TUBE_NAME
 assignment_SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_TUBE_NAME = tr.assignPropertyType(samp_type_MOFLO_XDP_TUBE,
@@ -1668,13 +1599,6 @@ assignment_SAMPLE_S3E_SPECIMEN_ANNOTATIONS_STATE.setMandatory(False)
 assignment_SAMPLE_S3E_SPECIMEN_ANNOTATIONS_STATE.setSection(None)
 assignment_SAMPLE_S3E_SPECIMEN_ANNOTATIONS_STATE.setPositionInForms(2)
 assignment_SAMPLE_S3E_SPECIMEN_ANNOTATIONS_STATE.setShownEdit(True)
-
-# SAMPLE_S3E_TUBE_S3E_SPECIMEN
-assignment_SAMPLE_S3E_TUBE_S3E_SPECIMEN = tr.assignPropertyType(samp_type_S3E_TUBE, prop_type_S3E_SPECIMEN)
-assignment_SAMPLE_S3E_TUBE_S3E_SPECIMEN.setMandatory(False)
-assignment_SAMPLE_S3E_TUBE_S3E_SPECIMEN.setSection(None)
-assignment_SAMPLE_S3E_TUBE_S3E_SPECIMEN.setPositionInForms(2)
-assignment_SAMPLE_S3E_TUBE_S3E_SPECIMEN.setShownEdit(False)
 
 # SAMPLE_S3E_TUBE_S3E_TUBE_NAME
 assignment_SAMPLE_S3E_TUBE_S3E_TUBE_NAME = tr.assignPropertyType(samp_type_S3E_TUBE, prop_type_S3E_TUBE_NAME)
