@@ -221,6 +221,14 @@ def _processExperimentNode(experimentNode,
     # Get the openBIS identifier
     openBISIdentifier = experimentNode.attrib.get("openBISIdentifier")
 
+    # Make sure to keep the code length within the limits imposed by
+    # openBIS for codes
+    if len(openBISIdentifier) > 41:
+        openBISIdentifier = openBISIdentifier[0:41]
+
+    # Create univocal ID
+    openBISIdentifier = openBISIdentifier + "_" + _getCustomTimeStamp()
+
     # Get the experiment name
     expName = experimentNode.attrib.get("name")
 
