@@ -466,9 +466,6 @@ def _processTrayNode(trayNode,
         logger.error(msg)
         raise Exception(msg)
 
-    # Set the experiment for the sample
-    openBISTray.setExperiment(openBISCollection)
-
     # Set the parent sample of type {...}_EXPERIMENT
     openBISTray.setParentSampleIdentifiers([openBISExperimentSampleIdentifier])
 
@@ -536,9 +533,6 @@ def _processTube(tubeNode,
         msg = "Could not create TUBE sample with auto-generated identifier"
         logger.error(msg)
         raise Exception(msg)
-
-    # Set the experiment to which it belongs
-    openBISTube.setExperiment(openBISCollection)
 
     # Set the name property
     openBISTube.setPropertyValue(openBISTubeSampleType + "_NAME", name)
@@ -616,9 +610,6 @@ def _processTubeSetNode(experimentNode,
                 % (openBISTubeSet.getSampleIdentifier(),
                    openBISTubeSetSampleType))
 
-    # Set the experiment
-    openBISTubeSet.setExperiment(openBISCollection)
-
     # Set the parent sample of type {...}_EXPERIMENT
     openBISTubeSet.setParentSampleIdentifiers([openBISExperimentSampleIdentifier])
 
@@ -677,9 +668,6 @@ def _processWell(wellNode,
         logger.error(msg)
         raise Exception(msg)
 
-    # Set the experiment to which it belongs
-    openBISWell.setExperiment(openBISCollection)
-
     # Set the name property
     openBISWell.setPropertyValue(openBISWellSampleType + "_NAME", name)
 
@@ -725,9 +713,6 @@ def _processFCSFile(fcsFileNode,
 
     # Assign the dataset to the sample
     dataset.setSample(openBISSample)
-
-    # Assign the dataset to the experiment
-    dataset.setExperiment(openBISCollection)
 
     # Set the file type
     dataset.setFileFormatType("FCS")
@@ -1072,7 +1057,6 @@ def _registerAttachmentsToCollection(attachments,
         attachmentDataSet = transaction.createNewDataSet("ATTACHMENT")
         transaction.moveFile(attachmentFilePath, attachmentDataSet)
         attachmentDataSet.setPropertyValue("$NAME", attachmentFileName)
-        attachmentDataSet.setExperiment(openBISCollection)
         attachmentDataSet.setSample(openBISExperimentSample)
 
     return True
