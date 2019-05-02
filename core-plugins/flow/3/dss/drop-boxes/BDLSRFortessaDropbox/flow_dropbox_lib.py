@@ -41,18 +41,21 @@ def _createSampleWithGenCode(transaction,
                              spaceCode,
                              openBISCollection,
                              sampleType,
-                             setExperiment=False):
+                             setExperiment=True):
     """Create a sample with automatically generated code.
 
     Depending on whether project samples are enabled in openBIS, the sample
     code will be created accordingly.
+    
+    If project samples are enabled, the code will be in the form: /SPACE/PROJECT/CODE
+    If project samples are not enabled, the code will be in the form: /SPACE/CODE
 
     @param transaction The dropbox transaction object.
     @param spaceCode The code of space (the space must exist).
     @param openBISCollection The openBIS Collection object (must exist).
     @param logger The logger object.
-    @param setExperiment (optional, default = false) Set to true, to set the
-           collection to the newly created sample.
+    @param setExperiment (optional, default = True) Set to true, to assign the
+           newly created sample to the openBISCollection collection.
     @return sample Created ISample
     """
 
@@ -460,7 +463,7 @@ def _processTrayNode(trayNode,
                                           openBISSpaceIdentifier,
                                           openBISCollection,
                                           openBISTraySampleType,
-                                          setExperiment=False)
+                                          setExperiment=True)
     if not openBISTray:
         msg = "Could not create plate sample."
         logger.error(msg)
@@ -527,7 +530,7 @@ def _processTube(tubeNode,
                                           openBISSpaceIdentifier,
                                           openBISCollection,
                                           openBISTubeSampleType,
-                                          setExperiment=False)
+                                          setExperiment=True)
 
     if not openBISTube:
         msg = "Could not create TUBE sample with auto-generated identifier"
@@ -661,7 +664,7 @@ def _processWell(wellNode,
                                           openBISSpaceIdentifier,
                                           openBISCollection,
                                           openBISWellSampleType,
-                                          setExperiment=False)
+                                          setExperiment=True)
 
     if not openBISWell:
         msg = "Could not create WELL sample with auto-generated identifier"
