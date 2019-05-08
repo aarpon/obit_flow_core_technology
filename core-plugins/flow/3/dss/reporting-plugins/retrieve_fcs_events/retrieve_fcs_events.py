@@ -349,8 +349,15 @@ def retrieveProcess(parameters, tableBuilder, uid):
             dataY = Hyperlog.arrayMult(dataY, params[0])
 
         # Build array to JSONify and return to the client
-        for i in range (actualNumEvents):
-            data.append([float(dataX[i]), float(dataY[i])])
+        # Data is returned as a 2 x n array:
+        # data[0] is dataX; data[1] is dataY
+        data.append([float(dx) for dx in dataX])
+        data.append([float(dy) for dy in dataY])
+        
+        # This is maintained for historical reasons. Each
+        # [x, y] point is stored in a position in the array.
+        # for i in range (actualNumEvents):
+        #     data.append([float(dataX[i]), float(dataY[i])])
 
         # JSON encode the data array
         dataJSON = json.dumps(data)
