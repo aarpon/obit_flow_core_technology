@@ -6,7 +6,7 @@
  * @author Aaron Ponti
  **/
 
-define([], function () {
+define(["d3", "c3"], function (d3, c3) {
 
     "use strict";
 
@@ -543,75 +543,64 @@ define([], function () {
         plotFCSData: function(data, xLabel, yLabel, xDisplay, yDisplay) {
 
             // Make sure to have a proper array
-            data = JSON.parse(data);
+            let parsed_data = JSON.parse(data);
 
-            // Axis type is always linear, since the transformations are all done server side.
-            let xType = "linear";
-            let yType = "linear";
+            // Prepend data names to be compatible with C3.js
+            parsed_data[0].unshift("x_values");
+            parsed_data[1].unshift("y_values");
 
-            $('#detailViewPlot').highcharts({
-                chart: {
-                    type: 'scatter',
-                    zoomType: 'xy'
-                },
+            // Plot the data
+            c3.generate({
+                bindto: '#detailViewPlot',
                 title: {
                     text: yLabel + " vs. " + xLabel
                 },
-                subtitle: {
-                    text: ''
-                },
-                xAxis: {
-                    title: {
-                        enabled: true,
-                        text: xLabel
+                data: {
+                    xs: {
+                        y_values: "x_values"
                     },
-                    type: xType,
-                    startOnTick: true,
-                    endOnTick: true,
-                    showLastLabel: true
-                },
-                yAxis: {
-                    title: {
-                        enabled: true,
-                        text: yLabel
+                    columns: [
+                        parsed_data[0],
+                        parsed_data[1],
+                    ],
+                    names: {
+                        y_values: yLabel
                     },
-                    type: yType,
-                    startOnTick: true,
-                    endOnTick: true,
-                    showLastLabel: true
+                    type: 'scatter'
                 },
-                plotOptions: {
-                    area: {
-                        turboThreshold: 10
+                axis: {
+                    x: {
+                        label: xLabel,
+                        tick: {
+                            fit: false
+                        }
                     },
-                    scatter: {
-                        marker: {
-                            radius: 1,
-                            states: {
-                                hover: {
-                                    enabled: true,
-                                    lineColor: 'rgb(100,100,100)'
-                                }
-                            }
-                        },
-                        states: {
-                            hover: {
-                                marker: {
-                                    enabled: false
-                                }
-                            }
-                        },
-                        tooltip: {
-                            headerFormat: '',
-                            pointFormat: '{point.x:.2f}, {point.y:.2f}'
+                    y: {
+                        label: yLabel,
+                        tick: {
+                            fit: false
                         }
                     }
                 },
-                series: [{
-                    name: '',
-                    color: 'rgba(223, 83, 83, .5)',
-                    data: data
-                }]
+                legend: {
+                    show: false
+                },
+                tooltip: {
+                    format: {
+                        title: function (d) {
+                            const format = d3.format(',');
+                            return xLabel + " | " + format(d);
+                            },
+                        value: function (value, ratio, id) {
+                            const format = d3.format(',');
+                            return format(value);
+                        }
+                    }
+                },
+                zoom: {
+                    enabled: true,
+                    rescale: true
+                },
             });
         },
 
