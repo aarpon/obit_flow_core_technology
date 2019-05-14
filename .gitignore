@@ -1,2 +1,4 @@
 /.settings/
 .idea/
+*$py.class
+logs/
