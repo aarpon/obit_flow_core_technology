@@ -867,23 +867,6 @@ class Mover():
         # Return
         return dataSets
 
-    def _getDataSetForFCSFileSample(self):
-        """
-        Get the FCS file for the sample with type {exp_prefix}_FCSFILE.
-        """
-
-        # Get the dataset for current FCS file sample
-        dataSets = searchService.getDataSet(self._entityId)
-        if dataSets is None:
-            self._message = "Could not retrieve datasets for " \
-            "FCS file with identifier " + self._entityId + "!"
-            self._logger.error(self._message)
-        else:
-            dataSets = [dataSets]
-
-        # Return
-        return dataSets
-
     def _getFilesForDataSets(self, dataSets):
         """
         Get the list of FCS file paths that correspond to the input list
