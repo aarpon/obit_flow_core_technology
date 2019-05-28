@@ -369,6 +369,11 @@ def process(transaction, parameters, tableBuilder):
 
     # Get the experiment name from the registered Experiment sample
     currentExpName = expSample.getPropertyValue(expSampleType + "_NAME")
+    if currentExpName == "":
+        try:
+            currentExpName = expSample.getPropertyValue("$NAME")
+        except:
+            pass
 
     # Inform
     _logger.info("Experiment name is registered as " + currentExpName)
@@ -387,6 +392,7 @@ def process(transaction, parameters, tableBuilder):
 
         # Update the registered Experiment name
         mutableExperimentSample.setPropertyValue(expSampleType + "_NAME", expNameFromFile)
+        mutableExperimentSample.setPropertyValue("$NAME", expNameFromFile)
 
         # Log
         _logger.info("Updated registered experiment sample name from '" +

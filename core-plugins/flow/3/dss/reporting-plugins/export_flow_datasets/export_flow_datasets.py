@@ -580,6 +580,11 @@ class Mover():
         # Get plate code and name
         plateCode = plate.getCode()
         plateName = plate.getPropertyValue(self._expSamplePrefix + "_PLATE_NAME")
+        if plateName == "":
+            try:
+                plateName = plate.getPropertyValue("$NAME")
+            except:
+                pass
 
         if _DEBUG:
             self._logger.info("Processing plate with name " + plateName)
