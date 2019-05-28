@@ -1,0 +1,146 @@
+@font-face {
+    font-family: 'Roboto';
+    font-weight: 300;
+    font-style: normal;
+    src: url('Roboto-300.eot');
+    src: url('Roboto-300.eot?#iefix') format('embedded-opentype'),
+    local('Roboto Light'),
+    local('Roboto-300'),
+    url('Roboto-300.woff2') format('woff2'),
+    url('Roboto-300.woff') format('woff'),
+    url('Roboto-300.ttf') format('truetype'),
+    url('Roboto-300.svg#Roboto') format('svg');
+}
+
+#webapp {
+    font-family: 'Roboto', sans-serif;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+label {
+    margin-left: 5px;
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+input {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#experimentNameView {
+    margin-bottom: 20px;
+}
+
+#experimentDescriptionView {
+    margin-bottom: 10px;
+}
+
+#experimentAcquisitionDetailsView {
+    margin-bottom: 10px;
+}
+
+#status {
+    text-align: center;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    max-height: 60px;
+    display: none;
+}
+
+#detailViewAction {
+    min-height: 30px;
+    vertical-align: middle;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+#detailViewActionExpl {
+    height: 20px;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 10px;
+    margin-bottom: 10px;
+}
+
+#detailViewPlot {
+    width: 100%;
+    text-align: center;
+}
+
+.upgradeButton {
+    font-size: 1.0em;
+}
+
+.action {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.fcsAcqDate {
+    font-size: 0.7em;
+    font-weight: normal;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #eee;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-size: 11px;
+}
+
+.circle {
+    fill: #222;
+}
+
+.toggleLink {
+    font-size: 10px;
+    margin-left: 5px;
+    margin-right: 3px;
+}
+
+#xAxisDiv {
+    display: inline-block;
+    text-align: right;
+}
+
+#yAxisDiv {
+    display: inline-block;
+    text-align: right;
+}
+
+#eventsDiv {
+    display: inline-block;
+    text-align: right;
+}
+
+#plotDiv {
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 10px;
+}
+
+#xAxisScalingDiv {
+    font-size: 13px;
+    display: block;
+    margin-top: 3px;
+}
+
+#yAxisScalingDiv {
+    font-size: 13px;
+    display: block;
+    margin-top: 3px;
+}
+
+#eventSamplingDiv {
+    font-size: 13px;
+    display: block;
+    margin-top: 3px;
+}
