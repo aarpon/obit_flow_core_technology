@@ -408,8 +408,9 @@ define(["openbis",
                                                           collectionId,
                                                           collectionType,
                                                           experimentSampleId,
+                                                          experimentSamplePermId,
                                                           experimentSampleType,
-                                                          plateId,
+                                                          platePermId,
                                                           plateType,
                                                           mode) {
 
@@ -419,8 +420,9 @@ define(["openbis",
                     collectionId: collectionId,
                     collectionType: collectionType,
                     expSampleId: experimentSampleId,
+                    expSamplePermId: experimentSamplePermId,
                     expSampleType: experimentSampleType,
-                    plateId: plateId,
+                    platePermId: platePermId,
                     plateType: plateType,
                     mode: mode
                 };

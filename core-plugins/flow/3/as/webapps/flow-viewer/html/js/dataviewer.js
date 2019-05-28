@@ -335,10 +335,11 @@ define(["d3", "c3"], function (d3, c3) {
             const collectionId = DATAMODEL.experimentSample.experiment.getIdentifier().identifier;
             const collectionType = DATAMODEL.experimentSample.experiment.getType().code;
             const experimentSampleId = DATAMODEL.experimentSampleId;
+            const experimentSamplePermId = DATAMODEL.experimentSample.getPermId().toString();
             const experimentSampleType = DATAMODEL.experimentSampleType;
 
             // Variables
-            let plateId = "";
+            let platePermId = "";
             let plateType = "";
             let task = "";
 
@@ -346,19 +347,19 @@ define(["d3", "c3"], function (d3, c3) {
             // export action associated to them!
             if (node.data.type === "EXPERIMENT_SAMPLE") {
                 task = "EXPERIMENT_SAMPLE";
-                plateId = "";
+                platePermId = "";
                 plateType = "";
             } else if (node.data.type === "ALL_PLATES") {
                 task = "ALL_PLATES";
-                plateId = "";
+                platePermId = "";
                 plateType = "";
             } else if (node.data.type === "PLATE") {
                 task = "PLATE";
-                plateId = node.data.element.getIdentifier().identifier;
+                platePermId = node.data.element.getPermId().permId;
                 plateType = node.data.element.getType().code;
             } else if (node.data.type === "TUBESET") {
                 task = "TUBESET";
-                plateId = "";
+                platePermId = "";
                 plateType = "";
             } else {
                 return;
@@ -408,8 +409,8 @@ define(["d3", "c3"], function (d3, c3) {
                     .click(function () {
                         DATAMODEL.callServerSidePluginExportDataSets(
                             task, collectionId, collectionType,
-                            experimentSampleId, experimentSampleType,
-                            plateId, plateType, "normal");
+                            experimentSampleId, experimentSamplePermId,
+                            experimentSampleType, platePermId, plateType, "normal");
                         return false;
                     });
 
@@ -438,8 +439,8 @@ define(["d3", "c3"], function (d3, c3) {
                 .click(function () {
                     DATAMODEL.callServerSidePluginExportDataSets(
                         task, collectionId, collectionType,
-                        experimentSampleId, experimentSampleType,
-                        plateId, plateType, "zip");
+                        experimentSampleId, experimentSamplePermId,
+                        experimentSampleType, platePermId, plateType, "zip");
                     return false;
                 });
 

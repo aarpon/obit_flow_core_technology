@@ -106,14 +106,15 @@ class Mover():
     performs the actual copying.
     """
 
-    def __init__(self, task, collectionId, collectionType, expSampleId, expSampleType,
-                 plateId, plateType, mode, userId, properties, logger):
+    def __init__(self, task, collectionId, collectionType, expSampleId, expSamplePermId,
+                 expSampleType, platePermId, plateType, mode, userId, properties, logger):
         """Constructor
 
         task           : helper argument to define what to export. 
         collectionId   : id of the collection
         collectionType : type of the collection
         expSampleId    : id of the experiment sample.
+        expSamplePermId: permId of the experiment sample.
         expSampleType  : type of the experiment sample.
         entityId       : id of the entity to export (with children)
         entityType     : type of the entity to export
@@ -136,8 +137,9 @@ class Mover():
                               "    collectionId    = " + collectionId + "\n" +
                               "    collectionType  = " + collectionType + "\n" +
                               "    expSampleId     = " + expSampleId + "\n" +
+                              "    expSamplePermId = " + expSamplePermId + "\n" +
                               "    expSampleType   = " + expSampleType + "\n" +
-                              "    plateId         = " + plateId + "\n" +
+                              "    platePermId     = " + platePermId + "\n" +
                               "    plateType       = " + plateType + "\n" +
                               "    mode            = " + mode + "\n" +
                               "    userId          = " + userId + "\n" +
@@ -155,28 +157,34 @@ class Mover():
         # Experiment type
         self._collectionType = collectionType
 
-        # Experiment id
+        # Experiment sample id
         self._expSampleId = expSampleId
+
+        # Experiment sample perm id
+        self._expSamplePermId = expSamplePermId
 
         # Experiment type
         self._expSampleType = expSampleType
 
         # Entity id
-        self._plateId = plateId
+        self._platePermId = platePermId
 
         # Entity type
         self._plateType = plateType
 
         # Get the EXPERIMENT SAMPLE object
         self._experimentSample = self._getFlowExperimentSample()
+        if self._experimentSample is None:
+            raise Exception("Could not retrieve experiment sample with permId " + \
+                             self._expSamplePermId + ".")
 
         # Get the COLLECTION object
         self._experiment = searchService.getExperiment(self._collectionId)
 
         # Get the PLATE object
         self._plate = None
-        if self._plateId != "" and self._plateType != "":
-            self._plate = self._retrieveSampleWithTypeAndId(self._plateId, self._plateType)
+        if self._platePermId != "" and self._plateType != "":
+            self._plate = self._retrieveSampleWithTypeAndPermId(self._platePermId, self._plateType)
 
         # Set all relevant entity types for current experiment type
         self._expSamplePrefix = self._expSampleType[0:self._expSampleType.find("_EXPERIMENT")]
@@ -347,9 +355,8 @@ class Mover():
         # Inform
         if _DEBUG:
             self._logger.info("Retrieving experiment sample of code " + \
-                              self._expSampleId + " and type " + self._expSampleType + \
-                              " from collection with code " + self._collectionId +
-                              "and type " + self._collectionType)
+                              self._expSampleId + ", permId " + self._expSamplePermId + \
+                              " and type " + self._expSampleType)
 
         # Search sample of type MICROSCOPY_EXPERIMENT with specified CODE
         sampleCriteria = SearchCriteria()
@@ -359,31 +366,17 @@ class Mover():
                 self._expSampleType))
         sampleCriteria.addMatchClause(
             MatchClause.createAttributeMatch(
-                MatchClauseAttribute.CODE,
-                self._expSampleId))
-
-        # Add search criteria for the collection (experiment)
-        expCriteria = SearchCriteria()
-        expCriteria.addMatchClause(
-            MatchClause.createAttributeMatch(
-                MatchClauseAttribute.TYPE,
-                self._collectionType))
-        expCriteria.addMatchClause(
-            MatchClause.createAttributeMatch(
-                MatchClauseAttribute.CODE,
-                self._collectionId))
-
-        # Add the experiment subcriteria
-        sampleCriteria.addSubCriteria(
-            SearchSubCriteria.createExperimentCriteria(expCriteria))
+                MatchClauseAttribute.PERM_ID,
+                self._expSamplePermId))
 
         # Search
         samples = searchService.searchForSamples(sampleCriteria)
 
         if len(samples) == 0:
             samples = []
-            self._message = "Could not retrieve " + self._expSampleType + " sample with id " + \
-                self._expSampleId + " from COLLECTION experiment " + self._collectionId + "."
+            self._message = "Could not retrieve " + self._expSampleType + " sample with code " + \
+                             self._expSampleId + ", permId " + self._expSamplePermId + \
+                             " and type " + self._expSampleType + "."
             self._logger.error(self._message)
             return samples
 
@@ -393,10 +386,10 @@ class Mover():
         # Return
         return samples[0]
 
-    def _retrieveSampleWithTypeAndId(self, sampleId, sampleType):
+    def _retrieveSampleWithTypeAndPermId(self, samplePermId, sampleType):
         """
         Retrieve a sample belonging to current experiment 
-        sample and collection having specified type and id.
+        sample and collection having specified type and perm id.
         """
         # The sample is of type 'sampleType' and has id 'sampleId'
         searchCriteria = SearchCriteria()
@@ -407,35 +400,8 @@ class Mover():
             )
         searchCriteria.addMatchClause(
             MatchClause.createAttributeMatch(
-                MatchClauseAttribute.CODE,
-                sampleId)
-            )
-
-        # The samples have parent _EXPERIMENT_SAMPLE
-        expSampleCriteria = SearchCriteria()
-        expSampleCriteria.addMatchClause(
-            MatchClause.createAttributeMatch(
-                MatchClauseAttribute.TYPE,
-                self._expSampleType)
-            )
-        expSampleCriteria.addMatchClause(
-            MatchClause.createAttributeMatch(
-                MatchClauseAttribute.CODE,
-                self._expSampleId)
-            )
-        searchCriteria.addSubCriteria(
-            SearchSubCriteria.createSampleParentCriteria(expSampleCriteria)
-        )
-
-        # They belong to collection self._experiment
-        expCriteria = SearchCriteria()
-        expCriteria.addMatchClause(
-            MatchClause.createAttributeMatch(
                 MatchClauseAttribute.PERM_ID,
-                self._experiment.permId)
-            )
-        searchCriteria.addSubCriteria(
-            SearchSubCriteria.createExperimentCriteria(expCriteria)
+                samplePermId)
             )
 
         # Now search
@@ -473,23 +439,53 @@ class Mover():
             )
         expSampleCriteria.addMatchClause(
             MatchClause.createAttributeMatch(
-                MatchClauseAttribute.CODE,
-                self._expSampleId)
+                MatchClauseAttribute.PERM_ID,
+                self._expSamplePermId)
             )
         searchCriteria.addSubCriteria(
             SearchSubCriteria.createSampleParentCriteria(expSampleCriteria)
         )
 
-        # They belong to collection self._experiment
-        expCriteria = SearchCriteria()
-        expCriteria.addMatchClause(
+        # Now search
+        samples = searchService.searchForSamples(searchCriteria)
+
+        # Return the samples
+        return samples
+
+    def _retrieveAllSamplesWithTypeAndParentWithPermId(self, sampleType, parentSamplePermId, parentSampleType):
+        """
+        Retrieve all samples belonging to current experiment 
+        sample and collection having specified type.
+        """
+
+        if _DEBUG:
+            self._logger.info("Retrieving samples of type " + sampleType +
+                              " with parent sample with perm id " + parentSamplePermId +
+                              " and type " + parentSampleType)
+
+        # The samples are of type 'sampleType'
+        searchCriteria = SearchCriteria()
+        searchCriteria.addMatchClause(
+            MatchClause.createAttributeMatch(
+                MatchClauseAttribute.TYPE,
+                sampleType)
+            )
+
+        # The samples have given parent
+        expSampleCriteria = SearchCriteria()
+        expSampleCriteria.addMatchClause(
+            MatchClause.createAttributeMatch(
+                MatchClauseAttribute.TYPE,
+                parentSampleType)
+            )
+        expSampleCriteria.addMatchClause(
             MatchClause.createAttributeMatch(
                 MatchClauseAttribute.PERM_ID,
-                self._experiment.permId)
+                parentSamplePermId)
             )
         searchCriteria.addSubCriteria(
-            SearchSubCriteria.createExperimentCriteria(expCriteria)
-            )
+            SearchSubCriteria.createSampleParentCriteria(expSampleCriteria)
+        )
 
         # Now search
         samples = searchService.searchForSamples(searchCriteria)
@@ -502,6 +498,11 @@ class Mover():
         Retrieve all samples belonging to current experiment 
         sample and collection having specified type.
         """
+
+        if _DEBUG:
+            self._logger.info("Retrieving samples of type " + sampleType +
+                              " with parent sample with id " + parentSampleId +
+                              " and type " + parentSampleType)
 
         # The samples are of type 'sampleType'
         searchCriteria = SearchCriteria()
@@ -526,17 +527,6 @@ class Mover():
         searchCriteria.addSubCriteria(
             SearchSubCriteria.createSampleParentCriteria(expSampleCriteria)
         )
-
-        # They belong to collection self._experiment
-        expCriteria = SearchCriteria()
-        expCriteria.addMatchClause(
-            MatchClause.createAttributeMatch(
-                MatchClauseAttribute.PERM_ID,
-                self._experiment.permId)
-            )
-        searchCriteria.addSubCriteria(
-            SearchSubCriteria.createExperimentCriteria(expCriteria)
-            )
 
         # Now search
         samples = searchService.searchForSamples(searchCriteria)
@@ -775,15 +765,16 @@ class Mover():
         # Return success
         return True
 
-    def _getDataSetsForPlate(self, plateId):
+    def _getDataSetsForPlate(self, platePermId):
         """
         Return a list of datasets belonging to the plate with specified ID.
         If none are found, return [].
         """
+
         # Get the wells
         wells = self._retrieveAllSamplesWithTypeAndParent(
             self._expSamplePrefix + "_WELL",
-            plateId,
+            platePermId,
             self._expSamplePrefix + "_PLATE")
 
         if len(wells) == 0:
@@ -933,8 +924,8 @@ class Mover():
             self._logger.info("Finding all samples of type " + sampleType)
 
         # Retrieve all plates
-        plates = self._retrieveAllSamplesWithTypeAndParent(sampleType,
-                                                           self._expSampleId,
+        plates = self._retrieveAllSamplesWithTypeAndParentWithPermId(sampleType,
+                                                           self._expSamplePermId,
                                                            self._expSampleType)
         if _DEBUG:
             self._logger.info("Found " + str(len(plates)) + " plates.")
@@ -959,8 +950,8 @@ class Mover():
             self._logger.info("Finding all samples of type " + sampleType)
 
         # Retrieve all tubes
-        tubes = self._retrieveAllSamplesWithTypeAndParent(sampleType,
-                                                          self._expSampleId,
+        tubes = self._retrieveAllSamplesWithTypeAndParentWithPermId(sampleType,
+                                                          self._expSamplePermId,
                                                           self._expSampleType)
         if _DEBUG:
             self._logger.info("Found " + str(len(tubes)) + " tubes.")
@@ -1170,11 +1161,14 @@ def aggregateProcess(parameters, tableBuilder, uid):
     # Get the experiment sample identifier
     expSampleId = parameters.get("expSampleId")
 
+    # Get the experiment sample perm identifier
+    expSamplePermId = parameters.get("expSamplePermId")
+
     # Get the experiment sample type
     expSampleType = parameters.get("expSampleType")
 
     # Get the plate code
-    plateId = parameters.get("plateId")
+    platePermId = parameters.get("platePermId")
 
     # Get the plate type
     plateType = parameters.get("plateType")
@@ -1188,8 +1182,9 @@ def aggregateProcess(parameters, tableBuilder, uid):
     logger.info("collectionId    = " + collectionId)
     logger.info("collectionType  = " + collectionType)
     logger.info("expSampleId     = " + expSampleId)
+    logger.info("expSamplePermId = " + expSamplePermId)
     logger.info("expSampleType   = " + expSampleType)
-    logger.info("plateId         = " + plateId)
+    logger.info("platePermId     = " + platePermId)
     logger.info("plateType       = " + plateType)
     logger.info("mode            = " + mode)
     logger.info("userId          = " + userId)
@@ -1209,8 +1204,8 @@ def aggregateProcess(parameters, tableBuilder, uid):
 
     # Instantiate the Mover object - userId is a global variable
     # made available to the aggregation plug-in
-    mover = Mover(task, collectionId, collectionType, expSampleId, expSampleType, plateId,
-                  plateType, mode, userId, properties, logger)
+    mover = Mover(task, collectionId, collectionType, expSampleId, expSamplePermId,
+                  expSampleType, platePermId, plateType, mode, userId, properties, logger)
 
     # Process
     success = mover.process()
