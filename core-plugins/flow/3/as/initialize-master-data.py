@@ -430,7 +430,7 @@ prop_type_DEFAULT_OBJECT_TYPE.setInternalNamespace(True)
 prop_type_DESCRIPTION = tr.getOrCreateNewPropertyType('DESCRIPTION', DataType.VARCHAR)
 prop_type_DESCRIPTION.setLabel('Description')
 prop_type_DESCRIPTION.setManagedInternally(False)
-prop_type_DESCRIPTION.setInternalNamespace(True)
+prop_type_DESCRIPTION.setInternalNamespace(False)
 
 # NAME
 prop_type_NAME = tr.getOrCreateNewPropertyType('NAME', DataType.VARCHAR)
@@ -1663,6 +1663,5 @@ assignment_SAMPLE_S3E_TUBE_S3E_TUBE_ISINDEXSORT.setMandatory(False)
 assignment_SAMPLE_S3E_TUBE_S3E_TUBE_ISINDEXSORT.setSection(None)
 assignment_SAMPLE_S3E_TUBE_S3E_TUBE_ISINDEXSORT.setPositionInForms(4)
 assignment_SAMPLE_S3E_TUBE_S3E_TUBE_ISINDEXSORT.setShownEdit(False)
-
 
 print("Import of Flow Cytometry Core Technology Master Data finished.")
