@@ -4,7 +4,7 @@
 @author: Aaron Ponti
 """
 
-from flow_dropbox_lib import Processor
+from Processor import Processor
 
 
 def process(transaction):
