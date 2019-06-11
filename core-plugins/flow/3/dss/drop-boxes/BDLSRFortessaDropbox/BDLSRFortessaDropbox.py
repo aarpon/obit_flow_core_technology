@@ -4,7 +4,7 @@
 @author: Aaron Ponti
 """
 
-from flow_dropbox_lib import register, setup_logger
+from flow_dropbox_lib import Processor
 
 
 def process(transaction):
@@ -18,5 +18,7 @@ def process(transaction):
     #
     prefix = "LSR_FORTESSA"
     version = 2
-    logger = setup_logger("../core-plugins/flow/3/dss/drop-boxes/BDLSRFortessaDropbox/logs", prefix)
-    register(transaction, prefix, version, logger)
+    logDir = "../core-plugins/flow/3/dss/drop-boxes/BDLSRFortessaDropbox/logs"
+
+    processor = Processor(transaction, prefix, version, logDir)
+    processor.run()
