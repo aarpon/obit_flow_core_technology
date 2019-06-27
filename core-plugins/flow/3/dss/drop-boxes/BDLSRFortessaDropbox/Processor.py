@@ -28,9 +28,12 @@ class Processor:
         # Keep track of the total number of samples in the transaction
         self._transactionSampleCount = 0
 
+        # Keep track of the collection objects created/accessed in the transaction
+        self._collectionObjects = {}
+
     def _supportIndexSorting(self, tubeSampleType):
         """Return true if the experiment with given prefix supports index sorting.
-        
+
         @param tubeSampleType: Type of the sample Tube. 
         """
         prefix = tubeSampleType[:-5]
@@ -181,19 +184,30 @@ class Processor:
         @return IExperiment collection
         """
 
-        # Try retrieving the collection
-        collection = self._transaction.getExperiment(openBISCollectionIdentifier)
+        # First, check if the openBISCollectionIdentifier is already known
+        if openBISCollectionIdentifier in self._collectionObjects:
 
-        # If the collection does not exist, create it
-        if collection is None:
+            # Retrieve it from the dictionary
+            collection = self._collectionObjects[openBISCollectionIdentifier]
 
-            # Create a new collection of type "COLLECTION"
-            collection = self._transaction.createNewExperiment(
-                openBISCollectionIdentifier, "COLLECTION")
-            if collection is not None:
-                # Set the collection name
-                collectionName = self._collectionNameFromIdentifier(openBISCollectionIdentifier)
-                collection.setPropertyValue("$NAME", collectionName)
+        else:
+
+            # Try retrieving the collection
+            collection = self._transaction.getExperiment(openBISCollectionIdentifier)
+
+            # If the collection does not exist, create it
+            if collection is None:
+
+                # Create a new collection of type "COLLECTION"
+                collection = self._transaction.createNewExperiment(
+                    openBISCollectionIdentifier, "COLLECTION")
+                if collection is not None:
+                    # Set the collection name
+                    collectionName = self._collectionNameFromIdentifier(openBISCollectionIdentifier)
+                    collection.setPropertyValue("$NAME", collectionName)
+
+            # Add the collection to the local dictionary
+            self._collectionObjects[openBISCollectionIdentifier] = collection
 
         return collection
 
