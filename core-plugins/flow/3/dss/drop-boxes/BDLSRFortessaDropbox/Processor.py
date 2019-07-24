@@ -341,13 +341,9 @@ class Processor:
         # Store properties
         #
 
-        # Store the name (in both the {...}_EXPERIMENT_NAME
-        # and $NAME properties). $NAME is used by the ELN-LIMS
-        # user interface.
+        # Store the name
         openBISExperimentSample.setPropertyValue(
             "$NAME", expName)
-        openBISExperimentSample.setPropertyValue(
-            openBISExperimentSampleType + "_NAME", expName)
 
         # Set the experiment version
         openBISExperimentSample.setPropertyValue(
@@ -494,10 +490,7 @@ class Processor:
         # Set the parent sample of type {...}_EXPERIMENT
         openBISTray.setParentSampleIdentifiers([openBISExperimentSampleIdentifier])
 
-        # Set the plate name
-        openBISTray.setPropertyValue(openBISTraySampleType + "_NAME", name)
-
-        # Set the $NAME property to be compatible with ELN
+        # Set the $NAME property
         openBISTray.setPropertyValue("$NAME", name)
 
         # Set the tray geometry
@@ -554,10 +547,7 @@ class Processor:
             self._logger.error(msg)
             raise Exception(msg)
 
-        # Set the name property
-        openBISTube.setPropertyValue(openBISTubeSampleType + "_NAME", name)
-
-        # Set the $NAME property to be compatible with ELN
+        # Set the $NAME property
         openBISTube.setPropertyValue("$NAME", name)
 
         # Does the tube have an "indexSort" attribute?
@@ -678,10 +668,7 @@ class Processor:
             self._logger.error(msg)
             raise Exception(msg)
 
-        # Set the name property
-        openBISWell.setPropertyValue(openBISWellSampleType + "_NAME", name)
-
-        # Set the $NAME property to be compatible with ELN
+        # Set the $NAME property
         openBISWell.setPropertyValue("$NAME", name)
 
         # Set the parents
