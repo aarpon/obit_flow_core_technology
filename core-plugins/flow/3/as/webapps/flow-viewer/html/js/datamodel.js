@@ -178,7 +178,7 @@ define(["openbis",
                         case (dataModelObj.EXPERIMENT_PREFIX + "_PLATE"):
 
                             res.push({
-                                title: sample.properties[dataModelObj.EXPERIMENT_PREFIX + "_PLATE_NAME"],
+                                title: sample.properties["$NAME"],
                                 icon: "plate.png",
                                 isFolder: true,
                                 isLazy: true,
@@ -242,7 +242,7 @@ define(["openbis",
                             // Now we create the well node and add it as a child of
                             // the correct specimen node
                             let wellNode = {
-                                title: sample.properties[dataModelObj.EXPERIMENT_PREFIX + "_WELL_NAME"],
+                                title: sample.properties["$NAME"],
                                 icon: "well.png",
                                 isFolder: true,
                                 isLazy: true,
@@ -320,7 +320,7 @@ define(["openbis",
                             // Now we create the tube node and add it as a child of
                             // the correct specimen node
                             let tubeNode = {
-                                title: sample.properties[dataModelObj.EXPERIMENT_PREFIX + "_TUBE_NAME"],
+                                title: sample.properties["$NAME"],
                                 icon: "tube.png",
                                 isFolder: true,
                                 isLazy: true,
@@ -780,7 +780,7 @@ define(["openbis",
                     // Store the {...}_EXPERIMENT sample object
                     dataModelObj.experimentSample = result.getObjects()[0];
 
-                    // Store the {...}_EXPERIMENT_NAME property
+                    // Store the $NAME property
                     dataModelObj.expName = dataModelObj.experimentSample.properties["$NAME"];
 
                     // Initialize the tree
