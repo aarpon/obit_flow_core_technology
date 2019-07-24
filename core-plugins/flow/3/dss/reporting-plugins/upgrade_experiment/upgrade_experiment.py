@@ -368,12 +368,7 @@ def process(transaction, parameters, tableBuilder):
     expNameFromFile = reader.getCustomKeyword("EXPERIMENT NAME")
 
     # Get the experiment name from the registered Experiment sample
-    currentExpName = expSample.getPropertyValue(expSampleType + "_NAME")
-    if currentExpName == "":
-        try:
-            currentExpName = expSample.getPropertyValue("$NAME")
-        except:
-            pass
+    currentExpName = expSample.getPropertyValue("$NAME")
 
     # Inform
     _logger.info("Experiment name is registered as " + currentExpName)
@@ -391,7 +386,6 @@ def process(transaction, parameters, tableBuilder):
     else:
 
         # Update the registered Experiment name
-        mutableExperimentSample.setPropertyValue(expSampleType + "_NAME", expNameFromFile)
         mutableExperimentSample.setPropertyValue("$NAME", expNameFromFile)
 
         # Log
