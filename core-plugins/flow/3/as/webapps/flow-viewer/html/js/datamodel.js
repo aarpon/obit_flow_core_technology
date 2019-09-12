@@ -952,6 +952,9 @@ define(["openbis",
                 fetchOptions.withType();
                 fetchOptions.withChildren().withType();
                 fetchOptions.withChildren().withProperties();
+                fetchOptions.withChildren().withParents();
+                fetchOptions.withChildren().withParents().withType();
+                fetchOptions.withChildren().withParents().withProperties();
 
                 let parentFetchOptions = new SampleFetchOptions();
                 parentFetchOptions.withType();
@@ -993,6 +996,9 @@ define(["openbis",
                 fetchOptions.withChildren();
                 fetchOptions.withChildren().withType();
                 fetchOptions.withChildren().withProperties();
+                fetchOptions.withChildren().withParents();
+                fetchOptions.withChildren().withParents().withType();
+                fetchOptions.withChildren().withParents().withProperties();
 
                 let parentFetchOptions = new SampleFetchOptions();
                 parentFetchOptions.withType();
