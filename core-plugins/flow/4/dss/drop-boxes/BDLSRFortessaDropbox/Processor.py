@@ -730,6 +730,9 @@ class Processor:
         fileName = fcsFileNode.attrib.get("relativeFileName")
         fileName = os.path.join(self._transaction.getIncoming().getAbsolutePath(), fileName)
 
+        # Add the file name to the $NAME property
+        dataset.setPropertyValue("$NAME", os.path.basename(fileName))
+
         # Log
         self._logger.info("Registering file: " + fileName)
 
