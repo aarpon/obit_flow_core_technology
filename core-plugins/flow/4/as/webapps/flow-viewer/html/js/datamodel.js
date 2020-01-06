@@ -399,9 +399,10 @@ define(["openbis",
              * @param collectionId string Collection identifier
              * @param collectionType string Collection type
              * @param experimentSampleId string Identifier of the experiment (sample)
+             * @param experimentSamplePermId string Perm Identifier of the experiment (sample)
              * @param experimentSampleType string Type of the experiment (sample)
-             * @param entityId string Identifier of the element to process
-             * @param entityType string Type of the element to process
+             * @param platePermId string Identifier of the plate to process
+             * @param plateType string Type of the plate to process
              * @param mode string One of "normal" or "zip"
              */
             callServerSidePluginExportDataSets: function (task,
