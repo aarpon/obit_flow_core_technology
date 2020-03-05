@@ -18,7 +18,7 @@ def process(transaction):
     #
     prefix = "S3E"
     version = 2
-    logDir = "../core-plugins/flow/3/dss/drop-boxes/BIORADS3eDropbox/logs"
+    logDir = "../core-plugins/flow/4/dss/drop-boxes/BIORADS3eDropbox/logs"
 
     processor = Processor(transaction, prefix, version, logDir)
     processor.run()

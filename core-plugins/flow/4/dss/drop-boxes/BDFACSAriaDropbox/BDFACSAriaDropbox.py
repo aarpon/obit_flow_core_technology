@@ -18,7 +18,7 @@ def process(transaction):
     #
     prefix = "FACS_ARIA"
     version = 2
-    logDir = "../core-plugins/flow/3/dss/drop-boxes/BDFACSAriaDropbox/logs"
+    logDir = "../core-plugins/flow/4/dss/drop-boxes/BDFACSAriaDropbox/logs"
 
     processor = Processor(transaction, prefix, version, logDir)
     processor.run()

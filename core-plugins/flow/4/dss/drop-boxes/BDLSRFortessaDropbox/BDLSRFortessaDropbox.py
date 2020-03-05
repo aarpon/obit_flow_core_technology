@@ -18,7 +18,7 @@ def process(transaction):
     #
     prefix = "LSR_FORTESSA"
     version = 2
-    logDir = "../core-plugins/flow/3/dss/drop-boxes/BDLSRFortessaDropbox/logs"
+    logDir = "../core-plugins/flow/4/dss/drop-boxes/BDLSRFortessaDropbox/logs"
 
     processor = Processor(transaction, prefix, version, logDir)
     processor.run()
