@@ -18,7 +18,7 @@ def process(transaction):
     #
     prefix = "MOFLO_XDP"
     version = 2
-    logDir = "../core-plugins/flow/3/dss/drop-boxes/BCMoFloXDPDropbox/logs"
+    logDir = "../core-plugins/flow/4/dss/drop-boxes/BCMoFloXDPDropbox/logs"
 
     processor = Processor(transaction, prefix, version, logDir)
     processor.run()
