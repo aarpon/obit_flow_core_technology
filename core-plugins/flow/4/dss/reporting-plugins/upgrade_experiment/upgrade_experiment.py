@@ -66,7 +66,7 @@ def _setUpLogging():
 
     # Get path to containing folder
     # __file__ does not work (reliably) in Jython
-    rpPath = "../core-plugins/flow/3/dss/reporting-plugins/upgrade_experiment"
+    rpPath = "../core-plugins/flow/4/dss/reporting-plugins/upgrade_experiment"
 
     # Path to the logs subfolder
     logPath = os.path.join(rpPath, "logs")
