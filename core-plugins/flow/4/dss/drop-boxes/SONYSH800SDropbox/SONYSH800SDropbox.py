@@ -16,9 +16,9 @@ def process(transaction):
     #
     # Run registration
     #
-    prefix = "SONY"
+    prefix = "SONY_SH800S"
     version = 2
-    logDir = "../core-plugins/flow/4/dss/drop-boxes/SONYDropbox/logs"
+    logDir = "../core-plugins/flow/4/dss/drop-boxes/SONYSH800SDropbox/logs"
 
     processor = Processor(transaction, prefix, version, logDir)
     processor.run()
