@@ -93,8 +93,7 @@ exp_type_COLLECTION.setDescription('Used as a folder for things.')
 
 # ORGANIZATION_UNIT
 samp_type_ORGANIZATION_UNIT = tr.getOrCreateNewSampleType('ORGANIZATION_UNIT')
-samp_type_ORGANIZATION_UNIT.setDescription(
-    'Used to create different organisations for samples since they can\'t belong to more than one experiment.')
+samp_type_ORGANIZATION_UNIT.setDescription('Used to create different organisations for samples since they can\'t belong to more than one experiment.')
 samp_type_ORGANIZATION_UNIT.setListable(True)
 samp_type_ORGANIZATION_UNIT.setShowContainer(False)
 samp_type_ORGANIZATION_UNIT.setShowParents(True)
@@ -560,22 +559,19 @@ prop_type_XMLCOMMENTS.setInternalNamespace(True)
 # ------------------------------------------------------------------------------
 
 # FACS_ARIA_EXPERIMENT_ACQ_HARDWARE
-prop_type_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE = tr.getOrCreateNewPropertyType('FACS_ARIA_EXPERIMENT_ACQ_HARDWARE',
-                                                                            DataType.VARCHAR)
+prop_type_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE = tr.getOrCreateNewPropertyType('FACS_ARIA_EXPERIMENT_ACQ_HARDWARE', DataType.VARCHAR)
 prop_type_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE.setLabel('Acquisition hardware')
 prop_type_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE.setManagedInternally(False)
 prop_type_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE.setInternalNamespace(False)
 
 # FACS_ARIA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME
-prop_type_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME = tr.getOrCreateNewPropertyType(
-    'FACS_ARIA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME', DataType.VARCHAR)
+prop_type_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME = tr.getOrCreateNewPropertyType('FACS_ARIA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME', DataType.VARCHAR)
 prop_type_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setLabel('Acquisition station name')
 prop_type_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setManagedInternally(False)
 prop_type_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setInternalNamespace(False)
 
 # FACS_ARIA_EXPERIMENT_ACQ_SOFTWARE
-prop_type_FACS_ARIA_EXPERIMENT_ACQ_SOFTWARE = tr.getOrCreateNewPropertyType('FACS_ARIA_EXPERIMENT_ACQ_SOFTWARE',
-                                                                            DataType.VARCHAR)
+prop_type_FACS_ARIA_EXPERIMENT_ACQ_SOFTWARE = tr.getOrCreateNewPropertyType('FACS_ARIA_EXPERIMENT_ACQ_SOFTWARE', DataType.VARCHAR)
 prop_type_FACS_ARIA_EXPERIMENT_ACQ_SOFTWARE.setLabel('Acquisition software')
 prop_type_FACS_ARIA_EXPERIMENT_ACQ_SOFTWARE.setManagedInternally(False)
 prop_type_FACS_ARIA_EXPERIMENT_ACQ_SOFTWARE.setInternalNamespace(False)
@@ -587,8 +583,7 @@ prop_type_FACS_ARIA_EXPERIMENT_DATE.setManagedInternally(False)
 prop_type_FACS_ARIA_EXPERIMENT_DATE.setInternalNamespace(False)
 
 # FACS_ARIA_EXPERIMENT_DESCRIPTION
-prop_type_FACS_ARIA_EXPERIMENT_DESCRIPTION = tr.getOrCreateNewPropertyType('FACS_ARIA_EXPERIMENT_DESCRIPTION',
-                                                                           DataType.MULTILINE_VARCHAR)
+prop_type_FACS_ARIA_EXPERIMENT_DESCRIPTION = tr.getOrCreateNewPropertyType('FACS_ARIA_EXPERIMENT_DESCRIPTION', DataType.MULTILINE_VARCHAR)
 prop_type_FACS_ARIA_EXPERIMENT_DESCRIPTION.setLabel('Description')
 prop_type_FACS_ARIA_EXPERIMENT_DESCRIPTION.setManagedInternally(False)
 prop_type_FACS_ARIA_EXPERIMENT_DESCRIPTION.setInternalNamespace(False)
@@ -618,8 +613,7 @@ prop_type_FACS_ARIA_FCSFILE_ACQ_DATE.setManagedInternally(False)
 prop_type_FACS_ARIA_FCSFILE_ACQ_DATE.setInternalNamespace(False)
 
 # FACS_ARIA_FCSFILE_PARAMETERS
-prop_type_FACS_ARIA_FCSFILE_PARAMETERS = tr.getOrCreateNewPropertyType('FACS_ARIA_FCSFILE_PARAMETERS',
-                                                                       DataType.MULTILINE_VARCHAR)
+prop_type_FACS_ARIA_FCSFILE_PARAMETERS = tr.getOrCreateNewPropertyType('FACS_ARIA_FCSFILE_PARAMETERS', DataType.MULTILINE_VARCHAR)
 prop_type_FACS_ARIA_FCSFILE_PARAMETERS.setLabel('FCS parameters')
 prop_type_FACS_ARIA_FCSFILE_PARAMETERS.setManagedInternally(False)
 prop_type_FACS_ARIA_FCSFILE_PARAMETERS.setInternalNamespace(False)
@@ -634,22 +628,19 @@ prop_type_FACS_ARIA_TUBE_ISINDEXSORT.setInternalNamespace(False)
 # ------------------------------------------------------------------------------
 
 # INFLUX_EXPERIMENT_ACQ_HARDWARE
-prop_type_INFLUX_EXPERIMENT_ACQ_HARDWARE = tr.getOrCreateNewPropertyType('INFLUX_EXPERIMENT_ACQ_HARDWARE',
-                                                                         DataType.VARCHAR)
+prop_type_INFLUX_EXPERIMENT_ACQ_HARDWARE = tr.getOrCreateNewPropertyType('INFLUX_EXPERIMENT_ACQ_HARDWARE', DataType.VARCHAR)
 prop_type_INFLUX_EXPERIMENT_ACQ_HARDWARE.setLabel('Acquisition hardware')
 prop_type_INFLUX_EXPERIMENT_ACQ_HARDWARE.setManagedInternally(False)
 prop_type_INFLUX_EXPERIMENT_ACQ_HARDWARE.setInternalNamespace(False)
 
 # INFLUX_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME
-prop_type_INFLUX_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME = tr.getOrCreateNewPropertyType(
-    'INFLUX_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME', DataType.VARCHAR)
+prop_type_INFLUX_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME = tr.getOrCreateNewPropertyType('INFLUX_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME', DataType.VARCHAR)
 prop_type_INFLUX_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setLabel('Acquisition station name')
 prop_type_INFLUX_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setManagedInternally(False)
 prop_type_INFLUX_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setInternalNamespace(False)
 
 # INFLUX_EXPERIMENT_ACQ_SOFTWARE
-prop_type_INFLUX_EXPERIMENT_ACQ_SOFTWARE = tr.getOrCreateNewPropertyType('INFLUX_EXPERIMENT_ACQ_SOFTWARE',
-                                                                         DataType.VARCHAR)
+prop_type_INFLUX_EXPERIMENT_ACQ_SOFTWARE = tr.getOrCreateNewPropertyType('INFLUX_EXPERIMENT_ACQ_SOFTWARE', DataType.VARCHAR)
 prop_type_INFLUX_EXPERIMENT_ACQ_SOFTWARE.setLabel('Acquisition software')
 prop_type_INFLUX_EXPERIMENT_ACQ_SOFTWARE.setManagedInternally(False)
 prop_type_INFLUX_EXPERIMENT_ACQ_SOFTWARE.setInternalNamespace(False)
@@ -661,8 +652,7 @@ prop_type_INFLUX_EXPERIMENT_DATE.setManagedInternally(False)
 prop_type_INFLUX_EXPERIMENT_DATE.setInternalNamespace(False)
 
 # INFLUX_EXPERIMENT_DESCRIPTION
-prop_type_INFLUX_EXPERIMENT_DESCRIPTION = tr.getOrCreateNewPropertyType('INFLUX_EXPERIMENT_DESCRIPTION',
-                                                                        DataType.MULTILINE_VARCHAR)
+prop_type_INFLUX_EXPERIMENT_DESCRIPTION = tr.getOrCreateNewPropertyType('INFLUX_EXPERIMENT_DESCRIPTION', DataType.MULTILINE_VARCHAR)
 prop_type_INFLUX_EXPERIMENT_DESCRIPTION.setLabel('Description')
 prop_type_INFLUX_EXPERIMENT_DESCRIPTION.setManagedInternally(False)
 prop_type_INFLUX_EXPERIMENT_DESCRIPTION.setInternalNamespace(False)
@@ -691,8 +681,7 @@ prop_type_INFLUX_FCSFILE_ACQ_DATE.setManagedInternally(False)
 prop_type_INFLUX_FCSFILE_ACQ_DATE.setInternalNamespace(False)
 
 # INFLUX_FCSFILE_PARAMETERS
-prop_type_INFLUX_FCSFILE_PARAMETERS = tr.getOrCreateNewPropertyType('INFLUX_FCSFILE_PARAMETERS',
-                                                                    DataType.MULTILINE_VARCHAR)
+prop_type_INFLUX_FCSFILE_PARAMETERS = tr.getOrCreateNewPropertyType('INFLUX_FCSFILE_PARAMETERS', DataType.MULTILINE_VARCHAR)
 prop_type_INFLUX_FCSFILE_PARAMETERS.setLabel('FCS parameters')
 prop_type_INFLUX_FCSFILE_PARAMETERS.setManagedInternally(False)
 prop_type_INFLUX_FCSFILE_PARAMETERS.setInternalNamespace(False)
@@ -707,36 +696,31 @@ prop_type_INFLUX_TUBE_ISINDEXSORT.setInternalNamespace(False)
 # ------------------------------------------------------------------------------
 
 # LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE
-prop_type_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE = tr.getOrCreateNewPropertyType('LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE',
-                                                                               DataType.VARCHAR)
+prop_type_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE = tr.getOrCreateNewPropertyType('LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE', DataType.VARCHAR)
 prop_type_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE.setLabel('Acquisition hardware')
 prop_type_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE.setManagedInternally(False)
 prop_type_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE.setInternalNamespace(False)
 
 # LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME
-prop_type_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME = tr.getOrCreateNewPropertyType(
-    'LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME', DataType.VARCHAR)
+prop_type_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME = tr.getOrCreateNewPropertyType('LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME', DataType.VARCHAR)
 prop_type_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setLabel('Acquisition station name')
 prop_type_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setManagedInternally(False)
 prop_type_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setInternalNamespace(False)
 
 # LSR_FORTESSA_EXPERIMENT_ACQ_SOFTWARE
-prop_type_LSR_FORTESSA_EXPERIMENT_ACQ_SOFTWARE = tr.getOrCreateNewPropertyType('LSR_FORTESSA_EXPERIMENT_ACQ_SOFTWARE',
-                                                                               DataType.VARCHAR)
+prop_type_LSR_FORTESSA_EXPERIMENT_ACQ_SOFTWARE = tr.getOrCreateNewPropertyType('LSR_FORTESSA_EXPERIMENT_ACQ_SOFTWARE', DataType.VARCHAR)
 prop_type_LSR_FORTESSA_EXPERIMENT_ACQ_SOFTWARE.setLabel('Acquisition software')
 prop_type_LSR_FORTESSA_EXPERIMENT_ACQ_SOFTWARE.setManagedInternally(False)
 prop_type_LSR_FORTESSA_EXPERIMENT_ACQ_SOFTWARE.setInternalNamespace(False)
 
 # LSR_FORTESSA_EXPERIMENT_DATE
-prop_type_LSR_FORTESSA_EXPERIMENT_DATE = tr.getOrCreateNewPropertyType('LSR_FORTESSA_EXPERIMENT_DATE',
-                                                                       DataType.TIMESTAMP)
+prop_type_LSR_FORTESSA_EXPERIMENT_DATE = tr.getOrCreateNewPropertyType('LSR_FORTESSA_EXPERIMENT_DATE', DataType.TIMESTAMP)
 prop_type_LSR_FORTESSA_EXPERIMENT_DATE.setLabel('Experiment date')
 prop_type_LSR_FORTESSA_EXPERIMENT_DATE.setManagedInternally(False)
 prop_type_LSR_FORTESSA_EXPERIMENT_DATE.setInternalNamespace(False)
 
 # LSR_FORTESSA_EXPERIMENT_DESCRIPTION
-prop_type_LSR_FORTESSA_EXPERIMENT_DESCRIPTION = tr.getOrCreateNewPropertyType('LSR_FORTESSA_EXPERIMENT_DESCRIPTION',
-                                                                              DataType.MULTILINE_VARCHAR)
+prop_type_LSR_FORTESSA_EXPERIMENT_DESCRIPTION = tr.getOrCreateNewPropertyType('LSR_FORTESSA_EXPERIMENT_DESCRIPTION', DataType.MULTILINE_VARCHAR)
 prop_type_LSR_FORTESSA_EXPERIMENT_DESCRIPTION.setLabel('Description')
 prop_type_LSR_FORTESSA_EXPERIMENT_DESCRIPTION.setManagedInternally(False)
 prop_type_LSR_FORTESSA_EXPERIMENT_DESCRIPTION.setInternalNamespace(False)
@@ -748,36 +732,31 @@ prop_type_LSR_FORTESSA_EXPERIMENT_NAME.setManagedInternally(False)
 prop_type_LSR_FORTESSA_EXPERIMENT_NAME.setInternalNamespace(False)
 
 # LSR_FORTESSA_EXPERIMENT_OWNER
-prop_type_LSR_FORTESSA_EXPERIMENT_OWNER = tr.getOrCreateNewPropertyType('LSR_FORTESSA_EXPERIMENT_OWNER',
-                                                                        DataType.VARCHAR)
+prop_type_LSR_FORTESSA_EXPERIMENT_OWNER = tr.getOrCreateNewPropertyType('LSR_FORTESSA_EXPERIMENT_OWNER', DataType.VARCHAR)
 prop_type_LSR_FORTESSA_EXPERIMENT_OWNER.setLabel('Owner')
 prop_type_LSR_FORTESSA_EXPERIMENT_OWNER.setManagedInternally(False)
 prop_type_LSR_FORTESSA_EXPERIMENT_OWNER.setInternalNamespace(False)
 
 # LSR_FORTESSA_EXPERIMENT_VERSION
-prop_type_LSR_FORTESSA_EXPERIMENT_VERSION = tr.getOrCreateNewPropertyType('LSR_FORTESSA_EXPERIMENT_VERSION',
-                                                                          DataType.INTEGER)
+prop_type_LSR_FORTESSA_EXPERIMENT_VERSION = tr.getOrCreateNewPropertyType('LSR_FORTESSA_EXPERIMENT_VERSION', DataType.INTEGER)
 prop_type_LSR_FORTESSA_EXPERIMENT_VERSION.setLabel('Version')
 prop_type_LSR_FORTESSA_EXPERIMENT_VERSION.setManagedInternally(False)
 prop_type_LSR_FORTESSA_EXPERIMENT_VERSION.setInternalNamespace(False)
 
 # LSR_FORTESSA_FCSFILE_ACQ_DATE
-prop_type_LSR_FORTESSA_FCSFILE_ACQ_DATE = tr.getOrCreateNewPropertyType('LSR_FORTESSA_FCSFILE_ACQ_DATE',
-                                                                        DataType.TIMESTAMP)
+prop_type_LSR_FORTESSA_FCSFILE_ACQ_DATE = tr.getOrCreateNewPropertyType('LSR_FORTESSA_FCSFILE_ACQ_DATE', DataType.TIMESTAMP)
 prop_type_LSR_FORTESSA_FCSFILE_ACQ_DATE.setLabel('Acquisition date')
 prop_type_LSR_FORTESSA_FCSFILE_ACQ_DATE.setManagedInternally(False)
 prop_type_LSR_FORTESSA_FCSFILE_ACQ_DATE.setInternalNamespace(False)
 
 # LSR_FORTESSA_FCSFILE_PARAMETERS
-prop_type_LSR_FORTESSA_FCSFILE_PARAMETERS = tr.getOrCreateNewPropertyType('LSR_FORTESSA_FCSFILE_PARAMETERS',
-                                                                          DataType.MULTILINE_VARCHAR)
+prop_type_LSR_FORTESSA_FCSFILE_PARAMETERS = tr.getOrCreateNewPropertyType('LSR_FORTESSA_FCSFILE_PARAMETERS', DataType.MULTILINE_VARCHAR)
 prop_type_LSR_FORTESSA_FCSFILE_PARAMETERS.setLabel('FCS parameters')
 prop_type_LSR_FORTESSA_FCSFILE_PARAMETERS.setManagedInternally(False)
 prop_type_LSR_FORTESSA_FCSFILE_PARAMETERS.setInternalNamespace(False)
 
 # LSR_FORTESSA_PLATE_GEOMETRY
-prop_type_LSR_FORTESSA_PLATE_GEOMETRY = tr.getOrCreateNewPropertyType('LSR_FORTESSA_PLATE_GEOMETRY',
-                                                                      DataType.CONTROLLEDVOCABULARY)
+prop_type_LSR_FORTESSA_PLATE_GEOMETRY = tr.getOrCreateNewPropertyType('LSR_FORTESSA_PLATE_GEOMETRY', DataType.CONTROLLEDVOCABULARY)
 prop_type_LSR_FORTESSA_PLATE_GEOMETRY.setLabel('Plate Geometry')
 prop_type_LSR_FORTESSA_PLATE_GEOMETRY.setManagedInternally(False)
 prop_type_LSR_FORTESSA_PLATE_GEOMETRY.setInternalNamespace(False)
@@ -859,22 +838,19 @@ prop_type_CYTOFLEX_S_PLATE_GEOMETRY.setVocabulary(vocabulary_CYTOFLEX_S_PLATE_GE
 # ------------------------------------------------------------------------------
 
 # MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE
-prop_type_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE = tr.getOrCreateNewPropertyType('MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE',
-                                                                            DataType.VARCHAR)
+prop_type_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE = tr.getOrCreateNewPropertyType('MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE', DataType.VARCHAR)
 prop_type_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE.setLabel('Acquisition hardware')
 prop_type_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE.setManagedInternally(False)
 prop_type_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE.setInternalNamespace(False)
 
 # MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME
-prop_type_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME = tr.getOrCreateNewPropertyType(
-    'MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME', DataType.VARCHAR)
+prop_type_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME = tr.getOrCreateNewPropertyType('MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME', DataType.VARCHAR)
 prop_type_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setLabel('Acquisition station name')
 prop_type_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setManagedInternally(False)
 prop_type_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setInternalNamespace(False)
 
 # MOFLO_XDP_EXPERIMENT_ACQ_SOFTWARE
-prop_type_MOFLO_XDP_EXPERIMENT_ACQ_SOFTWARE = tr.getOrCreateNewPropertyType('MOFLO_XDP_EXPERIMENT_ACQ_SOFTWARE',
-                                                                            DataType.VARCHAR)
+prop_type_MOFLO_XDP_EXPERIMENT_ACQ_SOFTWARE = tr.getOrCreateNewPropertyType('MOFLO_XDP_EXPERIMENT_ACQ_SOFTWARE', DataType.VARCHAR)
 prop_type_MOFLO_XDP_EXPERIMENT_ACQ_SOFTWARE.setLabel('Acquisition software')
 prop_type_MOFLO_XDP_EXPERIMENT_ACQ_SOFTWARE.setManagedInternally(False)
 prop_type_MOFLO_XDP_EXPERIMENT_ACQ_SOFTWARE.setInternalNamespace(False)
@@ -886,8 +862,7 @@ prop_type_MOFLO_XDP_EXPERIMENT_DATE.setManagedInternally(False)
 prop_type_MOFLO_XDP_EXPERIMENT_DATE.setInternalNamespace(False)
 
 # MOFLO_XDP_EXPERIMENT_DESCRIPTION
-prop_type_MOFLO_XDP_EXPERIMENT_DESCRIPTION = tr.getOrCreateNewPropertyType('MOFLO_XDP_EXPERIMENT_DESCRIPTION',
-                                                                           DataType.MULTILINE_VARCHAR)
+prop_type_MOFLO_XDP_EXPERIMENT_DESCRIPTION = tr.getOrCreateNewPropertyType('MOFLO_XDP_EXPERIMENT_DESCRIPTION', DataType.MULTILINE_VARCHAR)
 prop_type_MOFLO_XDP_EXPERIMENT_DESCRIPTION.setLabel('Description')
 prop_type_MOFLO_XDP_EXPERIMENT_DESCRIPTION.setManagedInternally(False)
 prop_type_MOFLO_XDP_EXPERIMENT_DESCRIPTION.setInternalNamespace(False)
@@ -917,8 +892,7 @@ prop_type_MOFLO_XDP_FCSFILE_ACQ_DATE.setManagedInternally(False)
 prop_type_MOFLO_XDP_FCSFILE_ACQ_DATE.setInternalNamespace(False)
 
 # MOFLO_XDP_FCSFILE_PARAMETERS
-prop_type_MOFLO_XDP_FCSFILE_PARAMETERS = tr.getOrCreateNewPropertyType('MOFLO_XDP_FCSFILE_PARAMETERS',
-                                                                       DataType.MULTILINE_VARCHAR)
+prop_type_MOFLO_XDP_FCSFILE_PARAMETERS = tr.getOrCreateNewPropertyType('MOFLO_XDP_FCSFILE_PARAMETERS', DataType.MULTILINE_VARCHAR)
 prop_type_MOFLO_XDP_FCSFILE_PARAMETERS.setLabel('FCS parameters')
 prop_type_MOFLO_XDP_FCSFILE_PARAMETERS.setManagedInternally(False)
 prop_type_MOFLO_XDP_FCSFILE_PARAMETERS.setInternalNamespace(False)
@@ -939,8 +913,7 @@ prop_type_S3E_EXPERIMENT_ACQ_HARDWARE.setManagedInternally(False)
 prop_type_S3E_EXPERIMENT_ACQ_HARDWARE.setInternalNamespace(False)
 
 # S3E_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME
-prop_type_S3E_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME = tr.getOrCreateNewPropertyType(
-    'S3E_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME', DataType.VARCHAR)
+prop_type_S3E_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME = tr.getOrCreateNewPropertyType('S3E_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME', DataType.VARCHAR)
 prop_type_S3E_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setLabel('Acquisition station name')
 prop_type_S3E_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setManagedInternally(False)
 prop_type_S3E_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setInternalNamespace(False)
@@ -958,8 +931,7 @@ prop_type_S3E_EXPERIMENT_DATE.setManagedInternally(False)
 prop_type_S3E_EXPERIMENT_DATE.setInternalNamespace(False)
 
 # S3E_EXPERIMENT_DESCRIPTION
-prop_type_S3E_EXPERIMENT_DESCRIPTION = tr.getOrCreateNewPropertyType('S3E_EXPERIMENT_DESCRIPTION',
-                                                                     DataType.MULTILINE_VARCHAR)
+prop_type_S3E_EXPERIMENT_DESCRIPTION = tr.getOrCreateNewPropertyType('S3E_EXPERIMENT_DESCRIPTION', DataType.MULTILINE_VARCHAR)
 prop_type_S3E_EXPERIMENT_DESCRIPTION.setLabel('Description')
 prop_type_S3E_EXPERIMENT_DESCRIPTION.setManagedInternally(False)
 prop_type_S3E_EXPERIMENT_DESCRIPTION.setInternalNamespace(False)
@@ -1045,8 +1017,7 @@ assignment_EXPERIMENT_COLLECTION_NAME.setPositionInForms(1)
 assignment_EXPERIMENT_COLLECTION_NAME.setShownEdit(False)
 
 # EXPERIMENT_COLLECTION_DEFAULT_OBJECT_TYPE
-assignment_EXPERIMENT_COLLECTION_DEFAULT_OBJECT_TYPE = tr.assignPropertyType(exp_type_COLLECTION,
-                                                                             prop_type_DEFAULT_OBJECT_TYPE)
+assignment_EXPERIMENT_COLLECTION_DEFAULT_OBJECT_TYPE = tr.assignPropertyType(exp_type_COLLECTION, prop_type_DEFAULT_OBJECT_TYPE)
 assignment_EXPERIMENT_COLLECTION_DEFAULT_OBJECT_TYPE.setMandatory(False)
 assignment_EXPERIMENT_COLLECTION_DEFAULT_OBJECT_TYPE.setSection(None)
 assignment_EXPERIMENT_COLLECTION_DEFAULT_OBJECT_TYPE.setPositionInForms(2)
@@ -1060,24 +1031,21 @@ assignment_SAMPLE_ORGANIZATION_UNIT_NAME.setPositionInForms(1)
 assignment_SAMPLE_ORGANIZATION_UNIT_NAME.setShownEdit(False)
 
 # SAMPLE_ORGANIZATION_UNIT_DESCRIPTION
-assignment_SAMPLE_ORGANIZATION_UNIT_DESCRIPTION = tr.assignPropertyType(samp_type_ORGANIZATION_UNIT,
-                                                                        prop_type_DESCRIPTION)
+assignment_SAMPLE_ORGANIZATION_UNIT_DESCRIPTION = tr.assignPropertyType(samp_type_ORGANIZATION_UNIT, prop_type_DESCRIPTION)
 assignment_SAMPLE_ORGANIZATION_UNIT_DESCRIPTION.setMandatory(False)
 assignment_SAMPLE_ORGANIZATION_UNIT_DESCRIPTION.setSection(None)
 assignment_SAMPLE_ORGANIZATION_UNIT_DESCRIPTION.setPositionInForms(2)
 assignment_SAMPLE_ORGANIZATION_UNIT_DESCRIPTION.setShownEdit(False)
 
 # SAMPLE_ORGANIZATION_UNIT_XMLCOMMENTS
-assignment_SAMPLE_ORGANIZATION_UNIT_XMLCOMMENTS = tr.assignPropertyType(samp_type_ORGANIZATION_UNIT,
-                                                                        prop_type_XMLCOMMENTS)
+assignment_SAMPLE_ORGANIZATION_UNIT_XMLCOMMENTS = tr.assignPropertyType(samp_type_ORGANIZATION_UNIT, prop_type_XMLCOMMENTS)
 assignment_SAMPLE_ORGANIZATION_UNIT_XMLCOMMENTS.setMandatory(False)
 assignment_SAMPLE_ORGANIZATION_UNIT_XMLCOMMENTS.setSection(None)
 assignment_SAMPLE_ORGANIZATION_UNIT_XMLCOMMENTS.setPositionInForms(3)
 assignment_SAMPLE_ORGANIZATION_UNIT_XMLCOMMENTS.setShownEdit(False)
 
 # SAMPLE_ORGANIZATION_UNIT_ANNOTATIONS_STATE
-assignment_SAMPLE_ORGANIZATION_UNIT_ANNOTATIONS_STATE = tr.assignPropertyType(samp_type_ORGANIZATION_UNIT,
-                                                                              prop_type_ANNOTATIONS_STATE)
+assignment_SAMPLE_ORGANIZATION_UNIT_ANNOTATIONS_STATE = tr.assignPropertyType(samp_type_ORGANIZATION_UNIT, prop_type_ANNOTATIONS_STATE)
 assignment_SAMPLE_ORGANIZATION_UNIT_ANNOTATIONS_STATE.setMandatory(False)
 assignment_SAMPLE_ORGANIZATION_UNIT_ANNOTATIONS_STATE.setSection(None)
 assignment_SAMPLE_ORGANIZATION_UNIT_ANNOTATIONS_STATE.setPositionInForms(4)
@@ -1094,88 +1062,77 @@ assignment_SAMPLE_FACS_ARIA_EXPERIMENT_NAME.setPositionInForms(1)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_NAME.setShownEdit(False)
 
 # SAMPLE_FACS_ARIA_EXPERIMENT_ANNOTATIONS_STATE
-assignment_SAMPLE_FACS_ARIA_EXPERIMENT_ANNOTATIONS_STATE = tr.assignPropertyType(samp_type_FACS_ARIA_EXPERIMENT,
-                                                                                 prop_type_ANNOTATIONS_STATE)
+assignment_SAMPLE_FACS_ARIA_EXPERIMENT_ANNOTATIONS_STATE = tr.assignPropertyType(samp_type_FACS_ARIA_EXPERIMENT, prop_type_ANNOTATIONS_STATE)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_ANNOTATIONS_STATE.setMandatory(False)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_ANNOTATIONS_STATE.setSection('General Info')
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_ANNOTATIONS_STATE.setPositionInForms(2)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_ANNOTATIONS_STATE.setShownEdit(False)
 
 # SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_NAME
-assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_NAME = tr.assignPropertyType(samp_type_FACS_ARIA_EXPERIMENT,
-                                                                                         prop_type_FACS_ARIA_EXPERIMENT_NAME)
+assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_NAME = tr.assignPropertyType(samp_type_FACS_ARIA_EXPERIMENT, prop_type_FACS_ARIA_EXPERIMENT_NAME)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_NAME.setMandatory(False)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_NAME.setSection(None)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_NAME.setPositionInForms(3)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_NAME.setShownEdit(False)
 
 # SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_DATE
-assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_DATE = tr.assignPropertyType(samp_type_FACS_ARIA_EXPERIMENT,
-                                                                                         prop_type_FACS_ARIA_EXPERIMENT_DATE)
+assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_DATE = tr.assignPropertyType(samp_type_FACS_ARIA_EXPERIMENT, prop_type_FACS_ARIA_EXPERIMENT_DATE)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_DATE.setMandatory(False)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_DATE.setSection(None)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_DATE.setPositionInForms(4)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_DATE.setShownEdit(False)
 
 # SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_DESCRIPTION
-assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_DESCRIPTION = tr.assignPropertyType(
-    samp_type_FACS_ARIA_EXPERIMENT, prop_type_FACS_ARIA_EXPERIMENT_DESCRIPTION)
+assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_DESCRIPTION = tr.assignPropertyType(samp_type_FACS_ARIA_EXPERIMENT, prop_type_FACS_ARIA_EXPERIMENT_DESCRIPTION)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_DESCRIPTION.setMandatory(False)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_DESCRIPTION.setSection(None)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_DESCRIPTION.setPositionInForms(5)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_DESCRIPTION.setShownEdit(True)
 
 # SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE
-assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE = tr.assignPropertyType(
-    samp_type_FACS_ARIA_EXPERIMENT, prop_type_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE)
+assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE = tr.assignPropertyType(samp_type_FACS_ARIA_EXPERIMENT, prop_type_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE.setMandatory(False)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE.setSection(None)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE.setPositionInForms(6)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE.setShownEdit(False)
 
 # SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_ACQ_SOFTWARE
-assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_ACQ_SOFTWARE = tr.assignPropertyType(
-    samp_type_FACS_ARIA_EXPERIMENT, prop_type_FACS_ARIA_EXPERIMENT_ACQ_SOFTWARE)
+assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_ACQ_SOFTWARE = tr.assignPropertyType(samp_type_FACS_ARIA_EXPERIMENT, prop_type_FACS_ARIA_EXPERIMENT_ACQ_SOFTWARE)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_ACQ_SOFTWARE.setMandatory(False)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_ACQ_SOFTWARE.setSection(None)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_ACQ_SOFTWARE.setPositionInForms(7)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_ACQ_SOFTWARE.setShownEdit(False)
 
 # SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_VERSION
-assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_VERSION = tr.assignPropertyType(
-    samp_type_FACS_ARIA_EXPERIMENT, prop_type_FACS_ARIA_EXPERIMENT_VERSION)
+assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_VERSION = tr.assignPropertyType(samp_type_FACS_ARIA_EXPERIMENT, prop_type_FACS_ARIA_EXPERIMENT_VERSION)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_VERSION.setMandatory(False)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_VERSION.setSection(None)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_VERSION.setPositionInForms(8)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_VERSION.setShownEdit(False)
 
 # SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_OWNER
-assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_OWNER = tr.assignPropertyType(
-    samp_type_FACS_ARIA_EXPERIMENT, prop_type_FACS_ARIA_EXPERIMENT_OWNER)
+assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_OWNER = tr.assignPropertyType(samp_type_FACS_ARIA_EXPERIMENT, prop_type_FACS_ARIA_EXPERIMENT_OWNER)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_OWNER.setMandatory(False)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_OWNER.setSection(None)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_OWNER.setPositionInForms(9)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_OWNER.setShownEdit(False)
 
 # SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME
-assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME = tr.assignPropertyType(
-    samp_type_FACS_ARIA_EXPERIMENT, prop_type_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME)
+assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME = tr.assignPropertyType(samp_type_FACS_ARIA_EXPERIMENT, prop_type_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setMandatory(False)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setSection(None)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setPositionInForms(10)
 assignment_SAMPLE_FACS_ARIA_EXPERIMENT_FACS_ARIA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setShownEdit(True)
 
 # DATA_SET_FACS_ARIA_FCSFILE_FACS_ARIA_FCSFILE_PARAMETERS
-assignment_DATA_SET_FACS_ARIA_FCSFILE_FACS_ARIA_FCSFILE_PARAMETERS = tr.assignPropertyType(
-    data_set_type_FACS_ARIA_FCSFILE, prop_type_FACS_ARIA_FCSFILE_PARAMETERS)
+assignment_DATA_SET_FACS_ARIA_FCSFILE_FACS_ARIA_FCSFILE_PARAMETERS = tr.assignPropertyType(data_set_type_FACS_ARIA_FCSFILE, prop_type_FACS_ARIA_FCSFILE_PARAMETERS)
 assignment_DATA_SET_FACS_ARIA_FCSFILE_FACS_ARIA_FCSFILE_PARAMETERS.setMandatory(False)
 assignment_DATA_SET_FACS_ARIA_FCSFILE_FACS_ARIA_FCSFILE_PARAMETERS.setSection(None)
 assignment_DATA_SET_FACS_ARIA_FCSFILE_FACS_ARIA_FCSFILE_PARAMETERS.setPositionInForms(2)
 assignment_DATA_SET_FACS_ARIA_FCSFILE_FACS_ARIA_FCSFILE_PARAMETERS.setShownEdit(False)
 
 # DATA_SET_FACS_ARIA_FCSFILE_FACS_ARIA_FCSFILE_ACQ_DATE
-assignment_DATA_SET_FACS_ARIA_FCSFILE_FACS_ARIA_FCSFILE_ACQ_DATE = tr.assignPropertyType(
-    data_set_type_FACS_ARIA_FCSFILE, prop_type_FACS_ARIA_FCSFILE_ACQ_DATE)
+assignment_DATA_SET_FACS_ARIA_FCSFILE_FACS_ARIA_FCSFILE_ACQ_DATE = tr.assignPropertyType(data_set_type_FACS_ARIA_FCSFILE, prop_type_FACS_ARIA_FCSFILE_ACQ_DATE)
 assignment_DATA_SET_FACS_ARIA_FCSFILE_FACS_ARIA_FCSFILE_ACQ_DATE.setMandatory(False)
 assignment_DATA_SET_FACS_ARIA_FCSFILE_FACS_ARIA_FCSFILE_ACQ_DATE.setSection(None)
 assignment_DATA_SET_FACS_ARIA_FCSFILE_FACS_ARIA_FCSFILE_ACQ_DATE.setPositionInForms(3)
@@ -1196,8 +1153,7 @@ assignment_SAMPLE_FACS_ARIA_SPECIMEN_NAME.setPositionInForms(1)
 assignment_SAMPLE_FACS_ARIA_SPECIMEN_NAME.setShownEdit(True)
 
 # SAMPLE_FACS_ARIA_SPECIMEN_ANNOTATIONS_STATE
-assignment_SAMPLE_FACS_ARIA_SPECIMEN_ANNOTATIONS_STATE = tr.assignPropertyType(samp_type_FACS_ARIA_SPECIMEN,
-                                                                               prop_type_ANNOTATIONS_STATE)
+assignment_SAMPLE_FACS_ARIA_SPECIMEN_ANNOTATIONS_STATE = tr.assignPropertyType(samp_type_FACS_ARIA_SPECIMEN, prop_type_ANNOTATIONS_STATE)
 assignment_SAMPLE_FACS_ARIA_SPECIMEN_ANNOTATIONS_STATE.setMandatory(False)
 assignment_SAMPLE_FACS_ARIA_SPECIMEN_ANNOTATIONS_STATE.setSection('General Info')
 assignment_SAMPLE_FACS_ARIA_SPECIMEN_ANNOTATIONS_STATE.setPositionInForms(2)
@@ -1211,8 +1167,7 @@ assignment_SAMPLE_FACS_ARIA_TUBE_NAME.setPositionInForms(1)
 assignment_SAMPLE_FACS_ARIA_TUBE_NAME.setShownEdit(True)
 
 # SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_TUBE_ISINDEXSORT
-assignment_SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_TUBE_ISINDEXSORT = tr.assignPropertyType(samp_type_FACS_ARIA_TUBE,
-                                                                                    prop_type_FACS_ARIA_TUBE_ISINDEXSORT)
+assignment_SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_TUBE_ISINDEXSORT = tr.assignPropertyType(samp_type_FACS_ARIA_TUBE, prop_type_FACS_ARIA_TUBE_ISINDEXSORT)
 assignment_SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_TUBE_ISINDEXSORT.setMandatory(False)
 assignment_SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_TUBE_ISINDEXSORT.setSection(None)
 assignment_SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_TUBE_ISINDEXSORT.setPositionInForms(3)
@@ -1229,88 +1184,77 @@ assignment_SAMPLE_INFLUX_EXPERIMENT_NAME.setPositionInForms(1)
 assignment_SAMPLE_INFLUX_EXPERIMENT_NAME.setShownEdit(True)
 
 # SAMPLE_INFLUX_EXPERIMENT_ANNOTATIONS_STATE
-assignment_SAMPLE_INFLUX_EXPERIMENT_ANNOTATIONS_STATE = tr.assignPropertyType(samp_type_INFLUX_EXPERIMENT,
-                                                                              prop_type_ANNOTATIONS_STATE)
+assignment_SAMPLE_INFLUX_EXPERIMENT_ANNOTATIONS_STATE = tr.assignPropertyType(samp_type_INFLUX_EXPERIMENT, prop_type_ANNOTATIONS_STATE)
 assignment_SAMPLE_INFLUX_EXPERIMENT_ANNOTATIONS_STATE.setMandatory(False)
 assignment_SAMPLE_INFLUX_EXPERIMENT_ANNOTATIONS_STATE.setSection('General Info')
 assignment_SAMPLE_INFLUX_EXPERIMENT_ANNOTATIONS_STATE.setPositionInForms(2)
 assignment_SAMPLE_INFLUX_EXPERIMENT_ANNOTATIONS_STATE.setShownEdit(False)
 
 # SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_DESCRIPTION
-assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_DESCRIPTION = tr.assignPropertyType(samp_type_INFLUX_EXPERIMENT,
-                                                                                          prop_type_INFLUX_EXPERIMENT_DESCRIPTION)
+assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_DESCRIPTION = tr.assignPropertyType(samp_type_INFLUX_EXPERIMENT, prop_type_INFLUX_EXPERIMENT_DESCRIPTION)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_DESCRIPTION.setMandatory(False)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_DESCRIPTION.setSection(None)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_DESCRIPTION.setPositionInForms(3)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_DESCRIPTION.setShownEdit(True)
 
 # SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_NAME
-assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_NAME = tr.assignPropertyType(samp_type_INFLUX_EXPERIMENT,
-                                                                                   prop_type_INFLUX_EXPERIMENT_NAME)
+assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_NAME = tr.assignPropertyType(samp_type_INFLUX_EXPERIMENT, prop_type_INFLUX_EXPERIMENT_NAME)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_NAME.setMandatory(False)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_NAME.setSection(None)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_NAME.setPositionInForms(4)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_NAME.setShownEdit(False)
 
 # SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_DATE
-assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_DATE = tr.assignPropertyType(samp_type_INFLUX_EXPERIMENT,
-                                                                                   prop_type_INFLUX_EXPERIMENT_DATE)
+assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_DATE = tr.assignPropertyType(samp_type_INFLUX_EXPERIMENT, prop_type_INFLUX_EXPERIMENT_DATE)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_DATE.setMandatory(False)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_DATE.setSection(None)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_DATE.setPositionInForms(5)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_DATE.setShownEdit(True)
 
 # SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_ACQ_HARDWARE
-assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_ACQ_HARDWARE = tr.assignPropertyType(samp_type_INFLUX_EXPERIMENT,
-                                                                                           prop_type_INFLUX_EXPERIMENT_ACQ_HARDWARE)
+assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_ACQ_HARDWARE = tr.assignPropertyType(samp_type_INFLUX_EXPERIMENT, prop_type_INFLUX_EXPERIMENT_ACQ_HARDWARE)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_ACQ_HARDWARE.setMandatory(False)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_ACQ_HARDWARE.setSection(None)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_ACQ_HARDWARE.setPositionInForms(6)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_ACQ_HARDWARE.setShownEdit(False)
 
 # SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_ACQ_SOFTWARE
-assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_ACQ_SOFTWARE = tr.assignPropertyType(samp_type_INFLUX_EXPERIMENT,
-                                                                                           prop_type_INFLUX_EXPERIMENT_ACQ_SOFTWARE)
+assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_ACQ_SOFTWARE = tr.assignPropertyType(samp_type_INFLUX_EXPERIMENT, prop_type_INFLUX_EXPERIMENT_ACQ_SOFTWARE)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_ACQ_SOFTWARE.setMandatory(False)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_ACQ_SOFTWARE.setSection(None)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_ACQ_SOFTWARE.setPositionInForms(7)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_ACQ_SOFTWARE.setShownEdit(False)
 
 # SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_OWNER
-assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_OWNER = tr.assignPropertyType(samp_type_INFLUX_EXPERIMENT,
-                                                                                    prop_type_INFLUX_EXPERIMENT_OWNER)
+assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_OWNER = tr.assignPropertyType(samp_type_INFLUX_EXPERIMENT, prop_type_INFLUX_EXPERIMENT_OWNER)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_OWNER.setMandatory(False)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_OWNER.setSection(None)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_OWNER.setPositionInForms(8)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_OWNER.setShownEdit(True)
 
 # SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME
-assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME = tr.assignPropertyType(
-    samp_type_INFLUX_EXPERIMENT, prop_type_INFLUX_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME)
+assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME = tr.assignPropertyType(samp_type_INFLUX_EXPERIMENT, prop_type_INFLUX_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setMandatory(False)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setSection(None)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setPositionInForms(9)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setShownEdit(True)
 
 # SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_VERSION
-assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_VERSION = tr.assignPropertyType(samp_type_INFLUX_EXPERIMENT,
-                                                                                      prop_type_INFLUX_EXPERIMENT_VERSION)
+assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_VERSION = tr.assignPropertyType(samp_type_INFLUX_EXPERIMENT, prop_type_INFLUX_EXPERIMENT_VERSION)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_VERSION.setMandatory(False)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_VERSION.setSection(None)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_VERSION.setPositionInForms(10)
 assignment_SAMPLE_INFLUX_EXPERIMENT_INFLUX_EXPERIMENT_VERSION.setShownEdit(False)
 
 # DATA_SET_INFLUX_FCSFILE_INFLUX_FCSFILE_PARAMETERS
-assignment_DATA_SET_INFLUX_FCSFILE_INFLUX_FCSFILE_PARAMETERS = tr.assignPropertyType(data_set_type_INFLUX_FCSFILE,
-                                                                                     prop_type_INFLUX_FCSFILE_PARAMETERS)
+assignment_DATA_SET_INFLUX_FCSFILE_INFLUX_FCSFILE_PARAMETERS = tr.assignPropertyType(data_set_type_INFLUX_FCSFILE, prop_type_INFLUX_FCSFILE_PARAMETERS)
 assignment_DATA_SET_INFLUX_FCSFILE_INFLUX_FCSFILE_PARAMETERS.setMandatory(False)
 assignment_DATA_SET_INFLUX_FCSFILE_INFLUX_FCSFILE_PARAMETERS.setSection(None)
 assignment_DATA_SET_INFLUX_FCSFILE_INFLUX_FCSFILE_PARAMETERS.setPositionInForms(2)
 assignment_DATA_SET_INFLUX_FCSFILE_INFLUX_FCSFILE_PARAMETERS.setShownEdit(False)
 
 # DATA_SET_INFLUX_FCSFILE_INFLUX_FCSFILE_ACQ_DATE
-assignment_DATA_SET_INFLUX_FCSFILE_INFLUX_FCSFILE_ACQ_DATE = tr.assignPropertyType(data_set_type_INFLUX_FCSFILE,
-                                                                                   prop_type_INFLUX_FCSFILE_ACQ_DATE)
+assignment_DATA_SET_INFLUX_FCSFILE_INFLUX_FCSFILE_ACQ_DATE = tr.assignPropertyType(data_set_type_INFLUX_FCSFILE, prop_type_INFLUX_FCSFILE_ACQ_DATE)
 assignment_DATA_SET_INFLUX_FCSFILE_INFLUX_FCSFILE_ACQ_DATE.setMandatory(False)
 assignment_DATA_SET_INFLUX_FCSFILE_INFLUX_FCSFILE_ACQ_DATE.setSection(None)
 assignment_DATA_SET_INFLUX_FCSFILE_INFLUX_FCSFILE_ACQ_DATE.setPositionInForms(3)
@@ -1331,8 +1275,7 @@ assignment_SAMPLE_INFLUX_SPECIMEN_NAME.setPositionInForms(1)
 assignment_SAMPLE_INFLUX_SPECIMEN_NAME.setShownEdit(True)
 
 # SAMPLE_INFLUX_SPECIMEN_ANNOTATIONS_STATE
-assignment_SAMPLE_INFLUX_SPECIMEN_ANNOTATIONS_STATE = tr.assignPropertyType(samp_type_INFLUX_SPECIMEN,
-                                                                            prop_type_ANNOTATIONS_STATE)
+assignment_SAMPLE_INFLUX_SPECIMEN_ANNOTATIONS_STATE = tr.assignPropertyType(samp_type_INFLUX_SPECIMEN, prop_type_ANNOTATIONS_STATE)
 assignment_SAMPLE_INFLUX_SPECIMEN_ANNOTATIONS_STATE.setMandatory(False)
 assignment_SAMPLE_INFLUX_SPECIMEN_ANNOTATIONS_STATE.setSection('General Info')
 assignment_SAMPLE_INFLUX_SPECIMEN_ANNOTATIONS_STATE.setPositionInForms(2)
@@ -1346,8 +1289,7 @@ assignment_SAMPLE_INFLUX_TUBE_NAME.setPositionInForms(1)
 assignment_SAMPLE_INFLUX_TUBE_NAME.setShownEdit(True)
 
 # SAMPLE_INFLUX_TUBE_INFLUX_TUBE_ISINDEXSORT
-assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_ISINDEXSORT = tr.assignPropertyType(samp_type_INFLUX_TUBE,
-                                                                              prop_type_INFLUX_TUBE_ISINDEXSORT)
+assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_ISINDEXSORT = tr.assignPropertyType(samp_type_INFLUX_TUBE, prop_type_INFLUX_TUBE_ISINDEXSORT)
 assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_ISINDEXSORT.setMandatory(False)
 assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_ISINDEXSORT.setSection(None)
 assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_ISINDEXSORT.setPositionInForms(4)
@@ -1357,96 +1299,84 @@ assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_ISINDEXSORT.setShownEdit(False)
 # ------------------------------------------------------------------------------
 
 # SAMPLE_LSR_FORTESSA_EXPERIMENT_NAME
-assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_NAME = tr.assignPropertyType(samp_type_LSR_FORTESSA_EXPERIMENT,
-                                                                       prop_type_NAME)
+assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_NAME = tr.assignPropertyType(samp_type_LSR_FORTESSA_EXPERIMENT, prop_type_NAME)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_NAME.setMandatory(False)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_NAME.setSection('General Info')
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_NAME.setPositionInForms(1)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_NAME.setShownEdit(False)
 
 # SAMPLE_LSR_FORTESSA_EXPERIMENT_ANNOTATIONS_STATE
-assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_ANNOTATIONS_STATE = tr.assignPropertyType(samp_type_LSR_FORTESSA_EXPERIMENT,
-                                                                                    prop_type_ANNOTATIONS_STATE)
+assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_ANNOTATIONS_STATE = tr.assignPropertyType(samp_type_LSR_FORTESSA_EXPERIMENT, prop_type_ANNOTATIONS_STATE)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_ANNOTATIONS_STATE.setMandatory(False)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_ANNOTATIONS_STATE.setSection('General Info')
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_ANNOTATIONS_STATE.setPositionInForms(2)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_ANNOTATIONS_STATE.setShownEdit(False)
 
 # SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_NAME
-assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_NAME = tr.assignPropertyType(
-    samp_type_LSR_FORTESSA_EXPERIMENT, prop_type_LSR_FORTESSA_EXPERIMENT_NAME)
+assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_NAME = tr.assignPropertyType(samp_type_LSR_FORTESSA_EXPERIMENT, prop_type_LSR_FORTESSA_EXPERIMENT_NAME)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_NAME.setMandatory(False)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_NAME.setSection(None)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_NAME.setPositionInForms(3)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_NAME.setShownEdit(False)
 
 # SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_DATE
-assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_DATE = tr.assignPropertyType(
-    samp_type_LSR_FORTESSA_EXPERIMENT, prop_type_LSR_FORTESSA_EXPERIMENT_DATE)
+assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_DATE = tr.assignPropertyType(samp_type_LSR_FORTESSA_EXPERIMENT, prop_type_LSR_FORTESSA_EXPERIMENT_DATE)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_DATE.setMandatory(False)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_DATE.setSection(None)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_DATE.setPositionInForms(4)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_DATE.setShownEdit(False)
 
 # SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_DESCRIPTION
-assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_DESCRIPTION = tr.assignPropertyType(
-    samp_type_LSR_FORTESSA_EXPERIMENT, prop_type_LSR_FORTESSA_EXPERIMENT_DESCRIPTION)
+assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_DESCRIPTION = tr.assignPropertyType(samp_type_LSR_FORTESSA_EXPERIMENT, prop_type_LSR_FORTESSA_EXPERIMENT_DESCRIPTION)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_DESCRIPTION.setMandatory(False)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_DESCRIPTION.setSection(None)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_DESCRIPTION.setPositionInForms(5)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_DESCRIPTION.setShownEdit(True)
 
 # SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE
-assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE = tr.assignPropertyType(
-    samp_type_LSR_FORTESSA_EXPERIMENT, prop_type_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE)
+assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE = tr.assignPropertyType(samp_type_LSR_FORTESSA_EXPERIMENT, prop_type_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE.setMandatory(False)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE.setSection(None)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE.setPositionInForms(6)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE.setShownEdit(False)
 
 # SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_ACQ_SOFTWARE
-assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_ACQ_SOFTWARE = tr.assignPropertyType(
-    samp_type_LSR_FORTESSA_EXPERIMENT, prop_type_LSR_FORTESSA_EXPERIMENT_ACQ_SOFTWARE)
+assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_ACQ_SOFTWARE = tr.assignPropertyType(samp_type_LSR_FORTESSA_EXPERIMENT, prop_type_LSR_FORTESSA_EXPERIMENT_ACQ_SOFTWARE)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_ACQ_SOFTWARE.setMandatory(False)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_ACQ_SOFTWARE.setSection(None)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_ACQ_SOFTWARE.setPositionInForms(7)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_ACQ_SOFTWARE.setShownEdit(False)
 
 # SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_OWNER
-assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_OWNER = tr.assignPropertyType(
-    samp_type_LSR_FORTESSA_EXPERIMENT, prop_type_LSR_FORTESSA_EXPERIMENT_OWNER)
+assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_OWNER = tr.assignPropertyType(samp_type_LSR_FORTESSA_EXPERIMENT, prop_type_LSR_FORTESSA_EXPERIMENT_OWNER)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_OWNER.setMandatory(False)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_OWNER.setSection(None)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_OWNER.setPositionInForms(8)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_OWNER.setShownEdit(False)
 
 # SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_VERSION
-assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_VERSION = tr.assignPropertyType(
-    samp_type_LSR_FORTESSA_EXPERIMENT, prop_type_LSR_FORTESSA_EXPERIMENT_VERSION)
+assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_VERSION = tr.assignPropertyType(samp_type_LSR_FORTESSA_EXPERIMENT, prop_type_LSR_FORTESSA_EXPERIMENT_VERSION)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_VERSION.setMandatory(False)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_VERSION.setSection(None)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_VERSION.setPositionInForms(9)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_VERSION.setShownEdit(False)
 
 # SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME
-assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME = tr.assignPropertyType(
-    samp_type_LSR_FORTESSA_EXPERIMENT, prop_type_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME)
+assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME = tr.assignPropertyType(samp_type_LSR_FORTESSA_EXPERIMENT, prop_type_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setMandatory(False)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setSection(None)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setPositionInForms(10)
 assignment_SAMPLE_LSR_FORTESSA_EXPERIMENT_LSR_FORTESSA_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setShownEdit(True)
 
 # DATA_SET_LSR_FORTESSA_FCSFILE_LSR_FORTESSA_FCSFILE_PARAMETERS
-assignment_DATA_SET_LSR_FORTESSA_FCSFILE_LSR_FORTESSA_FCSFILE_PARAMETERS = tr.assignPropertyType(
-    data_set_type_LSR_FORTESSA_FCSFILE, prop_type_LSR_FORTESSA_FCSFILE_PARAMETERS)
+assignment_DATA_SET_LSR_FORTESSA_FCSFILE_LSR_FORTESSA_FCSFILE_PARAMETERS = tr.assignPropertyType(data_set_type_LSR_FORTESSA_FCSFILE, prop_type_LSR_FORTESSA_FCSFILE_PARAMETERS)
 assignment_DATA_SET_LSR_FORTESSA_FCSFILE_LSR_FORTESSA_FCSFILE_PARAMETERS.setMandatory(False)
 assignment_DATA_SET_LSR_FORTESSA_FCSFILE_LSR_FORTESSA_FCSFILE_PARAMETERS.setSection(None)
 assignment_DATA_SET_LSR_FORTESSA_FCSFILE_LSR_FORTESSA_FCSFILE_PARAMETERS.setPositionInForms(2)
 assignment_DATA_SET_LSR_FORTESSA_FCSFILE_LSR_FORTESSA_FCSFILE_PARAMETERS.setShownEdit(False)
 
 # DATA_SET_LSR_FORTESSA_FCSFILE_LSR_FORTESSA_FCSFILE_ACQ_DATE
-assignment_DATA_SET_LSR_FORTESSA_FCSFILE_LSR_FORTESSA_FCSFILE_ACQ_DATE = tr.assignPropertyType(
-    data_set_type_LSR_FORTESSA_FCSFILE, prop_type_LSR_FORTESSA_FCSFILE_ACQ_DATE)
+assignment_DATA_SET_LSR_FORTESSA_FCSFILE_LSR_FORTESSA_FCSFILE_ACQ_DATE = tr.assignPropertyType(data_set_type_LSR_FORTESSA_FCSFILE, prop_type_LSR_FORTESSA_FCSFILE_ACQ_DATE)
 assignment_DATA_SET_LSR_FORTESSA_FCSFILE_LSR_FORTESSA_FCSFILE_ACQ_DATE.setMandatory(False)
 assignment_DATA_SET_LSR_FORTESSA_FCSFILE_LSR_FORTESSA_FCSFILE_ACQ_DATE.setSection(None)
 assignment_DATA_SET_LSR_FORTESSA_FCSFILE_LSR_FORTESSA_FCSFILE_ACQ_DATE.setPositionInForms(3)
@@ -1460,8 +1390,7 @@ assignment_DATA_SET_LSR_FORTESSA_FCSFILE_NAME.setPositionInForms(4)
 assignment_DATA_SET_LSR_FORTESSA_FCSFILE_NAME.setShownEdit(False)
 
 # SAMPLE_LSR_FORTESSA_PLATE_LSR_FORTESSA_PLATE_GEOMETRY
-assignment_SAMPLE_LSR_FORTESSA_PLATE_LSR_FORTESSA_PLATE_GEOMETRY = tr.assignPropertyType(samp_type_LSR_FORTESSA_PLATE,
-                                                                                         prop_type_LSR_FORTESSA_PLATE_GEOMETRY)
+assignment_SAMPLE_LSR_FORTESSA_PLATE_LSR_FORTESSA_PLATE_GEOMETRY = tr.assignPropertyType(samp_type_LSR_FORTESSA_PLATE, prop_type_LSR_FORTESSA_PLATE_GEOMETRY)
 assignment_SAMPLE_LSR_FORTESSA_PLATE_LSR_FORTESSA_PLATE_GEOMETRY.setMandatory(False)
 assignment_SAMPLE_LSR_FORTESSA_PLATE_LSR_FORTESSA_PLATE_GEOMETRY.setSection(None)
 assignment_SAMPLE_LSR_FORTESSA_PLATE_LSR_FORTESSA_PLATE_GEOMETRY.setPositionInForms(1)
@@ -1482,8 +1411,7 @@ assignment_SAMPLE_LSR_FORTESSA_SPECIMEN_NAME.setPositionInForms(1)
 assignment_SAMPLE_LSR_FORTESSA_SPECIMEN_NAME.setShownEdit(True)
 
 # SAMPLE_LSR_FORTESSA_SPECIMEN_ANNOTATIONS_STATE
-assignment_SAMPLE_LSR_FORTESSA_SPECIMEN_ANNOTATIONS_STATE = tr.assignPropertyType(samp_type_LSR_FORTESSA_SPECIMEN,
-                                                                                  prop_type_ANNOTATIONS_STATE)
+assignment_SAMPLE_LSR_FORTESSA_SPECIMEN_ANNOTATIONS_STATE = tr.assignPropertyType(samp_type_LSR_FORTESSA_SPECIMEN, prop_type_ANNOTATIONS_STATE)
 assignment_SAMPLE_LSR_FORTESSA_SPECIMEN_ANNOTATIONS_STATE.setMandatory(False)
 assignment_SAMPLE_LSR_FORTESSA_SPECIMEN_ANNOTATIONS_STATE.setSection('General Info')
 assignment_SAMPLE_LSR_FORTESSA_SPECIMEN_ANNOTATIONS_STATE.setPositionInForms(2)
@@ -1650,88 +1578,77 @@ assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_NAME.setPositionInForms(1)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_NAME.setShownEdit(True)
 
 # SAMPLE_MOFLO_XDP_EXPERIMENT_ANNOTATIONS_STATE
-assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_ANNOTATIONS_STATE = tr.assignPropertyType(samp_type_MOFLO_XDP_EXPERIMENT,
-                                                                                 prop_type_ANNOTATIONS_STATE)
+assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_ANNOTATIONS_STATE = tr.assignPropertyType(samp_type_MOFLO_XDP_EXPERIMENT, prop_type_ANNOTATIONS_STATE)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_ANNOTATIONS_STATE.setMandatory(False)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_ANNOTATIONS_STATE.setSection('General Info')
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_ANNOTATIONS_STATE.setPositionInForms(2)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_ANNOTATIONS_STATE.setShownEdit(False)
 
 # SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_DESCRIPTION
-assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_DESCRIPTION = tr.assignPropertyType(
-    samp_type_MOFLO_XDP_EXPERIMENT, prop_type_MOFLO_XDP_EXPERIMENT_DESCRIPTION)
+assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_DESCRIPTION = tr.assignPropertyType(samp_type_MOFLO_XDP_EXPERIMENT, prop_type_MOFLO_XDP_EXPERIMENT_DESCRIPTION)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_DESCRIPTION.setMandatory(False)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_DESCRIPTION.setSection(None)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_DESCRIPTION.setPositionInForms(3)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_DESCRIPTION.setShownEdit(True)
 
 # SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_NAME
-assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_NAME = tr.assignPropertyType(samp_type_MOFLO_XDP_EXPERIMENT,
-                                                                                         prop_type_MOFLO_XDP_EXPERIMENT_NAME)
+assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_NAME = tr.assignPropertyType(samp_type_MOFLO_XDP_EXPERIMENT, prop_type_MOFLO_XDP_EXPERIMENT_NAME)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_NAME.setMandatory(False)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_NAME.setSection(None)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_NAME.setPositionInForms(4)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_NAME.setShownEdit(False)
 
 # SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_DATE
-assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_DATE = tr.assignPropertyType(samp_type_MOFLO_XDP_EXPERIMENT,
-                                                                                         prop_type_MOFLO_XDP_EXPERIMENT_DATE)
+assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_DATE = tr.assignPropertyType(samp_type_MOFLO_XDP_EXPERIMENT, prop_type_MOFLO_XDP_EXPERIMENT_DATE)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_DATE.setMandatory(False)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_DATE.setSection(None)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_DATE.setPositionInForms(5)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_DATE.setShownEdit(True)
 
 # SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE
-assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE = tr.assignPropertyType(
-    samp_type_MOFLO_XDP_EXPERIMENT, prop_type_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE)
+assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE = tr.assignPropertyType(samp_type_MOFLO_XDP_EXPERIMENT, prop_type_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE.setMandatory(False)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE.setSection(None)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE.setPositionInForms(6)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE.setShownEdit(False)
 
 # SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_ACQ_SOFTWARE
-assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_ACQ_SOFTWARE = tr.assignPropertyType(
-    samp_type_MOFLO_XDP_EXPERIMENT, prop_type_MOFLO_XDP_EXPERIMENT_ACQ_SOFTWARE)
+assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_ACQ_SOFTWARE = tr.assignPropertyType(samp_type_MOFLO_XDP_EXPERIMENT, prop_type_MOFLO_XDP_EXPERIMENT_ACQ_SOFTWARE)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_ACQ_SOFTWARE.setMandatory(False)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_ACQ_SOFTWARE.setSection(None)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_ACQ_SOFTWARE.setPositionInForms(7)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_ACQ_SOFTWARE.setShownEdit(False)
 
 # SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_OWNER
-assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_OWNER = tr.assignPropertyType(
-    samp_type_MOFLO_XDP_EXPERIMENT, prop_type_MOFLO_XDP_EXPERIMENT_OWNER)
+assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_OWNER = tr.assignPropertyType(samp_type_MOFLO_XDP_EXPERIMENT, prop_type_MOFLO_XDP_EXPERIMENT_OWNER)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_OWNER.setMandatory(False)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_OWNER.setSection(None)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_OWNER.setPositionInForms(8)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_OWNER.setShownEdit(True)
 
 # SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME
-assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME = tr.assignPropertyType(
-    samp_type_MOFLO_XDP_EXPERIMENT, prop_type_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME)
+assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME = tr.assignPropertyType(samp_type_MOFLO_XDP_EXPERIMENT, prop_type_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setMandatory(False)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setSection(None)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setPositionInForms(9)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setShownEdit(True)
 
 # SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_VERSION
-assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_VERSION = tr.assignPropertyType(
-    samp_type_MOFLO_XDP_EXPERIMENT, prop_type_MOFLO_XDP_EXPERIMENT_VERSION)
+assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_VERSION = tr.assignPropertyType(samp_type_MOFLO_XDP_EXPERIMENT, prop_type_MOFLO_XDP_EXPERIMENT_VERSION)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_VERSION.setMandatory(False)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_VERSION.setSection(None)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_VERSION.setPositionInForms(10)
 assignment_SAMPLE_MOFLO_XDP_EXPERIMENT_MOFLO_XDP_EXPERIMENT_VERSION.setShownEdit(False)
 
 # DATA_SET_MOFLO_XDP_FCSFILE_MOFLO_XDP_FCSFILE_PARAMETERS
-assignment_DATA_SET_MOFLO_XDP_FCSFILE_MOFLO_XDP_FCSFILE_PARAMETERS = tr.assignPropertyType(
-    data_set_type_MOFLO_XDP_FCSFILE, prop_type_MOFLO_XDP_FCSFILE_PARAMETERS)
+assignment_DATA_SET_MOFLO_XDP_FCSFILE_MOFLO_XDP_FCSFILE_PARAMETERS = tr.assignPropertyType(data_set_type_MOFLO_XDP_FCSFILE, prop_type_MOFLO_XDP_FCSFILE_PARAMETERS)
 assignment_DATA_SET_MOFLO_XDP_FCSFILE_MOFLO_XDP_FCSFILE_PARAMETERS.setMandatory(False)
 assignment_DATA_SET_MOFLO_XDP_FCSFILE_MOFLO_XDP_FCSFILE_PARAMETERS.setSection(None)
 assignment_DATA_SET_MOFLO_XDP_FCSFILE_MOFLO_XDP_FCSFILE_PARAMETERS.setPositionInForms(2)
 assignment_DATA_SET_MOFLO_XDP_FCSFILE_MOFLO_XDP_FCSFILE_PARAMETERS.setShownEdit(False)
 
 # DATA_SET_MOFLO_XDP_FCSFILE_MOFLO_XDP_FCSFILE_ACQ_DATE
-assignment_DATA_SET_MOFLO_XDP_FCSFILE_MOFLO_XDP_FCSFILE_ACQ_DATE = tr.assignPropertyType(
-    data_set_type_MOFLO_XDP_FCSFILE, prop_type_MOFLO_XDP_FCSFILE_ACQ_DATE)
+assignment_DATA_SET_MOFLO_XDP_FCSFILE_MOFLO_XDP_FCSFILE_ACQ_DATE = tr.assignPropertyType(data_set_type_MOFLO_XDP_FCSFILE, prop_type_MOFLO_XDP_FCSFILE_ACQ_DATE)
 assignment_DATA_SET_MOFLO_XDP_FCSFILE_MOFLO_XDP_FCSFILE_ACQ_DATE.setMandatory(False)
 assignment_DATA_SET_MOFLO_XDP_FCSFILE_MOFLO_XDP_FCSFILE_ACQ_DATE.setSection(None)
 assignment_DATA_SET_MOFLO_XDP_FCSFILE_MOFLO_XDP_FCSFILE_ACQ_DATE.setPositionInForms(3)
@@ -1752,8 +1669,7 @@ assignment_SAMPLE_MOFLO_XDP_SPECIMEN_NAME.setPositionInForms(1)
 assignment_SAMPLE_MOFLO_XDP_SPECIMEN_NAME.setShownEdit(True)
 
 # SAMPLE_MOFLO_XDP_SPECIMEN_ANNOTATIONS_STATE
-assignment_SAMPLE_MOFLO_XDP_SPECIMEN_ANNOTATIONS_STATE = tr.assignPropertyType(samp_type_MOFLO_XDP_SPECIMEN,
-                                                                               prop_type_ANNOTATIONS_STATE)
+assignment_SAMPLE_MOFLO_XDP_SPECIMEN_ANNOTATIONS_STATE = tr.assignPropertyType(samp_type_MOFLO_XDP_SPECIMEN, prop_type_ANNOTATIONS_STATE)
 assignment_SAMPLE_MOFLO_XDP_SPECIMEN_ANNOTATIONS_STATE.setMandatory(False)
 assignment_SAMPLE_MOFLO_XDP_SPECIMEN_ANNOTATIONS_STATE.setSection('General Info')
 assignment_SAMPLE_MOFLO_XDP_SPECIMEN_ANNOTATIONS_STATE.setPositionInForms(2)
@@ -1767,8 +1683,7 @@ assignment_SAMPLE_MOFLO_XDP_TUBE_NAME.setPositionInForms(1)
 assignment_SAMPLE_MOFLO_XDP_TUBE_NAME.setShownEdit(True)
 
 # SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_TUBE_ISINDEXSORT
-assignment_SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_TUBE_ISINDEXSORT = tr.assignPropertyType(samp_type_MOFLO_XDP_TUBE,
-                                                                                    prop_type_MOFLO_XDP_TUBE_ISINDEXSORT)
+assignment_SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_TUBE_ISINDEXSORT = tr.assignPropertyType(samp_type_MOFLO_XDP_TUBE, prop_type_MOFLO_XDP_TUBE_ISINDEXSORT)
 assignment_SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_TUBE_ISINDEXSORT.setMandatory(False)
 assignment_SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_TUBE_ISINDEXSORT.setSection(None)
 assignment_SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_TUBE_ISINDEXSORT.setPositionInForms(4)
@@ -1785,88 +1700,77 @@ assignment_SAMPLE_S3E_EXPERIMENT_NAME.setPositionInForms(1)
 assignment_SAMPLE_S3E_EXPERIMENT_NAME.setShownEdit(True)
 
 # SAMPLE_S3E_EXPERIMENT_ANNOTATIONS_STATE
-assignment_SAMPLE_S3E_EXPERIMENT_ANNOTATIONS_STATE = tr.assignPropertyType(samp_type_S3E_EXPERIMENT,
-                                                                           prop_type_ANNOTATIONS_STATE)
+assignment_SAMPLE_S3E_EXPERIMENT_ANNOTATIONS_STATE = tr.assignPropertyType(samp_type_S3E_EXPERIMENT, prop_type_ANNOTATIONS_STATE)
 assignment_SAMPLE_S3E_EXPERIMENT_ANNOTATIONS_STATE.setMandatory(False)
 assignment_SAMPLE_S3E_EXPERIMENT_ANNOTATIONS_STATE.setSection('General Info')
 assignment_SAMPLE_S3E_EXPERIMENT_ANNOTATIONS_STATE.setPositionInForms(2)
 assignment_SAMPLE_S3E_EXPERIMENT_ANNOTATIONS_STATE.setShownEdit(False)
 
 # SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_DESCRIPTION
-assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_DESCRIPTION = tr.assignPropertyType(samp_type_S3E_EXPERIMENT,
-                                                                                    prop_type_S3E_EXPERIMENT_DESCRIPTION)
+assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_DESCRIPTION = tr.assignPropertyType(samp_type_S3E_EXPERIMENT, prop_type_S3E_EXPERIMENT_DESCRIPTION)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_DESCRIPTION.setMandatory(False)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_DESCRIPTION.setSection(None)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_DESCRIPTION.setPositionInForms(3)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_DESCRIPTION.setShownEdit(True)
 
 # SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_NAME
-assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_NAME = tr.assignPropertyType(samp_type_S3E_EXPERIMENT,
-                                                                             prop_type_S3E_EXPERIMENT_NAME)
+assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_NAME = tr.assignPropertyType(samp_type_S3E_EXPERIMENT, prop_type_S3E_EXPERIMENT_NAME)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_NAME.setMandatory(False)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_NAME.setSection(None)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_NAME.setPositionInForms(4)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_NAME.setShownEdit(False)
 
 # SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_DATE
-assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_DATE = tr.assignPropertyType(samp_type_S3E_EXPERIMENT,
-                                                                             prop_type_S3E_EXPERIMENT_DATE)
+assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_DATE = tr.assignPropertyType(samp_type_S3E_EXPERIMENT, prop_type_S3E_EXPERIMENT_DATE)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_DATE.setMandatory(False)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_DATE.setSection(None)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_DATE.setPositionInForms(5)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_DATE.setShownEdit(True)
 
 # SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_ACQ_HARDWARE
-assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_ACQ_HARDWARE = tr.assignPropertyType(samp_type_S3E_EXPERIMENT,
-                                                                                     prop_type_S3E_EXPERIMENT_ACQ_HARDWARE)
+assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_ACQ_HARDWARE = tr.assignPropertyType(samp_type_S3E_EXPERIMENT, prop_type_S3E_EXPERIMENT_ACQ_HARDWARE)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_ACQ_HARDWARE.setMandatory(False)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_ACQ_HARDWARE.setSection(None)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_ACQ_HARDWARE.setPositionInForms(6)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_ACQ_HARDWARE.setShownEdit(False)
 
 # SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_ACQ_SOFTWARE
-assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_ACQ_SOFTWARE = tr.assignPropertyType(samp_type_S3E_EXPERIMENT,
-                                                                                     prop_type_S3E_EXPERIMENT_ACQ_SOFTWARE)
+assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_ACQ_SOFTWARE = tr.assignPropertyType(samp_type_S3E_EXPERIMENT, prop_type_S3E_EXPERIMENT_ACQ_SOFTWARE)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_ACQ_SOFTWARE.setMandatory(False)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_ACQ_SOFTWARE.setSection(None)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_ACQ_SOFTWARE.setPositionInForms(7)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_ACQ_SOFTWARE.setShownEdit(False)
 
 # SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_OWNER
-assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_OWNER = tr.assignPropertyType(samp_type_S3E_EXPERIMENT,
-                                                                              prop_type_S3E_EXPERIMENT_OWNER)
+assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_OWNER = tr.assignPropertyType(samp_type_S3E_EXPERIMENT, prop_type_S3E_EXPERIMENT_OWNER)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_OWNER.setMandatory(False)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_OWNER.setSection(None)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_OWNER.setPositionInForms(8)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_OWNER.setShownEdit(True)
 
 # SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME
-assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME = tr.assignPropertyType(
-    samp_type_S3E_EXPERIMENT, prop_type_S3E_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME)
+assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME = tr.assignPropertyType(samp_type_S3E_EXPERIMENT, prop_type_S3E_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setMandatory(False)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setSection(None)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setPositionInForms(9)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_ACQ_HARDWARE_FRIENDLY_NAME.setShownEdit(True)
 
 # SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_VERSION
-assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_VERSION = tr.assignPropertyType(samp_type_S3E_EXPERIMENT,
-                                                                                prop_type_S3E_EXPERIMENT_VERSION)
+assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_VERSION = tr.assignPropertyType(samp_type_S3E_EXPERIMENT, prop_type_S3E_EXPERIMENT_VERSION)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_VERSION.setMandatory(False)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_VERSION.setSection(None)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_VERSION.setPositionInForms(10)
 assignment_SAMPLE_S3E_EXPERIMENT_S3E_EXPERIMENT_VERSION.setShownEdit(False)
 
 # DATA_SET_S3E_FCSFILE_S3E_FCSFILE_PARAMETERS
-assignment_DATA_SET_S3E_FCSFILE_S3E_FCSFILE_PARAMETERS = tr.assignPropertyType(data_set_type_S3E_FCSFILE,
-                                                                               prop_type_S3E_FCSFILE_PARAMETERS)
+assignment_DATA_SET_S3E_FCSFILE_S3E_FCSFILE_PARAMETERS = tr.assignPropertyType(data_set_type_S3E_FCSFILE, prop_type_S3E_FCSFILE_PARAMETERS)
 assignment_DATA_SET_S3E_FCSFILE_S3E_FCSFILE_PARAMETERS.setMandatory(False)
 assignment_DATA_SET_S3E_FCSFILE_S3E_FCSFILE_PARAMETERS.setSection(None)
 assignment_DATA_SET_S3E_FCSFILE_S3E_FCSFILE_PARAMETERS.setPositionInForms(2)
 assignment_DATA_SET_S3E_FCSFILE_S3E_FCSFILE_PARAMETERS.setShownEdit(False)
 
 # DATA_SET_S3E_FCSFILE_S3E_FCSFILE_ACQ_DATE
-assignment_DATA_SET_S3E_FCSFILE_S3E_FCSFILE_ACQ_DATE = tr.assignPropertyType(data_set_type_S3E_FCSFILE,
-                                                                             prop_type_S3E_FCSFILE_ACQ_DATE)
+assignment_DATA_SET_S3E_FCSFILE_S3E_FCSFILE_ACQ_DATE = tr.assignPropertyType(data_set_type_S3E_FCSFILE, prop_type_S3E_FCSFILE_ACQ_DATE)
 assignment_DATA_SET_S3E_FCSFILE_S3E_FCSFILE_ACQ_DATE.setMandatory(False)
 assignment_DATA_SET_S3E_FCSFILE_S3E_FCSFILE_ACQ_DATE.setSection(None)
 assignment_DATA_SET_S3E_FCSFILE_S3E_FCSFILE_ACQ_DATE.setPositionInForms(3)
@@ -1887,8 +1791,7 @@ assignment_SAMPLE_S3E_SPECIMEN_NAME.setPositionInForms(1)
 assignment_SAMPLE_S3E_SPECIMEN_NAME.setShownEdit(True)
 
 # SAMPLE_S3E_SPECIMEN_ANNOTATIONS_STATE
-assignment_SAMPLE_S3E_SPECIMEN_ANNOTATIONS_STATE = tr.assignPropertyType(samp_type_S3E_SPECIMEN,
-                                                                         prop_type_ANNOTATIONS_STATE)
+assignment_SAMPLE_S3E_SPECIMEN_ANNOTATIONS_STATE = tr.assignPropertyType(samp_type_S3E_SPECIMEN, prop_type_ANNOTATIONS_STATE)
 assignment_SAMPLE_S3E_SPECIMEN_ANNOTATIONS_STATE.setMandatory(False)
 assignment_SAMPLE_S3E_SPECIMEN_ANNOTATIONS_STATE.setSection(None)
 assignment_SAMPLE_S3E_SPECIMEN_ANNOTATIONS_STATE.setPositionInForms(2)
@@ -1902,8 +1805,7 @@ assignment_SAMPLE_S3_TUBE_NAME.setPositionInForms(1)
 assignment_SAMPLE_S3_TUBE_NAME.setShownEdit(True)
 
 # SAMPLE_S3E_TUBE_S3E_TUBE_ISINDEXSORT
-assignment_SAMPLE_S3E_TUBE_S3E_TUBE_ISINDEXSORT = tr.assignPropertyType(samp_type_S3E_TUBE,
-                                                                        prop_type_S3E_TUBE_ISINDEXSORT)
+assignment_SAMPLE_S3E_TUBE_S3E_TUBE_ISINDEXSORT = tr.assignPropertyType(samp_type_S3E_TUBE, prop_type_S3E_TUBE_ISINDEXSORT)
 assignment_SAMPLE_S3E_TUBE_S3E_TUBE_ISINDEXSORT.setMandatory(False)
 assignment_SAMPLE_S3E_TUBE_S3E_TUBE_ISINDEXSORT.setSection(None)
 assignment_SAMPLE_S3E_TUBE_S3E_TUBE_ISINDEXSORT.setPositionInForms(4)
