@@ -65,7 +65,8 @@ define(["openbis",
                 "FACS_ARIA_EXPERIMENT": false,
                 "INFLUX_EXPERIMENT": false,
                 "S3E_EXPERIMENT": false,
-                "MOFLO_XDP_EXPERIMENT": false
+                "MOFLO_XDP_EXPERIMENT": false,
+                "CYTOFLEX_S_EXPERIMENT": true
             };
 
             // Instantiate openBIS V3 API
