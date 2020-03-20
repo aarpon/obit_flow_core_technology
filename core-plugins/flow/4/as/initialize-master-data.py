@@ -484,6 +484,13 @@ data_set_type_CYTOFLEX_S_FCSFILE.setMainDataSetPattern('.*\.fcs')
 data_set_type_CYTOFLEX_S_FCSFILE.setMainDataSetPath(None)
 data_set_type_CYTOFLEX_S_FCSFILE.setDeletionDisallowed(False)
 
+# CYTOFLEX_S_ACCESSORY_FILE
+data_set_type_CYTOFLEX_S_ACCESSORY_FILE = tr.getOrCreateNewDataSetType('CYTOFLEX_S_ACCESSORY_FILE')
+data_set_type_CYTOFLEX_S_ACCESSORY_FILE.setDescription('An accessory dataset file associated with a CytoFLEX S experiment.')
+data_set_type_CYTOFLEX_S_ACCESSORY_FILE.setMainDataSetPattern(None)
+data_set_type_CYTOFLEX_S_ACCESSORY_FILE.setMainDataSetPath(None)
+data_set_type_CYTOFLEX_S_ACCESSORY_FILE.setDeletionDisallowed(False)
+
 # BC MOFLO XDP
 # ------------------------------------------------------------------------------
 
@@ -1566,6 +1573,13 @@ assignment_SAMPLE_CYTOFLEX_S_WELL_NAME.setMandatory(False)
 assignment_SAMPLE_CYTOFLEX_S_WELL_NAME.setSection('General Info')
 assignment_SAMPLE_CYTOFLEX_S_WELL_NAME.setPositionInForms(1)
 assignment_SAMPLE_CYTOFLEX_S_WELL_NAME.setShownEdit(True)
+
+# DATA_SET_CYTOFLEX_S_ACCESSORY_FILE_NAME
+assignment_DATA_SET_CYTOFLEX_S_ACCESSORY_FILE_NAME = tr.assignPropertyType(data_set_type_CYTOFLEX_S_ACCESSORY_FILE, prop_type_NAME)
+assignment_DATA_SET_CYTOFLEX_S_ACCESSORY_FILE_NAME.setMandatory(False)
+assignment_DATA_SET_CYTOFLEX_S_ACCESSORY_FILE_NAME.setSection(None)
+assignment_DATA_SET_CYTOFLEX_S_ACCESSORY_FILE_NAME.setPositionInForms(1)
+assignment_DATA_SET_CYTOFLEX_S_ACCESSORY_FILE_NAME.setShownEdit(False)
 
 # BC MOFLO XDP
 # ------------------------------------------------------------------------------
