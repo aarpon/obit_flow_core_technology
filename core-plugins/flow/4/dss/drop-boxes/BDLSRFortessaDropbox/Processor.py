@@ -34,7 +34,7 @@ class Processor:
     def _supportIndexSorting(self, tubeSampleType):
         """Return true if the experiment with given prefix supports index sorting.
 
-        @param tubeSampleType: Type of the sample Tube. 
+        @param tubeSampleType: Type of the sample Tube.
         """
         prefix = tubeSampleType[:-5]
         if prefix in ["FACS_ARIA", "INFLUX", "MOFLO_XDP", "S3E"]:
@@ -47,7 +47,7 @@ class Processor:
     def _collectionNameFromIdentifier(self, openBISCollectionIdentifier):
         """Converts the collection identifier to a human-friendly string for
         the NAME property.
-    
+
         @param openBISCollectionIdentifier Identifier of the collection object.
         @return string Human-friendly collection name.
         """
@@ -66,13 +66,13 @@ class Processor:
                                      sampleType,
                                      setExperiment=True):
         """Create a sample with automatically generated code.
-    
+
         Depending on whether project samples are enabled in openBIS, the sample
         code will be created accordingly.
-        
+
         If project samples are enabled, the code will be in the form: /SPACE/PROJECT/CODE
         If project samples are not enabled, the code will be in the form: /SPACE/CODE
-    
+
         @param spaceCode The code of space (the space must exist).
         @param openBISCollection The openBIS Collection object (must exist).
         @param sampleType Sample type.
@@ -127,7 +127,7 @@ class Processor:
     def _formatExpDateForPostgreSQL(self, expDate):
         """Format the experiment date to be compatible with postgreSQL's
         'timestamp' data type.
-    
+
         @param Date stored in the FCS file, in the form 01-JAN-2013
         @return Date in the form 2013-01-01
         """
@@ -179,7 +179,7 @@ class Processor:
     def _getOrCreateCollection(self,
                                openBISCollectionIdentifier):
         """Retrieve or register an openBIS Collection with given identifier.
-    
+
         @param openBISCollectionIdentifier The collection openBIS identifier.
         @return IExperiment collection
         """
@@ -213,7 +213,7 @@ class Processor:
 
     def _getSubFolders(self, incoming):
         """Return a list of subfolders of the passed incoming directory.
-    
+
         @param incoming Incoming folder.
         @return list of subfolders (String)
         """
@@ -227,21 +227,21 @@ class Processor:
                                openBISExperimentSampleType,
                                machineName):
         """Process an experiment node.
-    
+
         The ExperimentNode maps to an openBIS Experiment Sample.
-    
+
         The {...}_EXPERIMENT SAMPLE object has following structure:
-    
+
                 PARENTS  : samples of type ORGANIZATION_UNIT (tags)
-    
+
                 CHILDREN : samples of types {...}_TUBESET and {...}_TUBE
                            and, depending on the acquisition station,
                            also {...}_PLATE  and {...}_WELL
-    
+
                 CONTAINED: none
-    
+
                 DATASETS: datasets of type ATTACHMENT (several file extensions)
-    
+
         @param experimentNode An XML node corresponding to {...}_EXPERIMENT (sample).
         @param openBISExperimentSampleType Type of the experiment sample.
         @param machineName Human-friendly name of the acquisition machine.
@@ -387,20 +387,20 @@ class Processor:
                              openBISSpecimenSampleType,
                              specimenName):
         """Register a TubeSet (virtual tube container).
-    
+
         The SpecimenNode maps to an openBIS {...}_SPECIMEN sample.
-    
+
         The {...}_SPECIMEN SAMPLE object has following structure:
-    
+
                 PARENTS  : none
-    
+
                 CHILDREN : samples of type {...}_WELL or {...}_TUBE
-    
+
                 CONTAINED: none
-    
+
                 DATASETS: none
-    
-        @param specimenNode An XML node corresponding to a Specimen. 
+
+        @param specimenNode An XML node corresponding to a Specimen.
         @param openBISCollection A Collection Sample object
         @param openBISSpecimenSampleType  The Specimen sample type
         @param openBISExperimentSampleIdentifier The identifier of the
@@ -448,21 +448,21 @@ class Processor:
                          openBISExperimentSampleIdentifier,
                          openBISTraySampleType):
         """Register a Tray (Plate) based on the Tray XML node.
-    
-    
+
+
         The {...}_SPECIMEN SAMPLE object has following structure:
-    
+
                 PARENTS  : {...}_EXPERIMENT
-    
+
                 CHILDREN : samples of type {...}_WELL
-    
+
                 CONTAINED: none
-    
+
                 DATASETS: none
-    
+
         @param trayNode An XML node corresponding to a Tray (Plate).
         @param openBISCollection An IExperimentUpdatable object.
-        @param openBISExperimentSampleIdentifier The identifier of the {...}_EXPERIMENT sample.        
+        @param openBISExperimentSampleIdentifier The identifier of the {...}_EXPERIMENT sample.
         @param openBISTraySampleType Tray sample type.
         @return ISample sample, or None.
         """
@@ -507,19 +507,19 @@ class Processor:
                      openBISSpecimenSample,
                      openBISTubeSetSample):
         """Register a Tube (as a child of a Specimen) based on the Tube XML node.
-    
+
         The {...}_TUBE SAMPLE object has following structure:
-    
+
                 PARENTS  : {...}_EXPERIMENT, {...}_SPECIMEN, {...}_TUBESET
-    
+
                 CHILDREN : none
-    
+
                 CONTAINED: none
-    
+
                 DATASETS: {...}_FCSFILE (with corresponding .FCS files)
-    
-    
-        @param tubeNode An XML node corresponding to a Tube. 
+
+
+        @param tubeNode An XML node corresponding to a Tube.
         @param openBISCollection The IExperiment to which the Tube belongs
         @param openBISTubeSampleType The Tube sample type.
         @param openBISExperimentSample The openBIS Experiment sample (parent).
@@ -572,19 +572,19 @@ class Processor:
                             openBISTubeSetSampleType,
                             openBISExperimentSampleIdentifier):
         """Register a TubeSet (virtual tube container).
-    
+
         The TubeSetNode maps to an openBIS {...}_TUBESET sample.
-    
+
         The {...}_TUBESET SAMPLE object has following structure:
-    
+
                 PARENTS  : sample of type {...}_EXPERIMENT.
-    
+
                 CHILDREN : samples of type {...}_TUBE
-    
+
                 CONTAINED: none
-    
+
                 DATASETS: none
-    
+
         @param experimentNode An XML node corresponding to a (virtual) TubeSet.
         @param openBISCollection A Collection Sample object
         @param openBISTubeSetSampleType  The TubeSet sample type
@@ -629,19 +629,19 @@ class Processor:
                      openBISSpecimenSample,
                      openBISPlateSample):
         """Register a Well based on the Well XML node.
-    
+
         The {...}_WELL SAMPLE object has following structure:
-    
+
                 PARENTS  : {...}_EXPERIMENT, {...}_SPECIMEN, {...}_PLATE
-    
+
                 CHILDREN : none
-    
+
                 CONTAINED: none
-    
+
                 DATASETS: {...}_FCSFILE (with corresponding .FCS files)
-    
-    
-        @param wellNode An XML node corresponding to a Well. 
+
+
+        @param wellNode An XML node corresponding to a Well.
         @param openBISCollection The IExperiment to which the Tube belongs
         @param openBISWellSampleType The Well sample type.
         @param openBISExperimentSample The openBIS Experiment sample (parent).
@@ -687,7 +687,7 @@ class Processor:
                         openBISSample,
                         openBISCollection):
         """Register the FCS File using the parsed properties file.
-    
+
         @param fcsFileNode An XML node corresponding to an FCS file (dataset).
         @param openBISDataSetType The type of the DataSet.
         @param openBISSample An ISample object representing a Tube or Well.
@@ -738,6 +738,87 @@ class Processor:
 
         # Move the file
         self._transaction.moveFile(fileName, dataset)
+
+    def registerAccessoryFilesAsDatasets(self,
+                                         transaction,
+                                         relativePath,
+                                         openBISExperimentSampleType,
+                                         openBISAccessoryFileDataSetType,
+                                         openBISExperimentSample,
+                                         logger):
+        """Scan the given path for files at the root levels that are of the expected format
+        and associates them to the _EXPERIMENT sample.
+
+        Please notice that currently only samples of type CYTOFLEX_S_EXPERIMENT support registering
+        accessory files as datasets.
+        """
+
+        # Accepted file formats
+        file_formats = []
+        if openBISExperimentSampleType == "CYTOFLEX_S_EXPERIMENT":
+
+            # The expected format is .xml
+            file_formats = [".xml"]
+
+        else:
+
+            # CYTOFLEX_S_EXPERIMENT is currently the only supported sample type.
+            # If we find another one, we return (success)
+            return True
+
+        # Also check the dataset type. Currently, this can only be CYTOFLEX_S_ACCESSORY_FILE
+        if openBISAccessoryFileDataSetType != "CYTOFLEX_S_ACCESSORY_FILE":
+
+            # This is an error!
+            return False
+
+
+        # Extract the path relative to the experiment folder
+        if relativePath.endswith('/'):
+            relativePath = relativePath[0:len(relativePath) - 1]
+
+        last_index = relativePath.rfind('/')
+        if last_index != -1:
+            relativePath = relativePath[last_index + 1:]
+
+        logger.info("Relative path is: " + relativePath)
+
+        # Alias to the full path
+        fullpath = self._transaction.getIncoming().getAbsolutePath()
+
+        # Get the list of files at the root of full path that are of the expected format
+        files = [f for f in listdir(fullpath) if isfile(join(fullpath, f)) and os.path.splitext(f.lower())[-1] in file_formats]
+
+        # Report
+        logger.info("Accessory files to process: " + str(files))
+
+        # Register them as datasets
+        for f in files:
+
+            # Log
+            logger.info("Registering accessory file: " + f)
+
+            # Create a new dataset
+            dataset = transaction.createNewDataSet()
+            if not dataset:
+                msg = "Could not get or create dataset"
+                logger.error(msg)
+                raise Exception(msg)
+
+            # Set the dataset type
+            dataset.setDataSetType(openBISAccessoryFileDataSetType)
+
+            # Set the $NAME property
+            dataset.setPropertyValue("$NAME", f)
+
+            # Assign the dataset to the experiment sample
+            dataset.setSample(openBISExperimentSample)
+
+            # Move to a custom destination (to match the image datasets)
+            dstPath = join("original", relativePath, f)
+            transaction.moveFile(join(fullpath, f), dataset, dstPath)
+
+        return True
 
     def run(self):
         """Run the registration."""
@@ -795,7 +876,7 @@ class Processor:
 
     def _register(self, tree):
         """Register the Experiment using the parsed properties file.
-    
+
         @param tree ElementTree parsed from the properties XML file.
         """
 
@@ -811,6 +892,7 @@ class Processor:
         openBISTubeSetSampleType = self._prefix + "_TUBESET"
         openBISSpecimenSampleType = self._prefix + "_SPECIMEN"
         openBISWellSampleType = self._prefix + "_WELL"
+        openBISAccessoryFileDataSetType = self._prefix + "_ACCESSORY_FILE"
 
         # Get the root node (obitXML)
         rootNode = tree.getroot()
@@ -983,6 +1065,15 @@ class Processor:
                     self._logger.error(msg)
                     raise Exception(msg)
 
+            # Register the accessory files (for each Experiment Node)
+            expRelativePath = experimentNode.attrib.get("relativePath")
+            self.registerAccessoryFilesAsDatasets(transaction,
+                                                  expRelativePath,
+                                                  openBISExperimentSampleType,
+                                                  openBISAccessoryFileDataSetType,
+                                                  openBISExperimentSample,
+                                                  logger)
+
         # Log that we are finished with the registration
         self._logger.info("Registration completed")
 
@@ -991,7 +1082,7 @@ class Processor:
                                          openBISCollection,
                                          openBISExperimentSample):
         """Register a list of files to the collection.
-    
+
         @param attachments Comma-separated list of file names.
         @param openBISCollection openBIS Collection object.
         @param openBISExperimentSample openBIS Experiment Sample object.
@@ -1030,7 +1121,7 @@ class Processor:
                       openBISExperimentSample,
                       tagList):
         """Register the tags as parent samples of type ORGANIZATION_UNIT.
-    
+
         @param openBISExperimentSample openBIS Experiment Sample object.
         @param tagList Comma-separated list of tag names.
         """
@@ -1065,10 +1156,10 @@ class Processor:
     def _setup_logger(self, log_dir_path, logger_name, level=logging.DEBUG):
         """
         Sets up the logger.
-        
+
         @param log_dir_path: Full path to the log folder.
         @param logger_name: Name of the logger.
-        @param level: Debug level (optional, default = logging.DEBUG) 
+        @param level: Debug level (optional, default = logging.DEBUG)
         @return Logger object.
         """
 
