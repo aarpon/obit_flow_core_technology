@@ -39,7 +39,7 @@ class Processor:
         prefix = tubeSampleType[:-5]
         if prefix in ["FACS_ARIA", "INFLUX", "MOFLO_XDP", "S3E"]:
             return True
-        elif prefix in ["LSR_FORTESSA"]:
+        elif prefix in ["LSR_FORTESSA", "CYTOFLEX_S"]:
             return False
         else:
             raise Exception("Unknown prefix!")
@@ -740,12 +740,10 @@ class Processor:
         self._transaction.moveFile(fileName, dataset)
 
     def registerAccessoryFilesAsDatasets(self,
-                                         transaction,
                                          relativePath,
                                          openBISExperimentSampleType,
                                          openBISAccessoryFileDataSetType,
-                                         openBISExperimentSample,
-                                         logger):
+                                         openBISExperimentSample):
         """Scan the given path for files at the root levels that are of the expected format
         and associates them to the _EXPERIMENT sample.
 
@@ -781,28 +779,30 @@ class Processor:
         if last_index != -1:
             relativePath = relativePath[last_index + 1:]
 
-        logger.info("Relative path is: " + relativePath)
+        self._logger.info("Relative path is: " + relativePath)
 
         # Alias to the full path
         fullpath = self._transaction.getIncoming().getAbsolutePath()
 
         # Get the list of files at the root of full path that are of the expected format
-        files = [f for f in listdir(fullpath) if isfile(join(fullpath, f)) and os.path.splitext(f.lower())[-1] in file_formats]
+        files = [f for f in os.listdir(fullpath) if
+            os.path.isfile(os.path.join(fullpath, f)) and
+            os.path.splitext(f.lower())[-1] in file_formats]
 
         # Report
-        logger.info("Accessory files to process: " + str(files))
+        self._logger.info("Accessory files to process: " + str(files))
 
         # Register them as datasets
         for f in files:
 
             # Log
-            logger.info("Registering accessory file: " + f)
+            self._logger.info("Registering accessory file: " + f)
 
             # Create a new dataset
-            dataset = transaction.createNewDataSet()
+            dataset = self._transaction.createNewDataSet()
             if not dataset:
                 msg = "Could not get or create dataset"
-                logger.error(msg)
+                self._logger.error(msg)
                 raise Exception(msg)
 
             # Set the dataset type
@@ -816,7 +816,7 @@ class Processor:
 
             # Move to a custom destination (to match the image datasets)
             dstPath = join("original", relativePath, f)
-            transaction.moveFile(join(fullpath, f), dataset, dstPath)
+            self._transaction.moveFile(join(fullpath, f), dataset, dstPath)
 
         return True
 
@@ -1067,12 +1067,10 @@ class Processor:
 
             # Register the accessory files (for each Experiment Node)
             expRelativePath = experimentNode.attrib.get("relativePath")
-            self.registerAccessoryFilesAsDatasets(transaction,
-                                                  expRelativePath,
+            self.registerAccessoryFilesAsDatasets(expRelativePath,
                                                   openBISExperimentSampleType,
                                                   openBISAccessoryFileDataSetType,
-                                                  openBISExperimentSample,
-                                                  logger)
+                                                  openBISExperimentSample)
 
         # Log that we are finished with the registration
         self._logger.info("Registration completed")
