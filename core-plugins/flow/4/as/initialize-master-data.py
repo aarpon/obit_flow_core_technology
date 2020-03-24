@@ -454,6 +454,13 @@ data_set_type_FACS_ARIA_FCSFILE.setMainDataSetPattern('.*\.fcs')
 data_set_type_FACS_ARIA_FCSFILE.setMainDataSetPath(None)
 data_set_type_FACS_ARIA_FCSFILE.setDeletionDisallowed(False)
 
+# FACS_ARIA_ACCESSORY_FILE
+data_set_type_FACS_ARIA_ACCESSORY_FILE = tr.getOrCreateNewDataSetType('FACS_ARIA_ACCESSORY_FILE')
+data_set_type_FACS_ARIA_ACCESSORY_FILE.setDescription('An accessory dataset file associated with a FACS Aria experiment.')
+data_set_type_FACS_ARIA_ACCESSORY_FILE.setMainDataSetPattern(None)
+data_set_type_FACS_ARIA_ACCESSORY_FILE.setMainDataSetPath(None)
+data_set_type_FACS_ARIA_ACCESSORY_FILE.setDeletionDisallowed(False)
+
 # BD INFLUX
 # ------------------------------------------------------------------------------
 
@@ -464,6 +471,13 @@ data_set_type_INFLUX_FCSFILE.setMainDataSetPattern('.*\.fcs')
 data_set_type_INFLUX_FCSFILE.setMainDataSetPath(None)
 data_set_type_INFLUX_FCSFILE.setDeletionDisallowed(False)
 
+# INFLUX_ACCESSORY_FILE
+data_set_type_INFLUX_ACCESSORY_FILE = tr.getOrCreateNewDataSetType('INFLUX_ACCESSORY_FILE')
+data_set_type_INFLUX_ACCESSORY_FILE.setDescription('An accessory dataset file associated with an Influx experiment.')
+data_set_type_INFLUX_ACCESSORY_FILE.setMainDataSetPattern(None)
+data_set_type_INFLUX_ACCESSORY_FILE.setMainDataSetPath(None)
+data_set_type_INFLUX_ACCESSORY_FILE.setDeletionDisallowed(False)
+
 # BD LSR FORTESSA
 # ------------------------------------------------------------------------------
 
@@ -473,6 +487,13 @@ data_set_type_LSR_FORTESSA_FCSFILE.setDescription('An FCS file from the BD LSR F
 data_set_type_LSR_FORTESSA_FCSFILE.setMainDataSetPattern('.*\.fcs')
 data_set_type_LSR_FORTESSA_FCSFILE.setMainDataSetPath(None)
 data_set_type_LSR_FORTESSA_FCSFILE.setDeletionDisallowed(False)
+
+# LSR_FORTESSA_ACCESSORY_FILE
+data_set_type_LSR_FORTESSA_ACCESSORY_FILE = tr.getOrCreateNewDataSetType('LSR_FORTESSA_ACCESSORY_FILE')
+data_set_type_LSR_FORTESSA_ACCESSORY_FILE.setDescription('An accessory dataset file associated with an LSR Fortessa experiment.')
+data_set_type_LSR_FORTESSA_ACCESSORY_FILE.setMainDataSetPattern(None)
+data_set_type_LSR_FORTESSA_ACCESSORY_FILE.setMainDataSetPath(None)
+data_set_type_LSR_FORTESSA_ACCESSORY_FILE.setDeletionDisallowed(False)
 
 # BC CYTOFLEX S
 # ------------------------------------------------------------------------------
@@ -501,6 +522,13 @@ data_set_type_MOFLO_XDP_FCSFILE.setMainDataSetPattern('.*\.fcs')
 data_set_type_MOFLO_XDP_FCSFILE.setMainDataSetPath(None)
 data_set_type_MOFLO_XDP_FCSFILE.setDeletionDisallowed(False)
 
+# MOFLO_XDP_ACCESSORY_FILE
+data_set_type_MOFLO_XDP_ACCESSORY_FILE = tr.getOrCreateNewDataSetType('MOFLO_XDP_ACCESSORY_FILE')
+data_set_type_MOFLO_XDP_ACCESSORY_FILE.setDescription('An accessory dataset file associated with a MOFLO XDP experiment.')
+data_set_type_MOFLO_XDP_ACCESSORY_FILE.setMainDataSetPattern(None)
+data_set_type_MOFLO_XDP_ACCESSORY_FILE.setMainDataSetPath(None)
+data_set_type_MOFLO_XDP_ACCESSORY_FILE.setDeletionDisallowed(False)
+
 # BIORAD S3E
 # ------------------------------------------------------------------------------
 
@@ -510,6 +538,13 @@ data_set_type_S3E_FCSFILE.setDescription('An FCS file from the BIORAD S3e Cell S
 data_set_type_S3E_FCSFILE.setMainDataSetPattern('.*\.fcs')
 data_set_type_S3E_FCSFILE.setMainDataSetPath(None)
 data_set_type_S3E_FCSFILE.setDeletionDisallowed(False)
+
+# S3E_ACCESSORY_FILE
+data_set_type_S3E_ACCESSORY_FILE = tr.getOrCreateNewDataSetType('S3E_ACCESSORY_FILE')
+data_set_type_S3E_ACCESSORY_FILE.setDescription('An accessory dataset file associated with an S3E experiment.')
+data_set_type_S3E_ACCESSORY_FILE.setMainDataSetPattern(None)
+data_set_type_S3E_ACCESSORY_FILE.setMainDataSetPath(None)
+data_set_type_S3E_ACCESSORY_FILE.setDeletionDisallowed(False)
 
 # ==============================================================================
 #
@@ -1180,6 +1215,13 @@ assignment_SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_TUBE_ISINDEXSORT.setSection(None)
 assignment_SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_TUBE_ISINDEXSORT.setPositionInForms(3)
 assignment_SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_TUBE_ISINDEXSORT.setShownEdit(False)
 
+# DATA_SET_FACS_ARIA_ACCESSORY_FILE_NAME
+assignment_DATA_SET_FACS_ARIA_ACCESSORY_FILE_NAME = tr.assignPropertyType(data_set_type_FACS_ARIA_ACCESSORY_FILE, prop_type_NAME)
+assignment_DATA_SET_FACS_ARIA_ACCESSORY_FILE_NAME.setMandatory(False)
+assignment_DATA_SET_FACS_ARIA_ACCESSORY_FILE_NAME.setSection(None)
+assignment_DATA_SET_FACS_ARIA_ACCESSORY_FILE_NAME.setPositionInForms(1)
+assignment_DATA_SET_FACS_ARIA_ACCESSORY_FILE_NAME.setShownEdit(False)
+
 # BD INFLUX
 # ------------------------------------------------------------------------------
 
@@ -1301,6 +1343,13 @@ assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_ISINDEXSORT.setMandatory(False)
 assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_ISINDEXSORT.setSection(None)
 assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_ISINDEXSORT.setPositionInForms(4)
 assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_ISINDEXSORT.setShownEdit(False)
+
+# DATA_SET_INFLUX_ACCESSORY_FILE_NAME
+assignment_DATA_SET_INFLUX_ACCESSORY_FILE_NAME = tr.assignPropertyType(data_set_type_INFLUX_ACCESSORY_FILE, prop_type_NAME)
+assignment_DATA_SET_INFLUX_ACCESSORY_FILE_NAME.setMandatory(False)
+assignment_DATA_SET_INFLUX_ACCESSORY_FILE_NAME.setSection(None)
+assignment_DATA_SET_INFLUX_ACCESSORY_FILE_NAME.setPositionInForms(1)
+assignment_DATA_SET_INFLUX_ACCESSORY_FILE_NAME.setShownEdit(False)
 
 # BD LSR FORTESSA
 # ------------------------------------------------------------------------------
@@ -1437,6 +1486,13 @@ assignment_SAMPLE_LSR_FORTESSA_WELL_NAME.setMandatory(False)
 assignment_SAMPLE_LSR_FORTESSA_WELL_NAME.setSection('General Info')
 assignment_SAMPLE_LSR_FORTESSA_WELL_NAME.setPositionInForms(1)
 assignment_SAMPLE_LSR_FORTESSA_WELL_NAME.setShownEdit(True)
+
+# DATA_SET_LSR_FORTESSA_ACCESSORY_FILE_NAME
+assignment_DATA_SET_LSR_FORTESSA_ACCESSORY_FILE_NAME = tr.assignPropertyType(data_set_type_LSR_FORTESSA_ACCESSORY_FILE, prop_type_NAME)
+assignment_DATA_SET_LSR_FORTESSA_ACCESSORY_FILE_NAME.setMandatory(False)
+assignment_DATA_SET_LSR_FORTESSA_ACCESSORY_FILE_NAME.setSection(None)
+assignment_DATA_SET_LSR_FORTESSA_ACCESSORY_FILE_NAME.setPositionInForms(1)
+assignment_DATA_SET_LSR_FORTESSA_ACCESSORY_FILE_NAME.setShownEdit(False)
 
 # BC CYTOFLEX S
 # ------------------------------------------------------------------------------
@@ -1703,6 +1759,13 @@ assignment_SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_TUBE_ISINDEXSORT.setSection(None)
 assignment_SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_TUBE_ISINDEXSORT.setPositionInForms(4)
 assignment_SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_TUBE_ISINDEXSORT.setShownEdit(False)
 
+# DATA_SET_MOFLO_XDP_ACCESSORY_FILE_NAME
+assignment_DATA_SET_MOFLO_XDP_ACCESSORY_FILE_NAME = tr.assignPropertyType(data_set_type_MOFLO_XDP_ACCESSORY_FILE, prop_type_NAME)
+assignment_DATA_SET_MOFLO_XDP_ACCESSORY_FILE_NAME.setMandatory(False)
+assignment_DATA_SET_MOFLO_XDP_ACCESSORY_FILE_NAME.setSection(None)
+assignment_DATA_SET_MOFLO_XDP_ACCESSORY_FILE_NAME.setPositionInForms(1)
+assignment_DATA_SET_MOFLO_XDP_ACCESSORY_FILE_NAME.setShownEdit(False)
+
 # BIORAD S3E
 # ------------------------------------------------------------------------------
 
@@ -1824,5 +1887,12 @@ assignment_SAMPLE_S3E_TUBE_S3E_TUBE_ISINDEXSORT.setMandatory(False)
 assignment_SAMPLE_S3E_TUBE_S3E_TUBE_ISINDEXSORT.setSection(None)
 assignment_SAMPLE_S3E_TUBE_S3E_TUBE_ISINDEXSORT.setPositionInForms(4)
 assignment_SAMPLE_S3E_TUBE_S3E_TUBE_ISINDEXSORT.setShownEdit(False)
+
+# DATA_SET_S3E_ACCESSORY_FILE_NAME
+assignment_DATA_SET_S3E_ACCESSORY_FILE_NAME = tr.assignPropertyType(data_set_type_S3E_ACCESSORY_FILE, prop_type_NAME)
+assignment_DATA_SET_S3E_ACCESSORY_FILE_NAME.setMandatory(False)
+assignment_DATA_SET_S3E_ACCESSORY_FILE_NAME.setSection(None)
+assignment_DATA_SET_S3E_ACCESSORY_FILE_NAME.setPositionInForms(1)
+assignment_DATA_SET_S3E_ACCESSORY_FILE_NAME.setShownEdit(False)
 
 print("Import of Flow Cytometry Core Technology Master Data finished.")
