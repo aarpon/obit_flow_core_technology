@@ -770,19 +770,14 @@ class Processor:
             # This is an error!
             return False
 
+        # Report
+        self._logger.info("Processing accessory files for experiment of type: " + openBISExperimentSampleType)
 
-        # Extract the path relative to the experiment folder
-        if relativePath.endswith('/'):
-            relativePath = relativePath[0:len(relativePath) - 1]
+        # Path to be scanned for files
+        fullpath = os.path.join(self._transaction.getIncoming().getAbsolutePath(), relativePath)
 
-        last_index = relativePath.rfind('/')
-        if last_index != -1:
-            relativePath = relativePath[last_index + 1:]
-
-        self._logger.info("Relative path is: " + relativePath)
-
-        # Alias to the full path
-        fullpath = self._transaction.getIncoming().getAbsolutePath()
+        # Report
+        self._logger.info("All remaining files in folder: " + str(os.listdir(fullpath)))
 
         # Get the list of files at the root of full path that are of the expected format
         files = [f for f in os.listdir(fullpath) if
@@ -814,9 +809,9 @@ class Processor:
             # Assign the dataset to the experiment sample
             dataset.setSample(openBISExperimentSample)
 
-            # Move to a custom destination (to match the image datasets)
-            dstPath = join("original", relativePath, f)
-            self._transaction.moveFile(join(fullpath, f), dataset, dstPath)
+            # Move to a custom destination
+            dstPath = os.path.join("original", f)
+            self._transaction.moveFile(os.path.join(fullpath, f), dataset, dstPath)
 
         return True
 
