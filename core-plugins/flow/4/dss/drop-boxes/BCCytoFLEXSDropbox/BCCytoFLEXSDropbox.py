@@ -18,7 +18,7 @@ def process(transaction):
     #
     prefix = "CYTOFLEX_S"
     version = 2
-    logDir = "../core-plugins/flow/4/dss/drop-boxes/BDCytoFLEXSDropbox/logs"
+    logDir = "../core-plugins/flow/4/dss/drop-boxes/BCCytoFLEXSDropbox/logs"
 
     processor = Processor(transaction, prefix, version, logDir)
     processor.run()
