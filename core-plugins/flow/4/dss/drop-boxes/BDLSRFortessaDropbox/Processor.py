@@ -39,7 +39,7 @@ class Processor:
         prefix = tubeSampleType[:-5]
         if prefix in ["FACS_ARIA", "INFLUX", "MOFLO_XDP", "S3E", "SONY_MA900", "SONY_SH800S"]:
             return True
-        elif prefix in ["LSR_FORTESSA"]:
+        elif prefix in ["LSR_FORTESSA", "CYTOFLEX_S"]:
             return False
         else:
             raise Exception("Unknown prefix!")
@@ -739,6 +739,82 @@ class Processor:
         # Move the file
         self._transaction.moveFile(fileName, dataset)
 
+    def registerAccessoryFilesAsDatasets(self,
+                                         relativePath,
+                                         openBISExperimentSampleType,
+                                         openBISAccessoryFileDataSetType,
+                                         openBISExperimentSample):
+        """Scan the given path for files at the root levels that are of the expected format
+        and associates them to the _EXPERIMENT sample.
+
+        Please notice that currently only samples of type CYTOFLEX_S_EXPERIMENT support registering
+        accessory files as datasets.
+        """
+
+        # Accepted file formats
+        file_formats = []
+        if openBISExperimentSampleType == "CYTOFLEX_S_EXPERIMENT":
+
+            # The expected format is .xml
+            file_formats = [".xml"]
+
+        else:
+
+            # CYTOFLEX_S_EXPERIMENT is currently the only supported sample type.
+            # If we find another one, we return (success)
+            return True
+
+        # Also check the dataset type. Currently, this can only be CYTOFLEX_S_ACCESSORY_FILE
+        if openBISAccessoryFileDataSetType != "CYTOFLEX_S_ACCESSORY_FILE":
+
+            # This is an error!
+            return False
+
+        # Report
+        self._logger.info("Processing accessory files for experiment of type: " + openBISExperimentSampleType)
+
+        # Path to be scanned for files
+        fullpath = os.path.join(self._transaction.getIncoming().getAbsolutePath(), relativePath)
+
+        # Report
+        self._logger.info("All remaining files in folder: " + str(os.listdir(fullpath)))
+
+        # Get the list of files at the root of full path that are of the expected format
+        files = [f for f in os.listdir(fullpath) if
+            os.path.isfile(os.path.join(fullpath, f)) and
+            os.path.splitext(f.lower())[-1] in file_formats]
+
+        # Report
+        self._logger.info("Accessory files to process: " + str(files))
+
+        # Register them as datasets
+        for f in files:
+
+            # Log
+            self._logger.info("Registering accessory file: " + f)
+
+            # Create a new dataset
+            dataset = self._transaction.createNewDataSet()
+            if not dataset:
+                msg = "Could not get or create dataset"
+                self._logger.error(msg)
+                raise Exception(msg)
+
+            # Set the dataset type
+            dataset.setDataSetType(openBISAccessoryFileDataSetType)
+
+            # Set the $NAME property
+            dataset.setPropertyValue("$NAME", f)
+
+            # Assign the dataset to the experiment sample
+            dataset.setSample(openBISExperimentSample)
+
+            # Move to a custom destination
+            dstPath = os.path.join("original", f)
+            self._transaction.moveFile(os.path.join(fullpath, f), dataset, dstPath)
+
+        return True
+
     def run(self):
         """Run the registration."""
 
@@ -811,6 +887,7 @@ class Processor:
         openBISTubeSetSampleType = self._prefix + "_TUBESET"
         openBISSpecimenSampleType = self._prefix + "_SPECIMEN"
         openBISWellSampleType = self._prefix + "_WELL"
+        openBISAccessoryFileDataSetType = self._prefix + "_ACCESSORY_FILE"
 
         # Get the root node (obitXML)
         rootNode = tree.getroot()
@@ -982,6 +1059,13 @@ class Processor:
                     msg = "The Node must be either a Specimen or a Tray"
                     self._logger.error(msg)
                     raise Exception(msg)
+
+            # Register the accessory files (for each Experiment Node)
+            expRelativePath = experimentNode.attrib.get("relativePath")
+            self.registerAccessoryFilesAsDatasets(expRelativePath,
+                                                  openBISExperimentSampleType,
+                                                  openBISAccessoryFileDataSetType,
+                                                  openBISExperimentSample)
 
         # Log that we are finished with the registration
         self._logger.info("Registration completed")

@@ -67,7 +67,8 @@ define(["openbis",
                 "S3E_EXPERIMENT": false,
                 "MOFLO_XDP_EXPERIMENT": false,
                 "SONY_MA900_EXPERIMENT": false,
-                "SONY_SH800S_EXPERIMENT": false
+                "SONY_SH800S_EXPERIMENT": false,
+                "CYTOFLEX_S_EXPERIMENT": true
             };
 
             // Instantiate openBIS V3 API
