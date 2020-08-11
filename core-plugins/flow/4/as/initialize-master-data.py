@@ -650,6 +650,13 @@ data_set_type_SONY_SH800S_FCSFILE.setMainDataSetPattern('.*\.fcs')
 data_set_type_SONY_SH800S_FCSFILE.setMainDataSetPath(None)
 data_set_type_SONY_SH800S_FCSFILE.setDeletionDisallowed(False)
 
+# SONY_SH800S_ACCESSORY_FILE
+data_set_type_SONY_SH800S_ACCESSORY_FILE = tr.getOrCreateNewDataSetType('SONY_SH800S_ACCESSORY_FILE')
+data_set_type_SONY_SH800S_ACCESSORY_FILE.setDescription('An accessory dataset file associated with a SONY SH800S experiment.')
+data_set_type_SONY_SH800S_ACCESSORY_FILE.setMainDataSetPattern(None)
+data_set_type_SONY_SH800S_ACCESSORY_FILE.setMainDataSetPath(None)
+data_set_type_SONY_SH800S_ACCESSORY_FILE.setDeletionDisallowed(False)
+
 # SONY MA900
 # ------------------------------------------------------------------------------
 
@@ -659,6 +666,13 @@ data_set_type_SONY_MA900_FCSFILE.setDescription('An FCS file from the SONY MA900
 data_set_type_SONY_MA900_FCSFILE.setMainDataSetPattern('.*\.fcs')
 data_set_type_SONY_MA900_FCSFILE.setMainDataSetPath(None)
 data_set_type_SONY_MA900_FCSFILE.setDeletionDisallowed(False)
+
+# SONY_MA900_ACCESSORY_FILE
+data_set_type_SONY_MA900_ACCESSORY_FILE = tr.getOrCreateNewDataSetType('SONY_MA900_ACCESSORY_FILE')
+data_set_type_SONY_MA900_ACCESSORY_FILE.setDescription('An accessory dataset file associated with a SONY MA900 experiment.')
+data_set_type_SONY_MA900_ACCESSORY_FILE.setMainDataSetPattern(None)
+data_set_type_SONY_MA900_ACCESSORY_FILE.setMainDataSetPath(None)
+data_set_type_SONY_MA900_ACCESSORY_FILE.setDeletionDisallowed(False)
 
 # ==============================================================================
 #
@@ -2270,6 +2284,13 @@ assignment_SAMPLE_SONY_SH800S_TUBE_SONY_SH800S_TUBE_ISINDEXSORT.setSection(None)
 assignment_SAMPLE_SONY_SH800S_TUBE_SONY_SH800S_TUBE_ISINDEXSORT.setPositionInForms(4)
 assignment_SAMPLE_SONY_SH800S_TUBE_SONY_SH800S_TUBE_ISINDEXSORT.setShownEdit(False)
 
+# DATA_SET_SONY_SH800S_ACCESSORY_FILE_NAME
+assignment_DATA_SET_SONY_SH800S_ACCESSORY_FILE_NAME = tr.assignPropertyType(data_set_type_SONY_SH800S_ACCESSORY_FILE, prop_type_NAME)
+assignment_DATA_SET_SONY_SH800S_ACCESSORY_FILE_NAME.setMandatory(False)
+assignment_DATA_SET_SONY_SH800S_ACCESSORY_FILE_NAME.setSection(None)
+assignment_DATA_SET_SONY_SH800S_ACCESSORY_FILE_NAME.setPositionInForms(1)
+assignment_DATA_SET_SONY_SH800S_ACCESSORY_FILE_NAME.setShownEdit(False)
+
 # SONY MA900
 # ------------------------------------------------------------------------------
 
@@ -2391,5 +2412,12 @@ assignment_SAMPLE_SONY_MA900_TUBE_SONY_MA900_TUBE_ISINDEXSORT.setMandatory(False
 assignment_SAMPLE_SONY_MA900_TUBE_SONY_MA900_TUBE_ISINDEXSORT.setSection(None)
 assignment_SAMPLE_SONY_MA900_TUBE_SONY_MA900_TUBE_ISINDEXSORT.setPositionInForms(4)
 assignment_SAMPLE_SONY_MA900_TUBE_SONY_MA900_TUBE_ISINDEXSORT.setShownEdit(False)
+
+# DATA_SET_SONY_MA900_ACCESSORY_FILE_NAME
+assignment_DATA_SET_SONY_MA900_ACCESSORY_FILE_NAME = tr.assignPropertyType(data_set_type_SONY_MA900_ACCESSORY_FILE, prop_type_NAME)
+assignment_DATA_SET_SONY_MA900_ACCESSORY_FILE_NAME.setMandatory(False)
+assignment_DATA_SET_SONY_MA900_ACCESSORY_FILE_NAME.setSection(None)
+assignment_DATA_SET_SONY_MA900_ACCESSORY_FILE_NAME.setPositionInForms(1)
+assignment_DATA_SET_SONY_MA900_ACCESSORY_FILE_NAME.setShownEdit(False)
 
 print("Import of Flow Cytometry Core Technology Master Data finished.")
