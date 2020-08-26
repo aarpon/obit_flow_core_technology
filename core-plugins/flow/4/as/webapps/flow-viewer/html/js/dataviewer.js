@@ -85,7 +85,7 @@ define(["d3", "c3"], function (d3, c3) {
             let link = $("<a>")
                 .text(text)
                 .attr("href", "#")
-                .attr("title", text)
+                .attr("title", "These are Data Sets of type 'ATTACHMENT'.")
                 .click(
                 function () {
                     let url = "#entity=SAMPLE&permId=" + experimentSample.permId +
