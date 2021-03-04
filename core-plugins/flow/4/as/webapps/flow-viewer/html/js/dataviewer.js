@@ -53,39 +53,46 @@ define(["d3", "c3"], function (d3, c3) {
         },
 
         /**
-         * Display attachment info and link to the Attachments tab.
+         * Display info about Attachments and Accessory Files and links to the corresponding tabs.
          *
          * @param experimentSample {...}_EXPERIMENT sample.
          */
-        displayAttachments: function(experimentSample) {
+        displayAssociatedFiles: function(experimentSample) {
 
-            // Get the div
-            let experimentAttachmentsViewId = $("#experimentAttachmentsView");
+            // Update the associated files div
+            let associatedFilesViewId = $("#associatedFilesView");
+            associatedFilesViewId.empty();
+            associatedFilesViewId.append(this.prepareTitle("Associated files"));
 
-            // Clear the attachment div
-            experimentAttachmentsViewId.empty();
-
-            // Text
-            let text = "";
-            let n = 0;
+            // Counts attachments and accessory files
+            let numAttachments = 0;
+            let numAccessoryFiles = 0;
             for (let i = 0; i < experimentSample.dataSets.length; i++) {
                 if (experimentSample.dataSets[i].type.code === "ATTACHMENT") {
-                    n += 1;
+                    numAttachments += 1;
+                } else if (experimentSample.dataSets[i].type.code.endsWith("_ACCESSORY_FILE")) {
+                    numAccessoryFiles += 1;
+                } else {
+                    // Skip
                 }
             }
-            if (n === 0) {
-                text = "There are no attachments.";
-            } else if (n === 1) {
-                text = "There is one attachment";
+
+            // Text for the Attachments links
+            let attachmentsText = "";
+
+            if (numAttachments === 0) {
+                attachmentsText += "no attachments";
+            } else if (numAttachments === 1) {
+                attachmentsText += "one attachment";
             } else {
-                text = "There are " + n + " attachments.";
+                attachmentsText += numAttachments + " attachments";
             }
 
-            // Link to the data-sets tab
-            let link = $("<a>")
-                .text(text)
+            // Link to the data-sets tab with own tooltip
+            let attachmentsLink = $("<a>")
+                .text(attachmentsText)
                 .attr("href", "#")
-                .attr("title", text)
+                .attr("title", "These are Data Sets of type 'ATTACHMENT'.")
                 .click(
                 function () {
                     let url = "#entity=SAMPLE&permId=" + experimentSample.permId +
@@ -94,10 +101,40 @@ define(["d3", "c3"], function (d3, c3) {
                     return false;
                 });
 
-            experimentAttachmentsViewId.append(this.prepareTitle("Attachments"));
+            // Text for the Accessory Files links
+            let accessoryFilesText = "";
 
-            // Display the link
-            experimentAttachmentsViewId.append(link);
+            if (numAccessoryFiles === 0) {
+                accessoryFilesText += "no accessory files";
+            } else if (numAccessoryFiles === 1) {
+                accessoryFilesText += "one accessory file";
+            } else {
+                accessoryFilesText += numAccessoryFiles + " accessory files";
+            }
+
+            // Link to the data-sets tab with own tooltip
+            let accessoryFilesLink = $("<a>")
+                .text(accessoryFilesText)
+                .attr("href", "#")
+                .attr("title", "These are Data Sets of type '" + DATAMODEL.EXPERIMENT_PREFIX + "_ACCESSORY_FILE'.")
+                .click(
+                function () {
+                    let url = "#entity=SAMPLE&permId=" + experimentSample.permId +
+                        "&ui-subtab=data-sets-section&ui-timestamp=" + (new Date().getTime());
+                    window.top.location.hash = url;
+                    return false;
+                });
+
+            // Build the full text
+            let text = $("<p>")
+                .append("There are ")
+                .append(attachmentsLink)
+                .append( " and ")
+                .append(accessoryFilesLink)
+                .append(".");
+
+            // Display the full text
+            associatedFilesViewId.append(text);
 
         },
 
@@ -313,8 +350,8 @@ define(["d3", "c3"], function (d3, c3) {
             // Display the tags
             this.displayTags(experimentSample);
 
-            // Display the attachments
-            this.displayAttachments(experimentSample);
+            // Display the associated Attachments and Accessory Files
+            this.displayAssociatedFiles(experimentSample);
         },
 
         /**
