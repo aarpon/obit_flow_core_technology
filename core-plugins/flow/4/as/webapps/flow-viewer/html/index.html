@@ -1,0 +1,114 @@
+<html>
+<head>
+
+    <meta charset="utf-8">
+
+    <!-- Required by bootstrap -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Include stylesheets -->
+    <link rel="stylesheet" type="text/css" href="./third-party/c3/c3.min.css">
+    <link rel="stylesheet" type="text/css" href="./third-party/dynatree/skin/ui.dynatree.css">
+    <link rel="stylesheet" media="screen" href="./third-party/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" media="screen" href="./third-party/bootstrap/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="./css/default.css">
+
+    <!-- Include jquery -->
+    <script src="./third-party/jquery/js/jquery.min.js"></script>
+    <script src="./third-party/jquery/js/jquery.cookie.js"></script>
+    <script src="./third-party/jquery/js/jquery-ui.custom.min.js"></script>
+
+    <!-- Include bootstrap -->
+    <script src="./third-party/bootstrap/js/bootstrap.min.js"></script>
+    <!--[if lt IE 9]>
+    <script src="./third-party/bootstrap/js/html5shiv.js"></script>
+    <script src="./third-party/bootstrap/js/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Include dynatree library -->
+    <script src="./third-party/dynatree/js/jquery.dynatree.min.js"></script>
+
+    <!-- Include configuration script -->
+    <script src="./js/config/config.js"></script>
+    <script src="./etc/config.js"></script>
+
+</head>
+<body>
+
+<div id="webapp">
+    <div class="container-fluid">
+        <div class="row">
+            <div id="experimentNameView" class="col-md-12">Please wait...</div>
+        </div>
+        <div class="row">
+            <div id="experimentTagView" class="col-md-4">&nbsp;</div>
+            <div id="experimentDescriptionView" class="col-md-8">&nbsp;</div>
+        </div>
+        <div class="row">
+            <div id="associatedFilesView" class="col-md-4">&nbsp;</div>
+            <div id="experimentAcquisitionDetailsView" class="col-md-8">&nbsp;</div>
+        </div>
+        <div class="row">
+            <div id="status" class="col-md-12">&nbsp;</div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Experiment</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div id="treeView">
+                            Please wait while retrieving data...
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Details</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div id="detailViewSampleName"></div>
+                        <div id="detailViewAction"></div>
+                        <div id="detailViewActionExpl"></div>
+                        <div id="detailViewSample">&nbsp;</div>
+                        <div id="detailViewPlot">&nbsp;</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- requireJS openbis configuration -->
+<script src="/openbis/resources/api/v3/config.js"></script>
+
+<!-- Add local js scripts to requireJS paths -->
+<script>
+    require.paths["js/util"] = "/openbis/webapp/flow-viewer/js/util";
+    require.paths["js/datamodel"] = "/openbis/webapp/flow-viewer/js/datamodel";
+    require.paths["js/dataviewer"] = "/openbis/webapp/flow-viewer/js/dataviewer";
+    require.paths["d3"] = "/openbis/webapp/flow-viewer/third-party/d3/d3.v5.min";
+    require.paths["c3"] = "/openbis/webapp/flow-viewer/third-party/c3/c3.min";
+</script>
+
+<!-- Add requireJS -->
+<script type="text/javascript" src="/openbis/resources/api/v3/require.js"></script>
+
+<script>
+
+    require(["js/datamodel", "js/dataviewer", "d3", "c3"], function (DataModel, DataViewer, d3, c3) {
+
+            /* Merge default and custom configuration */
+            window.CONFIG = $.extend({}, DEFAULT_CONFIG, CONFIG);
+
+            /* Initialize global objects */
+            window.DATAVIEWER = new DataViewer();
+            window.DATAMODEL = new DataModel();
+        });
+
+</script>
+</body>
+</html>
