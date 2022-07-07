@@ -1475,6 +1475,11 @@ assignment_SAMPLE_FACS_ARIA_TUBE_NAME.setSection('General Info')
 assignment_SAMPLE_FACS_ARIA_TUBE_NAME.setPositionInForms(1)
 assignment_SAMPLE_FACS_ARIA_TUBE_NAME.setShownEdit(True)
 
+# SAMPLE_FACS_ARIA_TUBESET_NAME
+assignment_SAMPLE_FACS_ARIA_TUBESET_NAME = tr.assignPropertyType(samp_type_FACS_ARIA_TUBESET, prop_type_NAME)
+assignment_SAMPLE_FACS_ARIA_TUBESET_NAME.setMandatory(False)
+assignment_SAMPLE_FACS_ARIA_TUBESET_NAME.setShownEdit(False)
+
 # SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_TUBE_ISINDEXSORT
 assignment_SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_TUBE_ISINDEXSORT = tr.assignPropertyType(samp_type_FACS_ARIA_TUBE, prop_type_FACS_ARIA_TUBE_ISINDEXSORT)
 assignment_SAMPLE_FACS_ARIA_TUBE_FACS_ARIA_TUBE_ISINDEXSORT.setMandatory(False)
@@ -1603,6 +1608,11 @@ assignment_SAMPLE_INFLUX_TUBE_NAME.setMandatory(False)
 assignment_SAMPLE_INFLUX_TUBE_NAME.setSection('General Info')
 assignment_SAMPLE_INFLUX_TUBE_NAME.setPositionInForms(1)
 assignment_SAMPLE_INFLUX_TUBE_NAME.setShownEdit(True)
+
+# SAMPLE_INFLUX_TUBESET_NAME
+assignment_SAMPLE_INFLUX_TUBESET_NAME = tr.assignPropertyType(samp_type_INFLUX_TUBESET, prop_type_NAME)
+assignment_SAMPLE_INFLUX_TUBESET_NAME.setMandatory(False)
+assignment_SAMPLE_INFLUX_TUBESET_NAME.setShownEdit(False)
 
 # SAMPLE_INFLUX_TUBE_INFLUX_TUBE_ISINDEXSORT
 assignment_SAMPLE_INFLUX_TUBE_INFLUX_TUBE_ISINDEXSORT = tr.assignPropertyType(samp_type_INFLUX_TUBE, prop_type_INFLUX_TUBE_ISINDEXSORT)
@@ -1747,6 +1757,11 @@ assignment_SAMPLE_LSR_FORTESSA_TUBE_NAME.setSection('General Info')
 assignment_SAMPLE_LSR_FORTESSA_TUBE_NAME.setPositionInForms(1)
 assignment_SAMPLE_LSR_FORTESSA_TUBE_NAME.setShownEdit(True)
 
+# SAMPLE_LSR_FORTESSA_TUBESET_NAME
+assignment_SAMPLE_LSR_FORTESSA_TUBESET_NAME = tr.assignPropertyType(samp_type_LSR_FORTESSA_TUBESET, prop_type_NAME)
+assignment_SAMPLE_LSR_FORTESSA_TUBESET_NAME.setMandatory(False)
+assignment_SAMPLE_LSR_FORTESSA_TUBESET_NAME.setShownEdit(False)
+
 # SAMPLE_LSR_FORTESSA_WELL_NAME
 assignment_SAMPLE_LSR_FORTESSA_WELL_NAME = tr.assignPropertyType(samp_type_LSR_FORTESSA_WELL, prop_type_NAME)
 assignment_SAMPLE_LSR_FORTESSA_WELL_NAME.setMandatory(False)
@@ -1890,6 +1905,11 @@ assignment_SAMPLE_CYTOFLEX_S_TUBE_NAME.setSection('General Info')
 assignment_SAMPLE_CYTOFLEX_S_TUBE_NAME.setPositionInForms(1)
 assignment_SAMPLE_CYTOFLEX_S_TUBE_NAME.setShownEdit(True)
 
+# SAMPLE_CYTOFLEX_S_TUBESET_NAME
+assignment_SAMPLE_CYTOFLEX_S_TUBESET_NAME = tr.assignPropertyType(samp_type_CYTOFLEX_S_TUBESET, prop_type_NAME)
+assignment_SAMPLE_CYTOFLEX_S_TUBESET_NAME.setMandatory(False)
+assignment_SAMPLE_CYTOFLEX_S_TUBESET_NAME.setShownEdit(False)
+
 # SAMPLE_CYTOFLEX_S_WELL_NAME
 assignment_SAMPLE_CYTOFLEX_S_WELL_NAME = tr.assignPropertyType(samp_type_CYTOFLEX_S_WELL, prop_type_NAME)
 assignment_SAMPLE_CYTOFLEX_S_WELL_NAME.setMandatory(False)
@@ -2018,6 +2038,11 @@ assignment_SAMPLE_MOFLO_XDP_TUBE_NAME.setMandatory(False)
 assignment_SAMPLE_MOFLO_XDP_TUBE_NAME.setSection('General Info')
 assignment_SAMPLE_MOFLO_XDP_TUBE_NAME.setPositionInForms(1)
 assignment_SAMPLE_MOFLO_XDP_TUBE_NAME.setShownEdit(True)
+
+# SAMPLE_MOFLO_XDP_TUBESET_NAME
+assignment_SAMPLE_MOFLO_XDP_TUBESET_NAME = tr.assignPropertyType(samp_type_MOFLO_XDP_TUBESET, prop_type_NAME)
+assignment_SAMPLE_MOFLO_XDP_TUBESET_NAME.setMandatory(False)
+assignment_SAMPLE_MOFLO_XDP_TUBESET_NAME.setShownEdit(False)
 
 # SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_TUBE_ISINDEXSORT
 assignment_SAMPLE_MOFLO_XDP_TUBE_MOFLO_XDP_TUBE_ISINDEXSORT = tr.assignPropertyType(samp_type_MOFLO_XDP_TUBE, prop_type_MOFLO_XDP_TUBE_ISINDEXSORT)
@@ -2148,6 +2173,11 @@ assignment_SAMPLE_S3_TUBE_NAME.setSection('General Info')
 assignment_SAMPLE_S3_TUBE_NAME.setPositionInForms(1)
 assignment_SAMPLE_S3_TUBE_NAME.setShownEdit(True)
 
+# SAMPLE_S3E_TUBESET_NAME
+assignment_SAMPLE_S3_TUBESET_NAME = tr.assignPropertyType(samp_type_S3E_TUBESET, prop_type_NAME)
+assignment_SAMPLE_S3_TUBESET_NAME.setMandatory(False)
+assignment_SAMPLE_S3_TUBESET_NAME.setShownEdit(False)
+
 # SAMPLE_S3E_TUBE_S3E_TUBE_ISINDEXSORT
 assignment_SAMPLE_S3E_TUBE_S3E_TUBE_ISINDEXSORT = tr.assignPropertyType(samp_type_S3E_TUBE, prop_type_S3E_TUBE_ISINDEXSORT)
 assignment_SAMPLE_S3E_TUBE_S3E_TUBE_ISINDEXSORT.setMandatory(False)
@@ -2277,6 +2307,11 @@ assignment_SAMPLE_SONY_SH800S_TUBE_NAME.setSection('General Info')
 assignment_SAMPLE_SONY_SH800S_TUBE_NAME.setPositionInForms(1)
 assignment_SAMPLE_SONY_SH800S_TUBE_NAME.setShownEdit(True)
 
+# SAMPLE_SONY_SH800S_TUBESET_NAME
+assignment_SAMPLE_SONY_SH800S_TUBESET_NAME = tr.assignPropertyType(samp_type_SONY_SH800S_TUBESET, prop_type_NAME)
+assignment_SAMPLE_SONY_SH800S_TUBESET_NAME.setMandatory(False)
+assignment_SAMPLE_SONY_SH800S_TUBESET_NAME.setShownEdit(False)
+
 # SAMPLE_SONY_SH800S_TUBE_SONY_SH800S_TUBE_ISINDEXSORT
 assignment_SAMPLE_SONY_SH800S_TUBE_SONY_SH800S_TUBE_ISINDEXSORT = tr.assignPropertyType(samp_type_SONY_SH800S_TUBE, prop_type_SONY_SH800S_TUBE_ISINDEXSORT)
 assignment_SAMPLE_SONY_SH800S_TUBE_SONY_SH800S_TUBE_ISINDEXSORT.setMandatory(False)
@@ -2405,6 +2440,11 @@ assignment_SAMPLE_SONY_MA900_TUBE_NAME.setMandatory(False)
 assignment_SAMPLE_SONY_MA900_TUBE_NAME.setSection('General Info')
 assignment_SAMPLE_SONY_MA900_TUBE_NAME.setPositionInForms(1)
 assignment_SAMPLE_SONY_MA900_TUBE_NAME.setShownEdit(True)
+
+# SAMPLE_SONY_MA900_TUBESET_NAME
+assignment_SAMPLE_SONY_MA900_TUBESET_NAME = tr.assignPropertyType(samp_type_SONY_MA900_TUBESET, prop_type_NAME)
+assignment_SAMPLE_SONY_MA900_TUBESET_NAME.setMandatory(False)
+assignment_SAMPLE_SONY_MA900_TUBESET_NAME.setShownEdit(False)
 
 # SAMPLE_SONY_MA900_TUBE_SONY_MA900_TUBE_ISINDEXSORT
 assignment_SAMPLE_SONY_MA900_TUBE_SONY_MA900_TUBE_ISINDEXSORT = tr.assignPropertyType(samp_type_SONY_MA900_TUBE, prop_type_SONY_MA900_TUBE_ISINDEXSORT)
