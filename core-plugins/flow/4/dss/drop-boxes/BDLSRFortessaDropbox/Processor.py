@@ -176,8 +176,7 @@ class Processor:
         self._transactionSampleCount += 1
         return sampleType + "_" + self._transactionTimeStamp + "_" + str(self._transactionSampleCount)
 
-    def _getOrCreateCollection(self,
-                               openBISCollectionIdentifier):
+    def _getOrCreateCollection(self, openBISCollectionIdentifier):
         """Retrieve or register an openBIS Collection with given identifier.
 
         @param openBISCollectionIdentifier The collection openBIS identifier.
@@ -403,8 +402,6 @@ class Processor:
         @param specimenNode An XML node corresponding to a Specimen.
         @param openBISCollection A Collection Sample object
         @param openBISSpecimenSampleType  The Specimen sample type
-        @param openBISExperimentSampleIdentifier The identifier of the
-               {...}_EXPERIMENT sample.
         @param specimenName The name of the Specimen.
         @return ISample sample, or null
         """
@@ -503,14 +500,13 @@ class Processor:
                      tubeNode,
                      openBISCollection,
                      openBISTubeSampleType,
-                     openBISExperimentSample,
                      openBISSpecimenSample,
                      openBISTubeSetSample):
-        """Register a Tube (as a child of a Specimen) based on the Tube XML node.
+        """Register a Tube (as a child of a Specimen and a Tubeset) based on the Tube XML node.
 
         The {...}_TUBE SAMPLE object has following structure:
 
-                PARENTS  : {...}_EXPERIMENT, {...}_SPECIMEN, {...}_TUBESET
+                PARENTS  : {...}_SPECIMEN, {...}_TUBESET
 
                 CHILDREN : none
 
@@ -522,7 +518,6 @@ class Processor:
         @param tubeNode An XML node corresponding to a Tube.
         @param openBISCollection The IExperiment to which the Tube belongs
         @param openBISTubeSampleType The Tube sample type.
-        @param openBISExperimentSample The openBIS Experiment sample (parent).
         @param openBISSpecimenSample The openBIS Specimen sample (parent).
         @param openBISTubeSetSample The openBIS TubeSet sample (parent).
         @return ISample sample, or null
@@ -558,7 +553,6 @@ class Processor:
 
         # Set the parents
         openBISTube.setParentSampleIdentifiers([
-            openBISExperimentSample.getSampleIdentifier(),
             openBISSpecimenSample.getSampleIdentifier(),
             openBISTubeSetSample.getSampleIdentifier()
             ])
@@ -609,6 +603,9 @@ class Processor:
             self._logger.error(msg)
             raise Exception(msg)
 
+        # Set the $NAME property to "Tubes"
+        openBISTubeSet.setPropertyValue("$NAME", "Tubes")
+
         # Inform
         self._logger.info("Created new TubeSet " \
                           "with identifier %s, sample type %s" \
@@ -625,14 +622,13 @@ class Processor:
                      wellNode,
                      openBISCollection,
                      openBISWellSampleType,
-                     openBISExperimentSample,
                      openBISSpecimenSample,
                      openBISPlateSample):
-        """Register a Well based on the Well XML node.
+        """Register a Well (as a child of a Specimen and a Well) based on the Well XML node.
 
         The {...}_WELL SAMPLE object has following structure:
 
-                PARENTS  : {...}_EXPERIMENT, {...}_SPECIMEN, {...}_PLATE
+                PARENTS  : {...}_SPECIMEN, {...}_PLATE
 
                 CHILDREN : none
 
@@ -644,7 +640,6 @@ class Processor:
         @param wellNode An XML node corresponding to a Well.
         @param openBISCollection The IExperiment to which the Tube belongs
         @param openBISWellSampleType The Well sample type.
-        @param openBISExperimentSample The openBIS Experiment sample (parent).
         @param openBISSpecimenSample The openBIS Specimen sample (parent).
         @param openBISPlateSample The openBIS Plate sample (parent).
         @return ISample sample, or null
@@ -673,7 +668,6 @@ class Processor:
 
         # Set the parents
         openBISWell.setParentSampleIdentifiers([
-            openBISExperimentSample.getSampleIdentifier(),
             openBISSpecimenSample.getSampleIdentifier(),
             openBISPlateSample.getSampleIdentifier()
             ])
@@ -684,14 +678,12 @@ class Processor:
     def _processFCSFile(self,
                         fcsFileNode,
                         openBISDataSetType,
-                        openBISSample,
-                        openBISCollection):
+                        openBISSample):
         """Register the FCS File using the parsed properties file.
 
         @param fcsFileNode An XML node corresponding to an FCS file (dataset).
         @param openBISDataSetType The type of the DataSet.
         @param openBISSample An ISample object representing a Tube or Well.
-        @param openBISCollection The openBIS Collection.
         """
 
         # Create a new dataset
@@ -975,7 +967,6 @@ class Processor:
                         openBISTubeSample = self._processTube(tubeNode,
                                                         openBISCollection,
                                                         openBISTubeSampleType,
-                                                        openBISExperimentSample,
                                                         openBISSpecimenSample,
                                                         openBISTubeSetSample)
 
@@ -991,8 +982,7 @@ class Processor:
                             # Process the FCS file node
                             self._processFCSFile(fcsFileNode,
                                            openBISDataSetType,
-                                           openBISTubeSample,
-                                           openBISCollection)
+                                           openBISTubeSample)
 
                 elif experimentChildNodeType == "Tray":
 
@@ -1035,7 +1025,6 @@ class Processor:
                             openBISWellSample = self._processWell(wellNode,
                                                             openBISCollection,
                                                             openBISWellSampleType,
-                                                            openBISExperimentSample,
                                                             openBISSpecimenSample,
                                                             openBISTraySample)
 
@@ -1051,8 +1040,7 @@ class Processor:
                                 # Process the FCS file node
                                 self._processFCSFile(fcsFileNode,
                                                      openBISDataSetType,
-                                                     openBISWellSample,
-                                                     openBISCollection)
+                                                     openBISWellSample)
 
                 else:
 
