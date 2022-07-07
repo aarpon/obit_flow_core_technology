@@ -1477,6 +1477,7 @@ assignment_SAMPLE_FACS_ARIA_TUBE_NAME.setShownEdit(True)
 
 # SAMPLE_FACS_ARIA_TUBESET_NAME
 assignment_SAMPLE_FACS_ARIA_TUBESET_NAME = tr.assignPropertyType(samp_type_FACS_ARIA_TUBESET, prop_type_NAME)
+assignment_SAMPLE_FACS_ARIA_TUBESET_NAME.setDefaultValue('Tubes')
 assignment_SAMPLE_FACS_ARIA_TUBESET_NAME.setMandatory(False)
 assignment_SAMPLE_FACS_ARIA_TUBESET_NAME.setShownEdit(False)
 
@@ -1611,6 +1612,7 @@ assignment_SAMPLE_INFLUX_TUBE_NAME.setShownEdit(True)
 
 # SAMPLE_INFLUX_TUBESET_NAME
 assignment_SAMPLE_INFLUX_TUBESET_NAME = tr.assignPropertyType(samp_type_INFLUX_TUBESET, prop_type_NAME)
+assignment_SAMPLE_INFLUX_TUBESET_NAME.setDefaultValue('Tubes')
 assignment_SAMPLE_INFLUX_TUBESET_NAME.setMandatory(False)
 assignment_SAMPLE_INFLUX_TUBESET_NAME.setShownEdit(False)
 
@@ -1759,6 +1761,7 @@ assignment_SAMPLE_LSR_FORTESSA_TUBE_NAME.setShownEdit(True)
 
 # SAMPLE_LSR_FORTESSA_TUBESET_NAME
 assignment_SAMPLE_LSR_FORTESSA_TUBESET_NAME = tr.assignPropertyType(samp_type_LSR_FORTESSA_TUBESET, prop_type_NAME)
+assignment_SAMPLE_LSR_FORTESSA_TUBESET_NAME.setDefaultValue('Tubes')
 assignment_SAMPLE_LSR_FORTESSA_TUBESET_NAME.setMandatory(False)
 assignment_SAMPLE_LSR_FORTESSA_TUBESET_NAME.setShownEdit(False)
 
@@ -1907,6 +1910,7 @@ assignment_SAMPLE_CYTOFLEX_S_TUBE_NAME.setShownEdit(True)
 
 # SAMPLE_CYTOFLEX_S_TUBESET_NAME
 assignment_SAMPLE_CYTOFLEX_S_TUBESET_NAME = tr.assignPropertyType(samp_type_CYTOFLEX_S_TUBESET, prop_type_NAME)
+assignment_SAMPLE_CYTOFLEX_S_TUBESET_NAME.setDefaultValue('Tubes')
 assignment_SAMPLE_CYTOFLEX_S_TUBESET_NAME.setMandatory(False)
 assignment_SAMPLE_CYTOFLEX_S_TUBESET_NAME.setShownEdit(False)
 
@@ -2041,6 +2045,7 @@ assignment_SAMPLE_MOFLO_XDP_TUBE_NAME.setShownEdit(True)
 
 # SAMPLE_MOFLO_XDP_TUBESET_NAME
 assignment_SAMPLE_MOFLO_XDP_TUBESET_NAME = tr.assignPropertyType(samp_type_MOFLO_XDP_TUBESET, prop_type_NAME)
+assignment_SAMPLE_MOFLO_XDP_TUBESET_NAME.setDefaultValue('Tubes')
 assignment_SAMPLE_MOFLO_XDP_TUBESET_NAME.setMandatory(False)
 assignment_SAMPLE_MOFLO_XDP_TUBESET_NAME.setShownEdit(False)
 
@@ -2175,6 +2180,7 @@ assignment_SAMPLE_S3_TUBE_NAME.setShownEdit(True)
 
 # SAMPLE_S3E_TUBESET_NAME
 assignment_SAMPLE_S3_TUBESET_NAME = tr.assignPropertyType(samp_type_S3E_TUBESET, prop_type_NAME)
+assignment_SAMPLE_S3_TUBESET_NAME.setDefaultValue('Tubes')
 assignment_SAMPLE_S3_TUBESET_NAME.setMandatory(False)
 assignment_SAMPLE_S3_TUBESET_NAME.setShownEdit(False)
 
@@ -2309,6 +2315,7 @@ assignment_SAMPLE_SONY_SH800S_TUBE_NAME.setShownEdit(True)
 
 # SAMPLE_SONY_SH800S_TUBESET_NAME
 assignment_SAMPLE_SONY_SH800S_TUBESET_NAME = tr.assignPropertyType(samp_type_SONY_SH800S_TUBESET, prop_type_NAME)
+assignment_SAMPLE_SONY_SH800S_TUBESET_NAME.setDefaultValue('Tubes')
 assignment_SAMPLE_SONY_SH800S_TUBESET_NAME.setMandatory(False)
 assignment_SAMPLE_SONY_SH800S_TUBESET_NAME.setShownEdit(False)
 
@@ -2443,6 +2450,7 @@ assignment_SAMPLE_SONY_MA900_TUBE_NAME.setShownEdit(True)
 
 # SAMPLE_SONY_MA900_TUBESET_NAME
 assignment_SAMPLE_SONY_MA900_TUBESET_NAME = tr.assignPropertyType(samp_type_SONY_MA900_TUBESET, prop_type_NAME)
+assignment_SAMPLE_SONY_MA900_TUBESET_NAME.setDefaultValue('Tubes')
 assignment_SAMPLE_SONY_MA900_TUBESET_NAME.setMandatory(False)
 assignment_SAMPLE_SONY_MA900_TUBESET_NAME.setShownEdit(False)
 
